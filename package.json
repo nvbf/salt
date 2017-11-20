@@ -1,0 +1,20 @@
+{
+  "name": "create-next-example-app",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@std/esm": "^0.16.0",
+    "bluebird": "^3.5.1",
+    "debug": "^3.1.0",
+    "express": "^4.16.2",
+    "google-auth-library": "^0.11.0",
+    "googleapis": "^22.2.0",
+    "isomorphic-unfetch": "^2.0.0",
+    "next": "^4.1.4",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1"
+  }
+}
