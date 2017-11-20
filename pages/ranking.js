@@ -58,9 +58,9 @@ function listTournaments(players) {
     return (
       <li key={key}>
         <Link href={`/players/${id}`}>
-          <span>
+          <a>
             {name} - {points}
-          </span>
+          </a>
         </Link>
       </li>
     );

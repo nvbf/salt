@@ -1,6 +1,7 @@
 const express = require("express");
 
-import { getRanking, getPlayer, getTournament, getTournaments } from "./api";
+const api = require("./api");
+const { getRanking, getPlayer, getTournament, getTournaments } = api;
 
 const dev = process.env.NODE_ENV !== "production";
 const next = require("next");

@@ -1,9 +1,10 @@
 {
-  "name": "create-next-example-app",
+  "name": "Salt",
   "scripts": {
-    "dev": "next",
+    "dev": "node server.js",
+    "postinstall": "next build",
     "build": "next build",
-    "start": "next start"
+    "start": "NODE_ENV=production node run.js"
   },
   "dependencies": {
     "@std/esm": "^0.16.0",

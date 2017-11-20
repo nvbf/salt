@@ -1,3 +1,4 @@
+import React from "react";
 import Link from "next/link";
 import Head from "../components/head";
 import Nav from "../components/nav";
@@ -31,6 +32,7 @@ export default () => (
           <a className="card">
             <h3>Resultater &rarr;</h3>
             <p>Se resultater fra de siste turneringene som har vært</p>
+            <p>OBS denne funker ikke enda!!</p>
           </a>
         </Link>
       </div>

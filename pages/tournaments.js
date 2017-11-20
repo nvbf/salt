@@ -55,9 +55,9 @@ function listTournaments(tournaments) {
     return (
       <tr key={key}>
         <Link href={`/tournaments/${id}`}>
-          <span>
+          <a>
             {id}, {name}, {place}, {startdate}
-          </span>
+          </a>
         </Link>
       </tr>
     );
