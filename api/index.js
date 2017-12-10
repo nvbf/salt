@@ -11,6 +11,11 @@ export async function getPlayer(id) {
   return sheets.getPlayer(jwtClient, id);
 }
 
+export async function getPlayers() {
+  const jwtClient = await auth();
+  return sheets.getPlayers(jwtClient);
+}
+
 export async function getTournament(id) {
   const jwtClient = await auth();
   return sheets.getTournament(jwtClient, id);

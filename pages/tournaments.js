@@ -22,7 +22,17 @@ export default class extends React.Component {
   }
 
   render() {
-    const { tournaments = [], loading } = this.state;
+    const { tournaments = [], loading, error } = this.state;
+    log(tournaments);
+    if (error) {
+      return (
+        <div>
+          <Head title="Home" />
+          <Nav />
+          Noe feil skjedde :\ <p>{error}</p>
+        </div>
+      );
+    }
     if (loading) {
       return (
         <div>
@@ -44,22 +54,46 @@ export default class extends React.Component {
 }
 
 function renderTournaments(tournaments) {
-  if (tournaments.length > 1) {
-    return <table>{listTournaments(tournaments)}</table>;
+  if (tournaments.length > 0) {
+    return listTournaments(tournaments);
   }
   return <div>Ingen turneringer er registert</div>;
 }
 
 function listTournaments(tournaments) {
-  return tournaments.map(({ id, name, place, startdate }, key) => {
+  return (
+    <table>
+      {renderTableHead(tournaments[0])}
+      <tbody>{listRow(tournaments)}</tbody>
+    </table>
+  );
+}
+
+function listRow(tournaments) {
+  return tournaments.map(({ id, name, ...rest }, key) => {
     return (
       <tr key={key}>
-        <Link href={`/tournaments/${id}`}>
-          <a>
-            {id}, {name}, {place}, {startdate}
-          </a>
-        </Link>
+        <td>
+          <Link href={`/tournaments/${id}`}>
+            <a>{name}</a>
+          </Link>
+        </td>
+        {renderTableData(rest)}
       </tr>
     );
   });
+}
+
+function renderTableHead({id, timestamp, ...rest, }) {
+  const keys = Object.keys(rest);
+  return (
+    <thead>
+      <tr>{keys.map(key => <td key={key}>{key}</td>)}</tr>
+    </thead>
+  );
+}
+
+function renderTableData({id, timestamp, ...rest, }) {
+  const keys = Object.keys(rest);
+  return keys.map(key => <td key={key}>{rest[key]}</td>);
 }

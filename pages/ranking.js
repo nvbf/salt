@@ -4,6 +4,9 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Head from "../components/head";
 import Nav from "../components/nav";
+import { LoadingPage } from "../components/loading-page";
+import { ErrorPage } from "../components/error-page";
+import { getJson } from "../utils/getJson";
 
 const log = debug("players");
 
@@ -14,24 +17,14 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch("/api/ranking");
-    const statusCode = res.statusCode > 200 ? res.statusCode : false;
-    const json = await res.json();
-
-    this.setState({ players: json, loading: false });
+    this.setState({ players: await getJson("/api/ranking"), loading: false });
   }
 
   render() {
-    const { players = [], loading } = this.state;
-    if (loading) {
-      return (
-        <div>
-          <Head title="Home" />
-          <Nav />
-          Loading...
-        </div>
-      );
-    }
+    const { players = [], loading, error } = this.state;
+    if (loading) return <LoadingPage />;
+    if (error) return <ErrorPage error={error} />;
+
     return (
       <div>
         <Head title="Home" />
