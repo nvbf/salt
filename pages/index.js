@@ -25,7 +25,7 @@ export default () => (
         <Link href="/tournaments">
           <a className="card">
             <h3>Turneringer &rarr;</h3>
-            <p>Se årets turneringer</p>
+            <p>Se årets turneringer og meld deg på </p>
           </a>
         </Link>
         <Link href="/players">

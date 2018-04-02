@@ -4,8 +4,8 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Head from "../components/head";
 import Nav from "../components/nav";
-import { getIdFromPath } from "../utils/getIdFromPath";
-import { getJson } from "../utils/getJson";
+import { getIdFromPath } from "../src/utils/getIdFromPath";
+import { getJson } from "../src/utils/getJson";
 
 const log = debug("players");
 

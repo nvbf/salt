@@ -6,7 +6,7 @@ import Head from "../components/head";
 import Nav from "../components/nav";
 import { LoadingPage } from "../components/loading-page";
 import { ErrorPage } from "../components/error-page";
-import { getJson } from "../utils/getJson";
+import { getJson } from "../src/utils/getJson";
 
 const log = debug("players");
 

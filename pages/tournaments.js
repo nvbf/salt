@@ -5,7 +5,7 @@ import fetch from "isomorphic-unfetch";
 import Head from "../components/head";
 import Nav from "../components/nav";
 
-const log = debug("players");
+const log = debug("tournaments");
 
 export default class extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch("/api/tournaments");
+    const res = await fetch("/api/tournaments/norwegian");
     const statusCode = res.statusCode > 200 ? res.statusCode : false;
     const json = await res.json();
 
@@ -70,12 +70,12 @@ function listTournaments(tournaments) {
 }
 
 function listRow(tournaments) {
-  return tournaments.map(({ id, name, ...rest }, key) => {
+  return tournaments.map(({ TurneringsId, Navn, ...rest }, key) => {
     return (
       <tr key={key}>
         <td>
-          <Link href={`/tournaments/${id}`}>
-            <a>{name}</a>
+          <Link href={"/tournament"} as={`/tournaments/${TurneringsId}`}  >
+            <a>{Navn}</a>
           </Link>
         </td>
         {renderTableData(rest)}
@@ -85,15 +85,16 @@ function listRow(tournaments) {
 }
 
 function renderTableHead({id, timestamp, ...rest, }) {
-  const keys = Object.keys(rest);
+  const keys =  ["Name", "Startdato", "Pameldingsfrist", "KlasserTekst"];
   return (
     <thead>
-      <tr>{keys.map(key => <td key={key}>{key}</td>)}</tr>
+      <tr>{keys.map(key => <td key={key}><strong>{key}</strong></td>)}</tr>
     </thead>
   );
 }
 
-function renderTableData({id, timestamp, ...rest, }) {
-  const keys = Object.keys(rest);
-  return keys.map(key => <td key={key}>{rest[key]}</td>);
+function renderTableData(props) {
+  const keys =  ["Startdato", "Pameldingsfrist", "KlasserTekst"];
+  return keys.map(key => <td key={key}>{props[key]}</td>);
 }
+

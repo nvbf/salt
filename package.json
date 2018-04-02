@@ -1,7 +1,8 @@
 {
   "name": "Salt",
   "scripts": {
-    "dev": "node run.js",
+    "dev": "nodemon -w src/ --exec yarn dev-start",
+    "dev-start": "node --trace-warnings run.js",
     "postinstall": "next build",
     "build": "next build",
     "start": "NODE_ENV=production node run.js"
@@ -11,8 +12,11 @@
   },
   "dependencies": {
     "@std/esm": "^0.16.0",
+    "axios": "^0.18.0",
     "bluebird": "^3.5.1",
+    "circular-json": "^0.5.1",
     "debug": "^3.1.0",
+    "dotenv": "^5.0.1",
     "express": "^4.16.2",
     "google-auth-library": "^0.11.0",
     "googleapis": "^22.2.0",
@@ -22,5 +26,12 @@
     "next": "^4.1.4",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.3",
+    "jest": "^22.4.3",
+    "nodemon": "^1.17.3",
+    "regenerator-runtime": "^0.11.1"
   }
 }
