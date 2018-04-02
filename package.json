@@ -14,6 +14,8 @@
     "@std/esm": "^0.16.0",
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
+    "braintree": "^2.8.0",
+    "braintree-web-drop-in": "^1.10.0",
     "circular-json": "^0.5.1",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",
@@ -25,7 +27,9 @@
     "moment": "^2.19.3",
     "next": "^4.1.4",
     "react": "^16.1.1",
-    "react-dom": "^16.1.1"
+    "react-dom": "^16.1.1",
+    "sendgrid": "^5.2.3",
+    "styled-components": "^3.2.5"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

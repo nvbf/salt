@@ -7,8 +7,14 @@ import moment from "moment";
 import Link from "next/link";
 import { getJson } from '../src/utils/getJson'
 import { getIdFromPath } from '../src/utils/getIdFromPath'
+import styled from 'styled-components';
 
 const log = debug("tournament");
+
+const StyledSpan = styled.span`
+  font-weight: bold;
+`
+
 
 export default class extends React.Component {
   constructor(props) {
@@ -23,9 +29,11 @@ export default class extends React.Component {
       if(tournament) {
         this.setState({ tournament: tournament, loading: false });
       } else {
+        log(`No such tournament?`)
         this.setState({ error: "No such tournament " });
       }
     } catch (error) {
+      log(`Error: ${error}`)
       this.setState({ error });
     }
   }
@@ -63,8 +71,17 @@ export default class extends React.Component {
 function renderTournament(tournament) {
   log(`tournament: ${tournament}`)
   return (
+    <main>
       <h2>!{tournament.name}</h2>
-      
+        <ul>
+          <li><StyledSpan>Start </StyledSpan> {tournament.startDate} - {tournament.startTime} </li>
+          <li><StyledSpan>Type </StyledSpan> {tournament.tournamentType} </li>
+          <li><StyledSpan>Klasse </StyledSpan> {tournament.classesText} </li>
+          <li><StyledSpan>Påmeldingsfrist </StyledSpan> {tournament.deadline} </li>
+          <li><StyledSpan>Sted </StyledSpan> {tournament.playerVenue} </li>
+          <li><StyledSpan>Påmelding</StyledSpan> {renderSignupLink(tournament)} </li>
+        </ul>
+    </main>
   );
 }
 
@@ -72,11 +89,13 @@ function renderSignupLink(tournament) {
   const { deadline, id } = tournament;
   const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
-  if (signupAllowd) {
+  if(!signupAllowd) {
     return (
-      <Link href={`/signup/${id}`}>
-        <a>Meld deg på</a>
+      <Link href={"/signup"} as={`/signup/${id}`}  >
+      <a>Meld deg på</a>
       </Link>
     );
+  } else {
+    return "Påmelding stengt"
   }
 }

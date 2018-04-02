@@ -19,12 +19,17 @@ export async function getPlayer(id) {
 }
 
 export async function getPlayers() {
-  return await apiGetPlayers();
+  const apiPlayers = await apiGetPlayers();
+  log(`apiPlayers ${JSON.stringify(apiPlayers)}`)
+  const players = mapToObject(apiPlayers)
+  log(`players ${JSON.stringify(players)}`)
+  const simplePlayers = players.map(({id, firstname, lastname}) => ({id, firstname, lastname}))
+  return simplePlayers
 }
 
 export async function getTournament(id) {
   const apiTournament = await apiGetTournament(id);
-  return mapTotournamentObject(apiTournament)
+  return mapToObject(apiTournament)
 }
 
 export async function getTournaments() {
@@ -35,10 +40,10 @@ export async function getNorwegianTournaments() {
   return await apiGetNorwegianTournaments();
 }
 
-export function mapTotournamentObject(apiRes) {
+export function mapToObject(apiRes) {
   if(Array.isArray(apiRes)) {
     log(`mapping Array`)
-    return apiRes.map(obj => mapTotournamentObject(obj))
+    return apiRes.map(obj => mapToObject(obj))
   }
 
   const keys =Object.keys(apiRes)
@@ -46,7 +51,7 @@ export function mapTotournamentObject(apiRes) {
   keys.forEach(key => {
     if(mapping[key]) {
       if(typeof apiRes[key] === "object") {
-        const result = mapTotournamentObject(apiRes[key]) 
+        const result = mapToObject(apiRes[key]) 
         tournament[mapping[key]] = result 
       } else {
         tournament[mapping[key]] = apiRes[key]
@@ -71,6 +76,7 @@ const mapping = {
   "Pameldingsfrist": "deadline",
   "Turneringsleder": "tournamentDirector",
   "TurneringEpost": "email",
+  "Telefon": "phone",
   "TurneringTlf": "phone",
   "KlasserTekst": "classesText",
   "Klasser": "classes",
@@ -79,5 +85,14 @@ const mapping = {
   "MaksLag": "maxNrOfTeams",
   "Memo": "description",
   "Spillested": "playerVenue",
-  "Betalingsinfo": "paymentInfo"
+  "Betalingsinfo": "paymentInfo",
+  "PersonId": "id",
+  "Fornavn": "firstname",
+  "Etternavn": "lastname",
+  "Adresse1": "adresseLine1",
+  "Adresse2": "adresseLine2",
+  "Posnr": "zipcode",
+  "Possted": "city",
+  "FDato": "dateOfBith",
+  "Epost": "email",
 }

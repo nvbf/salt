@@ -12,8 +12,11 @@ export async function apiGetPlayer(id) {
     return []
 }
 export async function apiGetPlayers() {
-    return []
+    const result = await axios.get(`${API_URL}/players`)
+    log(result)
+    return getData(result)
 }
+
 export async function apiGetTournament(id) {
     const tournaments = await apiGetTournaments()
     log(`tournaments.length ${tournaments.length}`)

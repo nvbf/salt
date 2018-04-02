@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const express = require("express");
 const api = require("./api");
 const {
@@ -10,6 +8,8 @@ const {
   getTournaments,
   getNorwegianTournaments
 } = api;
+import { gateway }  from './utils/gateway.js';
+import { sendMailTournament } from './utils/senMail.js'
 
 const dev = process.env.NODE_ENV !== "production";
 const next = require("next");
@@ -100,11 +100,57 @@ app.prepare().then(() => {
     return handle(req, res);
   });
 
-  /* eslint-disable no-console */
+ server.get("/client_token", function (req, res) {
+    gateway.clientToken.generate({}, function (err, response) {
+      res.send(response.clientToken);
+    });
+  });
+
+  server.post("/turnering/checkout/", (req, res) => {
+    console.log(req.body);
+    const nonce = req.body.payment_method_nonce;
+  
+    // 1. Checke om det er plass nok 
+    // 2. Sjekke om prisen er riktig 
+  
+    console.log('Sending to braintree...');
+      gateway.transaction.sale({
+        customer: {
+          email: req.body.email,
+        },
+        amount: req.body.price,
+        paymentMethodNonce: nonce,
+        options: {
+          submitForSettlement: true,
+          storeInVaultOnSuccess: true
+        }
+      }, (err, result) => {
+        console.log('Response from braintree', err, result);
+        if(err) {
+          console.log('ERROR', err);
+          return res.render('failed-transaction.ejs', { error: JSON.stringify(result, null, 2) });
+        }
+        if(!result.success) {
+          console.log('ERROR', result);
+          return res.render('failed-transaction.ejs', { error: JSON.stringify(result, null, 2)});
+        }
+        console.log(result.transaction);
+        console.log(req.body);
+        const data = {
+          players: req.body.players,
+          paid:req.body.price,
+          tournamentid:req.body.tournamentid
+        };
+        // Sende POST til apiiet.
+        sendMailTournament(req.body.email);
+        res.render('signup-tournament.ejs');
+      });
+    })  
+
   server.listen(process.env.PORT || 3000, err => {
     if (err) throw err;
     log("Server ready on http://localhost:3000");
-  });
+  });  
 });
 
 async function errorHandlerJson(handler, req, res, next) {
