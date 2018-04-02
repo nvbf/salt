@@ -1,8 +1,7 @@
 const sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
 
 
-
-export function sendMailTournament(receiver, tournament) {
+function sendMailTournament(receiver, tournament) {
   sendgrid.send({
     to:       receiver,
     from:     'post@osvb.no',
@@ -15,3 +14,6 @@ export function sendMailTournament(receiver, tournament) {
     console.log(json);
   });
 }
+
+
+module.exports = sendMailTournament

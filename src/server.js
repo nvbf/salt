@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require("express");
 const api = require("./api");
 const {
@@ -8,8 +10,10 @@ const {
   getTournaments,
   getNorwegianTournaments
 } = api;
-import { gateway }  from './utils/gateway.js';
-import { sendMailTournament } from './utils/senMail.js'
+
+
+const gateway = require('./utils/gateway.js');
+const sendMailTournament = require('./utils/sendMail.js')
 
 const dev = process.env.NODE_ENV !== "production";
 const next = require("next");
