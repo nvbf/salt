@@ -2,16 +2,15 @@
   "name": "Salt",
   "scripts": {
     "dev": "nodemon -w src/ --exec yarn dev-start",
-    "dev-start": "node --trace-warnings run.js",
+    "dev-start": "node --trace-warnings src/server",
     "postinstall": "next build",
     "build": "next build",
-    "start": "NODE_ENV=production node run.js"
+    "start": "NODE_ENV=production node node src/server"
   },
   "engines": {
     "node": "9"
   },
   "dependencies": {
-    "@std/esm": "^0.26.0",
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
     "braintree": "^2.8.0",
@@ -19,7 +18,6 @@
     "circular-json": "^0.5.1",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",
-    "esm": "^3.0.15",
     "express": "^4.16.3",
     "google-auth-library": "^1.3.2",
     "googleapis": "^28.0.1",

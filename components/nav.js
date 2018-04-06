@@ -1,12 +1,12 @@
-import Head from './head'
-import Link from 'next/link'
+import Head from "./head";
+import Link from "next/link";
 
-const links = [
-  { href: 'https://github.com/segmentio/create-next-app', label: 'Github' }
-].map(link => {
-  link.key = `nav-link-${link.href}-${link.label}`
-  return link
-})
+const links = [{ href: "https://github.com/nvbf/salt", label: "Github" }].map(
+  link => {
+    link.key = `nav-link-${link.href}-${link.label}`;
+    return link;
+  }
+);
 
 const Nav = () => (
   <nav>
@@ -17,22 +17,21 @@ const Nav = () => (
         </Link>
       </li>
       <ul>
-        {links.map(
-          ({ key, href, label }) => (
-            <li key={key}>
-              <Link href={href}>
-                <a>{label}</a>
-              </Link>
-            </li>
-          )
-        )}
+        {links.map(({ key, href, label }) => (
+          <li key={key}>
+            <Link href={href}>
+              <a>{label}</a>
+            </Link>
+          </li>
+        ))}
       </ul>
     </ul>
 
     <style jsx>{`
       :global(body) {
         margin: 0;
-        font-family: -apple-system,BlinkMacSystemFont,Avenir Next,Avenir,Helvetica,sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
+          Helvetica, sans-serif;
       }
       nav {
         text-align: center;
@@ -55,6 +54,6 @@ const Nav = () => (
       }
     `}</style>
   </nav>
-)
+);
 
-export default Nav
+export default Nav;

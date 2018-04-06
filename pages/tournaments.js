@@ -47,7 +47,6 @@ export default class extends React.Component {
         <Head title="Home" />
         <Nav />
         {renderTournaments(tournaments)}
-        <p>Trykk på turneringa for detalje side</p>
       </div>
     );
   }
