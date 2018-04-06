@@ -5,7 +5,7 @@
     "dev-start": "node --trace-warnings src/server",
     "postinstall": "next build",
     "build": "next build",
-    "start": "NODE_ENV=production node node src/server"
+    "start": "NODE_ENV=production node src/server"
   },
   "engines": {
     "node": "9"
