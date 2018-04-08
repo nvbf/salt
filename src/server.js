@@ -68,14 +68,15 @@ app.prepare().then(() => {
   var checkoutRoute = express.Router();
   checkoutRoute.use(express.json());
 
-  server.configure("production", () => {
-    server.use((req, res, next) => {
-      if (req.header("x-forwarded-proto") !== "https") {
-        res.redirect(`https://${req.header("host")}${req.url}`);
-      } else {
-        next();
-      }
-    });
+  server.use((req, res, next) => {
+    if (
+      req.header("x-forwarded-proto") &&
+      req.header("x-forwarded-proto") !== "https"
+    ) {
+      res.redirect(`https://${req.header("host")}${req.url}`);
+    } else {
+      next();
+    }
   });
 
   server.use("/api/ranking", errorHandlerJson.bind(null, getRankingHandler));
