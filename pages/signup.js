@@ -2,19 +2,32 @@ import React from "react";
 import debug from "debug";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import { Main } from "../components/Main";
+import { ClassSelect } from "../components/ClassSelect";
+
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 
 const dropin = require("braintree-web-drop-in");
-
 const log = debug("players");
 
 export default class Signup extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { players: [], tournament: {}, loading: true };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.showPayment = this.showPayment.bind(this);
+
+    this.state = {
+      signupClass: false,
+      players: [],
+      tournament: {},
+      loading: true
+    };
+  }
+
+  handleChange(event) {
+    this.setState({ signupClass: event.target.value });
   }
 
   static async getInitialProps({ query, req }) {
@@ -28,46 +41,48 @@ export default class Signup extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.players.length > 0 && prevState.players.length == 0) {
-      dropin.create(
-        {
-          authorization: this.props.clientToken,
-          container: "#dropin-container"
-        },
-        function(createErr, instance) {
-          var button = document.querySelector("#submit-button");
-          button.addEventListener("click", function() {
-            instance.requestPaymentMethod(function(
-              requestPaymentMethodErr,
-              payload
-            ) {
-              const res = fetch("/tournaments/checkout/", {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify({
-                  nonce: payload.nounce,
-                  tournamentId: getIdFromPath(),
-                  player1: getSelectedValueFromDropDownWithId("#player1"),
-                  player2: getSelectedValueFromDropDownWithId("#player2"),
-                  email: document.querySelector("#email").value,
-                  klasse: "1"
-                })
-              })
-                .then(function(res) {
-                  console.log(res);
-                })
-                .catch(function(res) {
-                  console.log(res);
-                });
-            });
+  showPayment() {
+    dropin.create(
+      {
+        authorization: this.props.clientToken,
+        container: "#dropin-container"
+      },
+      function(createErr, instance) {
+        var button = document.querySelector("#submit-button");
+        button.addEventListener("click", function() {
+          instance.requestPaymentMethod(function(
+            requestPaymentMethodErr,
+            payload
+          ) {
+            signup(this.props.signupClass, nounce);
           });
-        }
-      );
-    }
+        });
+      }
+    );
+  }
+
+  signup(signupClass, nounce = "free") {
+    const res = fetch("/tournaments/checkout/", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        nonce: nounce,
+        tournamentId: getIdFromPath(),
+        player1: getSelectedValueFromDropDownWithId("#player1"),
+        player2: getSelectedValueFromDropDownWithId("#player2"),
+        email: document.querySelector("#email").value,
+        klasse: signupClass
+      })
+    })
+      .then(function(res) {
+        console.log(res);
+      })
+      .catch(function(res) {
+        console.log(res);
+      });
   }
 
   async componentDidMount() {
@@ -86,24 +101,37 @@ export default class Signup extends React.Component {
   }
 
   render() {
-    const { players, tournament, loading } = this.state;
-    log("tournament", tournament);
+    const {
+      players,
+      tournament: { name, classes },
+      loading,
+      signupClass = false
+    } = this.state;
     if (loading) {
+      return <Main>Loading...</Main>;
+    }
+    if (!signupClass) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
-          Loading...
-        </div>
+        <Main>
+          <h1> {name}</h1>
+          <ClassSelect classes={classes} handleChange={this.handleChange} />
+        </Main>
       );
     }
+    const correctClass = getClassInfoFromClass(signupClass, classes);
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
-        <h1> {tournament.name}</h1>
-        {renderSignup(players)}
-      </div>
+      <Main>
+        <h1> {name}</h1>
+        {renderSignup(players, correctClass.price)}
+        <h4> Email for kvittering:</h4>
+        <input type="text" id="email" />
+        <h4>Klasse: {correctClass["class"]} </h4>
+        <h4>Pris: {correctClass.price || "Gratis"} </h4>
+        <div id="dropin-container" />
+        <button onClick={this.showPayment} id="submit-button">
+          Betale
+        </button>
+      </Main>
     );
   }
 }
@@ -117,10 +145,6 @@ function renderSignup(players) {
         <select id="player1">{listPlayers(players)}</select>
         <h4> Spiller 2</h4>
         <select id="player2">{listPlayers(players)}</select>
-        <h4> Email for kvittering:</h4>
-        <input type="text" id="email" />
-        <div id="dropin-container" />
-        <button id="submit-button">Betale</button>
       </section>
     );
   }
@@ -141,4 +165,12 @@ function listPlayers(players) {
       </option>
     );
   });
+}
+
+function getClassInfoFromClass(klass, classes) {
+  const correctClass = classes.filter(klass1 => klass1["class"] === klass);
+  if (correctClass.length != 1) {
+    console.log("getClassInfoFromClass problem", correctClass, classes, klass);
+  }
+  return correctClass[0];
 }

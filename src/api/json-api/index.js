@@ -30,8 +30,30 @@ async function apiRegisterTeamForTournament(data) {
 }
 
 async function apiGetRanking() {
-  return [];
+  const result = await axios.get(`${API_URL}/points`);
+  const playersRes = await axios.get(`${API_URL}/players`);
+  const data = getData(result);
+  const playerSum = data.reduce((lastValue = {}, currentValue, index, {}) => {
+    //console.log('lastValue.currentSpillerId', lastValue.currentSpillerId)
+    //console.log('currentValue', currentValue)
+    if (lastValue.currentSpillerId == currentValue.SpillerId) {
+      lastValue.currentSpillerId.sum += currentValue.Poeng;
+    } else {
+      lastValue.currentSpillerId = currentValue.SpillerId;
+      lastValue[currentValue.SpillerId] = {};
+      lastValue[currentValue.SpillerId].sum = currentValue.Poeng;
+    }
+    return lastValue;
+  });
+  const keys = Object.keys(playerSum);
+  const players = keys.filter(key => Number.isInteger(Number(key)));
+  const playerObjects = players.map(key => ({
+    id: key,
+    sum: playerSum[key].sum
+  }));
+  return playerObjects.sort((a, b) => a.sum - b.sum);
 }
+
 async function apiGetPlayer(id) {
   return [];
 }

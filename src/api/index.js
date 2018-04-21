@@ -26,7 +26,7 @@ async function getPlayers() {
     firstname,
     lastname
   }));
-  return simplePlayers;
+  return simplePlayers.filter(({ id }) => id != 0);
 }
 
 async function getTournament(id) {
