@@ -85,6 +85,7 @@ function mapToObject(apiRes) {
         tournament[mapping[key]] = apiRes[key];
       }
     } else {
+      log(`skipping ${key} no mapping for it!`);
     }
   });
   return tournament;
@@ -122,7 +123,20 @@ const mapping = {
   Posnr: "zipcode",
   Possted: "city",
   FDato: "dateOfBith",
-  Epost: "email"
+  Epost: "email",
+  Lag: "teams",
+  LagId: "teamId",
+  Lagnavn: "teamName",
+  LagnavnKort: "teamNameShort",
+  Spiller_1: "player1Id",
+  Spiller_2: "player2Id",
+  PoengS1: "player1Points",
+  PoengS2: "player2Points",
+  PoengLag: "teamPoints",
+  ProfixioId: "profixioId",
+  Idrettsnr: "idrettsnr",
+  SpillerId: "playerId",
+  Kjonn: "gender"
 };
 
 module.exports = {

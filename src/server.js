@@ -132,12 +132,43 @@ app.prepare().then(() => {
 
   checkoutRoute.post("/", async (req, res) => {
     const { tournamentId, player1, player2, klasse } = req.body;
+    if (!tournamentId || !player1 || !player2 || !klasse) {
+      return res.json({
+        error: `Forventet at tournament, player1, player2 and klasse had a value: ${tournamentId}, ${player1}, ${player2}, ${klasse}`,
+        statusText: "error"
+      });
+    }
     const nonce = "fake-valid-no-billing-address-nonce" || req.body.nonce;
 
     // 1. Checke om det er plass nok
+
     // 2. Sjekke om prisen er riktig
-    const price = 500;
-    const tournament = getTournament(tournamentId);
+    const tournament = await getTournament(tournamentId);
+    log("tournament!!!", tournament);
+    log(`find klasse ${klasse}`);
+    //TODO: can't get correct class
+    const tournamentClasses = tournament.classes.filter(
+      klass => klass["class"] == klasse
+    );
+    const tournamentClass = tournamentClasses[0];
+    log("tournament class", tournamentClass);
+    const price = tournamentClass.price;
+
+    if (tournamentClass.length === 0) {
+      return res.json({
+        error:
+          "Can ikke finne denne klassen i denne turnering, dette skal ikke skje....",
+        statusText: "error"
+      });
+    }
+
+    if (tournamentClass.maxNrOfTeams >= tournamentClass.teams.length) {
+      return res.json({
+        error:
+          "Turneringen ble dessverre akkurat full, det er ikke lenger mulig å melde seg på. Du har ikke blitt belastet",
+        statusText: "error"
+      });
+    }
 
     console.log("Sending to braintree...");
     gateway.transaction.sale(
@@ -158,7 +189,7 @@ app.prepare().then(() => {
           console.log("ERROR", err || result);
           return res.json({
             error: JSON.stringify(err || result, null, 2),
-            status: "error"
+            statusText: "error"
           });
         }
         console.log(result.transaction);
@@ -197,7 +228,7 @@ async function errorHandlerJson(handler, req, res, next) {
   try {
     return await handler(req, res, next);
   } catch (err) {
-    log(`Error in handler: ${err}`);
+    log(`Error in handler: ${err}, ${CircularJSON.stringify(err)}`);
     res.status(500).json({
       error: "Internal Server Error",
       details: `${err}`

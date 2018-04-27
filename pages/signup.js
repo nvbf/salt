@@ -7,6 +7,7 @@ import { ClassSelect } from "../components/ClassSelect";
 
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
+import { resolve } from "upath";
 
 const dropin = require("braintree-web-drop-in");
 const log = debug("players");
@@ -17,16 +18,25 @@ export default class Signup extends React.Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.showPayment = this.showPayment.bind(this);
+    this.signup = this.signup.bind(this);
+    this.handleErrorResponse = this.handleErrorResponse.bind(this);
+    this.handleValidResponse = this.handleValidResponse.bind(this);
 
     this.state = {
       signupClass: false,
       players: [],
       tournament: {},
-      loading: true
+      loading: true,
+      paymentMessage: "",
+      paymentStatus: ""
     };
   }
 
   handleChange(event) {
+    // de not set state on defaultValue
+    if (event.target.value == " ") {
+      return;
+    }
     this.setState({ signupClass: event.target.value });
   }
 
@@ -47,21 +57,19 @@ export default class Signup extends React.Component {
         authorization: this.props.clientToken,
         container: "#dropin-container"
       },
-      function(createErr, instance) {
+      (createErr, instance) => {
         var button = document.querySelector("#submit-button");
-        button.addEventListener("click", function() {
-          instance.requestPaymentMethod(function(
-            requestPaymentMethodErr,
-            payload
-          ) {
-            signup(this.props.signupClass, nounce);
+        button.addEventListener("click", () => {
+          instance.requestPaymentMethod((requestPaymentMethodErr, payload) => {
+            log("payload.nounce", payload.nounce);
+            this.signup(payload.nounce);
           });
         });
       }
     );
   }
 
-  signup(signupClass, nounce = "free") {
+  signup(nounce = "free") {
     const res = fetch("/tournaments/checkout/", {
       headers: {
         Accept: "application/json",
@@ -73,16 +81,27 @@ export default class Signup extends React.Component {
         tournamentId: getIdFromPath(),
         player1: getSelectedValueFromDropDownWithId("#player1"),
         player2: getSelectedValueFromDropDownWithId("#player2"),
-        email: document.querySelector("#email").value,
-        klasse: signupClass
+        klasse: this.state.signupClass,
+        email: document.querySelector("#email").value
       })
     })
-      .then(function(res) {
-        console.log(res);
-      })
-      .catch(function(res) {
-        console.log(res);
-      });
+      .then(this.handleValidResponse)
+      .catch(this.handleErrorResponse);
+  }
+
+  handleValidResponse(res) {
+    console.log("res", res);
+    if (res.status == 200) {
+      this.setState({ paymentStatus: res.statusText });
+    }
+  }
+
+  handleErrorResponse(res) {
+    console.log("error res", res);
+    this.setState({
+      paymentStatus: res.statusText,
+      paymentMessage: res.error
+    });
   }
 
   async componentDidMount() {
@@ -96,8 +115,32 @@ export default class Signup extends React.Component {
         loading: false
       });
     } catch (err) {
+      //TODO: make this visibale for the end user
       this.setState({ error: "Problem..." });
     }
+  }
+
+  renderPaymentStatusOK() {
+    const { name } = this.state.tournament;
+    return (
+      <Main>
+        <h1> {name}</h1>
+        <p>
+          Betalingen er registert og dere er påmeldt til turneringen. Kvittering
+          er sendt på mail
+        </p>
+      </Main>
+    );
+  }
+
+  renderPaymentStatusError() {
+    return (
+      <Main>
+        <h1> {name}</h1>
+        <h3>Error</h3>
+        <p>{this.state.paymentMessage}</p>
+      </Main>
+    );
   }
 
   render() {
@@ -105,11 +148,19 @@ export default class Signup extends React.Component {
       players,
       tournament: { name, classes },
       loading,
-      signupClass = false
+      paymentStatus,
+      signupClass
     } = this.state;
     if (loading) {
       return <Main>Loading...</Main>;
     }
+    if (paymentStatus === "OK") {
+      return this.renderPaymentStatusOK();
+    }
+    if (paymentStatus === "error") {
+      return this.renderPaymentStatusError();
+    }
+
     if (!signupClass) {
       return (
         <Main>

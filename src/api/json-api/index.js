@@ -63,7 +63,7 @@ async function apiGetPlayers() {
 }
 
 async function apiGetTournament(id) {
-  const tournaments = await apiGetTournaments();
+  const tournaments = await apiGetTournaments(`?TurneringsId=${id}&Lag=True`);
   const tournamentArray = tournaments.filter(
     ({ TurneringsId }) => TurneringsId == id
   );
@@ -72,8 +72,9 @@ async function apiGetTournament(id) {
   }
   return tournamentArray[0];
 }
-async function apiGetTournaments() {
-  const result = await axios.get(`${API_URL}/tournaments`);
+async function apiGetTournaments(extraQueryString = "") {
+  log(`request URL: ${API_URL}/tournaments${extraQueryString}`);
+  const result = await axios.get(`${API_URL}/tournaments${extraQueryString}`);
   return getData(result);
 }
 

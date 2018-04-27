@@ -76,23 +76,24 @@ function renderTournament(tournament) {
       <h1>{tournament.name}</h1>
       <ul>
         <li>
-          <StyledSpan>Start </StyledSpan> {tournament.startDate} -{" "}
-          {tournament.startTime}{" "}
+          <StyledSpan>Start </StyledSpan> {tournament.startDate} -
+          {tournament.startTime}
         </li>
         <li>
-          <StyledSpan>Type </StyledSpan> {tournament.tournamentType}{" "}
+          <StyledSpan>Type </StyledSpan> {tournament.tournamentType}
         </li>
         <li>
-          <StyledSpan>Klasse </StyledSpan> {tournament.classesText}{" "}
+          <StyledSpan>Klasse </StyledSpan> {tournament.classesText}
         </li>
         <li>
-          <StyledSpan>Påmeldingsfrist </StyledSpan> {tournament.deadline}{" "}
+          <StyledSpan>Påmeldingsfrist </StyledSpan> {tournament.deadline}
         </li>
         <li>
-          <StyledSpan>Sted </StyledSpan> {tournament.playerVenue}{" "}
+          <StyledSpan>Sted </StyledSpan>{" "}
+          {tournament.playerVenue || "Ikke oppgitt"}
         </li>
         <li>
-          <StyledSpan>Påmelding</StyledSpan> {renderSignupLink(tournament)}{" "}
+          <StyledSpan>Påmelding</StyledSpan> {renderSignupLink(tournament)}
         </li>
       </ul>
     </main>

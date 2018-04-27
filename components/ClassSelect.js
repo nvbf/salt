@@ -19,7 +19,9 @@ export class ClassSelect extends React.Component {
 }
 
 function listOptions(classes) {
-  return classes.map(klass => {
+  const firstOption = <option key=" " value=" " />;
+
+  const classesAsOptions = classes.map(klass => {
     const klass1 = klass["class"];
     return (
       <option key={klass1} value={klass1}>
@@ -27,4 +29,5 @@ function listOptions(classes) {
       </option>
     );
   });
+  return [firstOption, ...classesAsOptions];
 }
