@@ -46,13 +46,13 @@ function renderPlayers(players) {
 }
 
 function listTournaments(players) {
-  return players.map(({ id, name, points }, key) => {
-    log(id, name, points);
+  return players.map(({ id, name, sum }, key) => {
+    log(id, name, sum);
     return (
       <li key={key}>
         <Link href={`/players/${id}`}>
           <a>
-            {name} - {points}
+            {name} - {sum}
           </a>
         </Link>
       </li>

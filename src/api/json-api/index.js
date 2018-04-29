@@ -41,6 +41,7 @@ async function apiGetPointsFromPlayer(id) {
 async function apiGetRanking() {
   const result = await axios.get(`${API_URL}/points`);
   const playersRes = await axios.get(`${API_URL}/players`);
+  const playerData = getData(playersRes);
   const data = getData(result);
   const playerSum = data.reduce((lastValue = {}, currentValue, index, {}) => {
     //console.log('lastValue.currentSpillerId', lastValue.currentSpillerId)
@@ -49,7 +50,15 @@ async function apiGetRanking() {
       lastValue.currentSpillerId.sum += currentValue.Poeng;
     } else {
       lastValue.currentSpillerId = currentValue.SpillerId;
+      // log(`playerData ${CircularJSON.stringify(playerData)}`);
+      const playerArray = playerData.filter(
+        player => player.SpillerId === lastValue.currentSpillerId
+      );
+      log(`lastValue.currentSpillerId ${lastValue.currentSpillerId}`);
+      log(`playerArray ${CircularJSON.stringify(playerArray)}`);
       lastValue[currentValue.SpillerId] = {};
+      lastValue[currentValue.SpillerId].name =
+        playerArray[0].Fornavn + " " + playerArray[0].Etternavn;
       lastValue[currentValue.SpillerId].sum = currentValue.Poeng;
     }
     return lastValue;
@@ -58,9 +67,10 @@ async function apiGetRanking() {
   const players = keys.filter(key => Number.isInteger(Number(key)));
   const playerObjects = players.map(key => ({
     id: key,
+    name: playerSum[key].name,
     sum: playerSum[key].sum
   }));
-  return playerObjects.sort((a, b) => a.sum - b.sum);
+  return playerObjects.sort((a, b) => b.sum - a.sum);
 }
 
 async function apiGetPlayer(id) {
