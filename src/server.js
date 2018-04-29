@@ -10,7 +10,8 @@ const {
   getTournament,
   getTournaments,
   getNorwegianTournaments,
-  registerTeamForTournament
+  registerTeamForTournament,
+  getPointsFromPlayer
 } = api;
 
 const getClientToken = require("./utils/getClientToken");
@@ -42,9 +43,18 @@ const playersHandler = async (req, res) => {
   return res.json(players);
 };
 
+const pointsHandler = async (req, res) => {
+  const rankingpoints = await getPointsFromPlayer(req.params.id);
+  return res.json(rankingpoints);
+};
+
 const playerHandler = async (req, res) => {
-  const ranking = await getPlayer(req.params.id);
-  return res.json(ranking);
+  const player = await getPlayer(req.params.id);
+  if (player.noSuchPlayer) {
+    log("noSuchPlayer - going to next handler");
+    return next();
+  }
+  return res.json(player);
 };
 
 const tournamentHandler = async (req, res, next) => {
@@ -96,9 +106,16 @@ app.prepare().then(() => {
     errorHandlerJson.bind(null, tournamentsHandler)
   );
 
-  server.use("/api/players/", errorHandlerJson.bind(null, playersHandler));
+  server.use(
+    "/api/tournaments",
+    errorHandlerJson.bind(null, tournamentsHandler)
+  );
+
+  server.use("/api/points/:id", errorHandlerJson.bind(null, pointsHandler));
 
   server.use("/api/players/:id", errorHandlerJson.bind(null, playerHandler));
+
+  server.use("/api/players/", errorHandlerJson.bind(null, playersHandler));
 
   server.get("/players/:id", (req, res) => {
     return app.render(req, res, "/player", { id: req.params.id });
@@ -118,14 +135,6 @@ app.prepare().then(() => {
 
   server.get("/client_token", async function(req, res) {
     res.send(await getClientToken());
-  });
-
-  server.get("/test", async function(req, res) {
-    return res.send(
-      CircularJSON.stringify(
-        await registerTeamForTournament(1, "M", 2589669, 6328154, 12345)
-      )
-    );
   });
 
   server.use("/tournaments/checkout", checkoutRoute);
@@ -162,10 +171,10 @@ app.prepare().then(() => {
       });
     }
 
-    if (tournamentClass.maxNrOfTeams >= tournamentClass.teams.length) {
+    if (tournamentClass.maxNrOfTeams <= tournamentClass.teams.length) {
       return res.json({
         error:
-          "Turneringen ble dessverre akkurat full, det er ikke lenger mulig å melde seg på. Du har ikke blitt belastet",
+          "Turneringen ble dessverre akkurat full, det er ikke lenger mulig å melde seg på. Kortet har ikke blitt belastet",
         statusText: "error"
       });
     }

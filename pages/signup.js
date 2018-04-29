@@ -89,18 +89,18 @@ export default class Signup extends React.Component {
       .catch(this.handleErrorResponse);
   }
 
-  handleValidResponse(res) {
-    console.log("res", res);
-    if (res.status == 200) {
-      this.setState({ paymentStatus: res.statusText });
-    }
+  async handleValidResponse(res) {
+    const { statusText, error } = await res.json();
+    console.log("statusText, error", statusText, error);
+    this.setState({ paymentStatus: statusText, paymentMessage: error });
   }
 
   handleErrorResponse(res) {
     console.log("error res", res);
     this.setState({
-      paymentStatus: res.statusText,
-      paymentMessage: res.error
+      paymentStatus: "error",
+      paymentMessage:
+        "En feil har oppstått, prøv igjen. Får du denne feilmeldingen flere ganger send en sms til 93008598 og gi beskjed"
     });
   }
 

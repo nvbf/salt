@@ -16,11 +16,13 @@ export default class extends React.Component {
     const statusCode = res.statusCode > 200 ? res.statusCode : false;
     const json = await res.json();
 
-    this.setState({ player: json, loading: false });
+    const resPoints = await fetch(`/api/points/${id}`);
+    const points = await resPoints.json();
+    this.setState({ player: json, points, loading: false });
   }
 
   render() {
-    const { player, loading } = this.state;
+    const { player, loading, points } = this.state;
     if (loading) {
       return (
         <div>
@@ -35,19 +37,44 @@ export default class extends React.Component {
         <Head title="Home" />
         <Nav />
         {renderPlayer(player)}
+        {renderRanking(points)}
       </div>
     );
   }
 }
 
-function renderPlayer({ id = 0, name, birthday }) {
+function renderRanking(points) {
+  if (points.length === 0) {
+    return (
+      <React.Fragment>
+        <h3>Ranking </h3>
+        <p>Ingen turneringer registert </p>
+      </React.Fragment>
+    );
+  }
+  return (
+    <React.Fragment>
+      <h3>Ranking </h3>
+      <ul>
+        {points.map(({ tournamentType, tournamentName, points, place }) => (
+          <li>
+            {place}.plass {tournamentName} ({tournamentType}) - {points} poeng{" "}
+          </li>
+        ))}
+      </ul>
+    </React.Fragment>
+  );
+}
+function renderPlayer({ id, firstname, lastname, dateOfBith }) {
   if (!id) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
   }
   return (
     <div>
-      <h2>{name}</h2>
-      <p>Bursdag: {birthday}</p>
+      <h2>
+        {firstname} {lastname}
+      </h2>
+      <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
   );
 }

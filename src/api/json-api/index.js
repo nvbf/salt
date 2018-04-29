@@ -29,6 +29,15 @@ async function apiRegisterTeamForTournament(data) {
   }
 }
 
+async function apiGetPointsFromPlayer(id) {
+  const res = await axios.get(`${API_URL}/points?SpillerId=${id}`);
+  log("res.data");
+  log(id);
+
+  log(res.data);
+  return res.data;
+}
+
 async function apiGetRanking() {
   const result = await axios.get(`${API_URL}/points`);
   const playersRes = await axios.get(`${API_URL}/players`);
@@ -55,7 +64,13 @@ async function apiGetRanking() {
 }
 
 async function apiGetPlayer(id) {
-  return [];
+  const players = await apiGetPlayers();
+  const playersArray = players.filter(({ SpillerId }) => SpillerId == id);
+
+  if (playersArray.length === 0) {
+    return { noSuchPlayer: "No such player id" };
+  }
+  return playersArray[0];
 }
 async function apiGetPlayers() {
   const result = await axios.get(`${API_URL}/players`);
@@ -99,5 +114,6 @@ module.exports = {
   apiGetTournament,
   apiGetTournaments,
   apiGetNorwegianTournaments,
-  apiRegisterTeamForTournament
+  apiRegisterTeamForTournament,
+  apiGetPointsFromPlayer
 };

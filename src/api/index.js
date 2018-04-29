@@ -5,7 +5,8 @@ const {
   apiGetTournament,
   apiGetTournaments,
   apiGetNorwegianTournaments,
-  apiRegisterTeamForTournament
+  apiRegisterTeamForTournament,
+  apiGetPointsFromPlayer
 } = require("./json-api");
 
 const log = require("debug")("salt:src:api");
@@ -14,8 +15,14 @@ async function getRanking() {
   return await apiGetRanking();
 }
 
+async function getPointsFromPlayer(id) {
+  const points = await apiGetPointsFromPlayer(id);
+  return mapToObject(points);
+}
+
 async function getPlayer(id) {
-  return await apiGetPlayer(id);
+  const player = await apiGetPlayer(id);
+  return mapToObject(player);
 }
 
 async function getPlayers() {
@@ -63,7 +70,8 @@ async function registerTeamForTournament(
     Spiller_1: player1,
     Spiller_2: player2,
     Klasse: klasse,
-    Melding: "TODO: få sendt inn transactionId"
+    Melding: "TODO: få sendt inn transactionId",
+    TransactionId: transactionId
   });
   return response;
 }
@@ -115,7 +123,7 @@ const mapping = {
   Memo: "description",
   Spillested: "playerVenue",
   Betalingsinfo: "paymentInfo",
-  PersonId: "id",
+  PersonId: "personId",
   Fornavn: "firstname",
   Etternavn: "lastname",
   Adresse1: "adresseLine1",
@@ -135,8 +143,14 @@ const mapping = {
   PoengLag: "teamPoints",
   ProfixioId: "profixioId",
   Idrettsnr: "idrettsnr",
-  SpillerId: "playerId",
-  Kjonn: "gender"
+  SpillerId: "id",
+  Kjonn: "gender",
+  Turneringsnavn: "tournamentName",
+  Plassering: "place",
+  Poeng: "points",
+  Topn: "topn",
+  SortId: "sortId",
+  Foreldet: "obsolete"
 };
 
 module.exports = {
@@ -146,5 +160,6 @@ module.exports = {
   getTournament,
   getTournaments,
   getNorwegianTournaments,
-  registerTeamForTournament
+  registerTeamForTournament,
+  getPointsFromPlayer
 };
