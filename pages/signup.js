@@ -58,6 +58,9 @@ export default class Signup extends React.Component {
         container: "#dropin-container"
       },
       (createErr, instance) => {
+        if (createErr) {
+          log(`createError ${JSON.stringify(createErr)}`);
+        }
         var button = document.querySelector("#submit-button");
         button.addEventListener("click", () => {
           instance.requestPaymentMethod((requestPaymentMethodErr, payload) => {
