@@ -147,7 +147,9 @@ app.prepare().then(() => {
         statusText: "error"
       });
     }
-    const nonce = "fake-valid-no-billing-address-nonce" || req.body.nonce;
+    const nonce = process.env.BT_SANDBOX
+      ? "fake-valid-no-billing-address-nonce"
+      : req.body.nonce;
 
     // 1. Checke om det er plass nok
 
