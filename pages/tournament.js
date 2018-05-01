@@ -136,11 +136,7 @@ function renderSignupLink(tournament) {
   const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
   if (signupAllowd) {
-    return (
-      <Link href={"/signup"} as={`/signup/${id}`}>
-        <a>Meld deg på</a>
-      </Link>
-    );
+    return <a href={`/signup/${id}`}>Meld deg på</a>;
   } else {
     return "Påmelding stengt";
   }

@@ -203,7 +203,6 @@ export default class Signup extends React.Component {
 
 function renderSignup(players) {
   if (players.length > 1) {
-    log("player is truthy");
     return (
       <section>
         <h4> Spiller 1</h4>
@@ -213,7 +212,6 @@ function renderSignup(players) {
       </section>
     );
   }
-  log("player is falsy");
   return <div>Ingen spillere er registert</div>;
 }
 

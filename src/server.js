@@ -228,7 +228,6 @@ app.prepare().then(() => {
             { statusText: "OK" },
             apiRes
           );
-          log("afttereee");
           res.json(withPaymentStatus);
         })
         .catch(err => {
@@ -237,13 +236,13 @@ app.prepare().then(() => {
           res.status(503).json(CircularJSON.stringify(err));
         });
 
-      // sendMailTournament(
-      //   req.body.email,
-      //   tournament,
-      //   klasse,
-      //   price,
-      //   result.transaction.id
-      // );
+      sendMailTournament(
+        req.body.email,
+        tournament,
+        klasse,
+        price,
+        result.transaction.id
+      );
     });
   });
 

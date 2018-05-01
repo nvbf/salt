@@ -82,15 +82,14 @@ async function registerTeamForTournament(
     Spiller_1: player1,
     Spiller_2: player2,
     Klasse: klasse,
-    Melding: "TODO: få sendt inn transactionId",
-    TransactionId: 4
+    Melding: "",
+    TransactionId: transactionId
   });
   return response;
 }
 
 function mapToObject(apiRes) {
   if (Array.isArray(apiRes)) {
-    log(`mapping Array`);
     return apiRes.map(obj => mapToObject(obj));
   }
 

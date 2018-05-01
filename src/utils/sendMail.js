@@ -1,8 +1,5 @@
-const sendgrid = require("sendgrid")(
-  process.env.SENDGRID_USERNAME,
-  process.env.SENDGRID_PASSWORD
-);
-
+const sendgrid = require("@sendgrid/mail");
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
 const log = require("debug")("salt:src:utils:sendMail");
 
 function sendMailTournament(
@@ -27,9 +24,9 @@ function sendMailTournament(
     },
     function(err, json) {
       if (err) {
-        console.log("ERROR: Klarte ikke sende mail til ", receiver);
+        log("ERROR: Klarte ikke sende mail til ", receiver);
       }
-      console.log(json);
+      log("mail sucssfully sendt");
     }
   );
 }

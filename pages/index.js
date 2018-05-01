@@ -29,11 +29,10 @@ export default () => (
             <p>Se årets turneringer og meld deg på </p>
           </a>
         </Link>
-        <Link href="/players">
+        <Link href="/results">
           <a className="card">
             <h3>Resultater &rarr;</h3>
             <p>Se resultater fra de siste turneringene som har vært</p>
-            <p>OBS denne funker ikke enda!!</p>
           </a>
         </Link>
       </div>
