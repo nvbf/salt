@@ -13,7 +13,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
-    "braintree": "^2.8.0",
+    "braintree": "2.10.0",
     "braintree-web-drop-in": "^1.10.0",
     "circular-json": "^0.5.1",
     "debug": "^3.1.0",

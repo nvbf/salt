@@ -1,12 +1,16 @@
 import Head from "./head";
 import Link from "next/link";
 
-const links = [{ href: "https://github.com/nvbf/salt", label: "Github" }].map(
-  link => {
-    link.key = `nav-link-${link.href}-${link.label}`;
-    return link;
+const links = [
+  { href: "http://norgestour.no/", label: "norgestour.no" },
+  {
+    href: "https://www.profixio.com/fx/login.php?login_public=NVBF.NO.SVB",
+    label: "Cupassist"
   }
-);
+].map(link => {
+  link.key = `nav-link-${link.href}-${link.label}`;
+  return link;
+});
 
 const Nav = () => (
   <nav>

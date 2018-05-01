@@ -2,7 +2,6 @@ const axios = require("axios");
 const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
 const API_URL = process.env.API_URL;
-
 const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
 
 async function apiRegisterTeamForTournament(data) {
@@ -22,7 +21,7 @@ async function apiRegisterTeamForTournament(data) {
   } catch (error) {
     log("Error in posting team - " + CircularJSON.stringify(error));
     return {
-      statusText: "Error",
+      statusText: "error",
       status: "503",
       message: CircularJSON.stringify(error)
     };
@@ -47,7 +46,7 @@ async function apiGetRanking() {
     //console.log('lastValue.currentSpillerId', lastValue.currentSpillerId)
     //console.log('currentValue', currentValue)
     if (lastValue.currentSpillerId == currentValue.SpillerId) {
-      lastValue.currentSpillerId.sum += currentValue.Poeng;
+      lastValue[currentValue.SpillerId].sum += currentValue.Poeng;
     } else {
       lastValue.currentSpillerId = currentValue.SpillerId;
       // log(`playerData ${CircularJSON.stringify(playerData)}`);
@@ -59,6 +58,7 @@ async function apiGetRanking() {
       lastValue[currentValue.SpillerId] = {};
       lastValue[currentValue.SpillerId].name =
         playerArray[0].Fornavn + " " + playerArray[0].Etternavn;
+      lastValue[currentValue.SpillerId].gender = playerArray[0].Kjonn;
       lastValue[currentValue.SpillerId].sum = currentValue.Poeng;
     }
     return lastValue;
@@ -67,10 +67,27 @@ async function apiGetRanking() {
   const players = keys.filter(key => Number.isInteger(Number(key)));
   const playerObjects = players.map(key => ({
     id: key,
+    gender: playerSum[key].gender,
     name: playerSum[key].name,
     sum: playerSum[key].sum
   }));
-  return playerObjects.sort((a, b) => b.sum - a.sum);
+  const sortedRanking = playerObjects.sort((a, b) => b.sum - a.sum);
+  const sortedRankingByGroups = groupByGender(sortedRanking);
+  return sortedRankingByGroups;
+}
+
+function groupByGender(list) {
+  return list.reduce(
+    (groups, currentPlayer) => {
+      if (currentPlayer.gender === "M") {
+        groups.male.push(currentPlayer);
+      } else {
+        groups.female.push(currentPlayer);
+      }
+      return groups;
+    },
+    { male: [], female: [] }
+  );
 }
 
 async function apiGetPlayer(id) {
@@ -100,7 +117,8 @@ async function apiGetTournament(id) {
 async function apiGetTournaments(extraQueryString = "") {
   log(`request URL: ${API_URL}/tournaments${extraQueryString}`);
   const result = await axios.get(`${API_URL}/tournaments${extraQueryString}`);
-  return getData(result);
+  const data = getData(result);
+  return data;
 }
 
 async function apiGetNorwegianTournaments() {

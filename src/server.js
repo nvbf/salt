@@ -11,7 +11,8 @@ const {
   getTournaments,
   getNorwegianTournaments,
   registerTeamForTournament,
-  getPointsFromPlayer
+  getPointsFromPlayer,
+  getTournamentsInTheFuture
 } = api;
 
 const getClientToken = require("./utils/getClientToken");
@@ -57,6 +58,10 @@ const playerHandler = async (req, res) => {
   return res.json(player);
 };
 
+const tournamentsInTheFutureHandler = async (req, res) => {
+  return res.json(await getTournamentsInTheFuture());
+};
+
 const tournamentHandler = async (req, res, next) => {
   log("tournamentHandler");
   const tournament = await getTournament(req.params.id);
@@ -94,6 +99,11 @@ app.prepare().then(() => {
   server.use(
     "/api/tournaments/norwegian",
     errorHandlerJson.bind(null, norwegianTournamentHandler)
+  );
+
+  server.use(
+    "/api/tournaments/future",
+    errorHandlerJson.bind(null, tournamentsInTheFutureHandler)
   );
 
   server.use(
@@ -150,6 +160,7 @@ app.prepare().then(() => {
     const nonce = process.env.BT_SANDBOX
       ? "fake-valid-no-billing-address-nonce"
       : req.body.nonce;
+    log(`Using nounce: ${nonce}`);
 
     // 1. Checke om det er plass nok
 
@@ -182,47 +193,58 @@ app.prepare().then(() => {
     }
 
     console.log("Sending to braintree...");
-    gateway.transaction.sale(
-      {
-        customer: {
-          email: req.body.email
-        },
-        amount: price,
-        paymentMethodNonce: nonce,
-        options: {
-          submitForSettlement: true,
-          storeInVaultOnSuccess: true
-        }
+    const salesData = {
+      customer: {
+        email: req.body.email
       },
-      (err, result) => {
-        console.log("Response from braintree", err, result);
-        if (err || !result.success) {
-          console.log("ERROR", err || result);
-          return res.json({
-            error: JSON.stringify(err || result, null, 2),
-            statusText: "error"
-          });
-        }
-        console.log(result.transaction);
-        registerTeamForTournament(
-          tournamentId,
-          klasse,
-          player1,
-          player2,
-          result.transaction.id
-        )
-          .then(apiRes => res.json(apiRes))
-          .catch(err => res.status(503).json(CircularJSON.stringify(err)));
-
-        // sendMailTournament(
-        //   req.body.email,
-        //   tournament,
-        //   klasse,
-        //   price,
-        //   result.transaction.id
-        // );
+      amount: price,
+      paymentMethodNonce: nonce,
+      options: {
+        submitForSettlement: true,
+        storeInVaultOnSuccess: true
       }
-    );
+    };
+    log(`salesData ${JSON.stringify(salesData)}`);
+    gateway.transaction.sale(salesData, (err, result) => {
+      console.log("Response from braintree", err, result);
+      if (err || !result.success) {
+        console.log("ERROR", err || result);
+        return res.json({
+          error: JSON.stringify(err || result, null, 2),
+          statusText: "error"
+        });
+      }
+      console.log(result.transaction);
+      registerTeamForTournament(
+        tournamentId,
+        klasse,
+        player1,
+        player2,
+        result.transaction.id
+      )
+        .then(apiRes => {
+          const withPaymentStatus = Object.assign(
+            {},
+            { statusText: "OK" },
+            apiRes
+          );
+          log("afttereee");
+          res.json(withPaymentStatus);
+        })
+        .catch(err => {
+          log("Was not able to registere the team, but payment is done!");
+
+          res.status(503).json(CircularJSON.stringify(err));
+        });
+
+      // sendMailTournament(
+      //   req.body.email,
+      //   tournament,
+      //   klasse,
+      //   price,
+      //   result.transaction.id
+      // );
+    });
   });
 
   server.get("*", (req, res) => {

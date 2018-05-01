@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 const {
   apiGetRanking,
   apiGetPlayer,
@@ -42,7 +44,17 @@ async function getTournament(id) {
 }
 
 async function getTournaments() {
-  return await apiGetTournaments();
+  const tournaments = await apiGetTournaments();
+  return mapToObject(tournaments);
+}
+
+async function getTournamentsInTheFuture() {
+  const tournaments = await getTournaments();
+  const tournamentsInTheFuture = tournaments.filter(({ deadline }) => {
+    const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
+    return timeToDeadLine > 0;
+  });
+  return tournamentsInTheFuture;
 }
 
 async function getNorwegianTournaments() {
@@ -71,7 +83,7 @@ async function registerTeamForTournament(
     Spiller_2: player2,
     Klasse: klasse,
     Melding: "TODO: få sendt inn transactionId",
-    TransactionId: transactionId
+    TransactionId: 4
   });
   return response;
 }
@@ -161,5 +173,6 @@ module.exports = {
   getTournaments,
   getNorwegianTournaments,
   registerTeamForTournament,
-  getPointsFromPlayer
+  getPointsFromPlayer,
+  getTournamentsInTheFuture
 };

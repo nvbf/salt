@@ -13,15 +13,16 @@ const log = debug("players");
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { players: [], loading: true };
+    this.state = { male: [], female: [], loading: true };
   }
 
   async componentDidMount() {
-    this.setState({ players: await getJson("/api/ranking"), loading: false });
+    const { male, female } = await getJson("/api/ranking");
+    this.setState({ male, female, loading: false });
   }
 
   render() {
-    const { players = [], loading, error } = this.state;
+    const { male = [], female = [], loading, error } = this.state;
     if (loading) return <LoadingPage />;
     if (error) return <ErrorPage error={error} />;
 
@@ -29,8 +30,10 @@ export default class extends React.Component {
       <div>
         <Head title="Home" />
         <Nav />
-        {renderPlayers(players)}
-        <p>Trykk på spillerne for detalje side</p>
+        <h3>Damer</h3>
+        {renderPlayers(female)}
+        <h3>Herrer</h3>
+        {renderPlayers(male)}
       </div>
     );
   }
@@ -38,16 +41,13 @@ export default class extends React.Component {
 
 function renderPlayers(players) {
   if (players.length > 1) {
-    log("player is truthy");
     return <ul>{listTournaments(players)}</ul>;
   }
-  log("player is falsy");
   return <div>Ingen spillere er registert</div>;
 }
 
 function listTournaments(players) {
   return players.map(({ id, name, sum }, key) => {
-    log(id, name, sum);
     return (
       <li key={key}>
         <Link href={`/players/${id}`}>

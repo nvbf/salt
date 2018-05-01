@@ -9,10 +9,11 @@ export default () => (
     <Nav />
 
     <div className="hero">
-      <h1 className="title">Første utkast !</h1>
+      <h1 className="title">Sandvolleyballturneringer i Norge</h1>
       <p className="description">
-        Her vil du fine turneringer, ranking seeding osv, og alt blir automatisk
-        oppdattert.
+        Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
+        sesongen 2018. Du vil også kunne foreløpig seeding, og hvilke
+        turneringer de er basert på. Vi jobber fortløpende med og forbedre siden
       </p>
 
       <div className="row">

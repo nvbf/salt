@@ -14,7 +14,7 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch("/api/tournaments/norwegian");
+    const res = await fetch("/api/tournaments/future");
     const statusCode = res.statusCode > 200 ? res.statusCode : false;
     const json = await res.json();
 
@@ -56,7 +56,7 @@ function renderTournaments(tournaments) {
   if (tournaments.length > 0) {
     return listTournaments(tournaments);
   }
-  return <div>Ingen turneringer er registert</div>;
+  return <div>Ingen turneringer er på plass enda, prøve igjen senere</div>;
 }
 
 function listTournaments(tournaments) {
@@ -69,12 +69,12 @@ function listTournaments(tournaments) {
 }
 
 function listRow(tournaments) {
-  return tournaments.map(({ TurneringsId, Navn, ...rest }, key) => {
+  return tournaments.map(({ id, name, ...rest }, key) => {
     return (
       <tr key={key}>
         <td>
-          <Link href={"/tournament"} as={`/tournaments/${TurneringsId}`}  >
-            <a>{Navn}</a>
+          <Link href={"/tournament"} as={`/tournaments/${id}`}  >
+            <a>{name}</a>
           </Link>
         </td>
         {renderTableData(rest)}
@@ -84,7 +84,7 @@ function listRow(tournaments) {
 }
 
 function renderTableHead({id, timestamp, ...rest, }) {
-  const keys =  ["Name", "Startdato", "Pameldingsfrist", "KlasserTekst"];
+  const keys =  ["Navn", "Startdato", "Pameldingsfrist", "Klasser"];
   return (
     <thead>
       <tr>{keys.map(key => <td key={key}><strong>{key}</strong></td>)}</tr>
@@ -93,7 +93,7 @@ function renderTableHead({id, timestamp, ...rest, }) {
 }
 
 function renderTableData(props) {
-  const keys =  ["Startdato", "Pameldingsfrist", "KlasserTekst"];
+  const keys =  ["startDate", "deadline", "classesText"];
   return keys.map(key => <td key={key}>{props[key]}</td>);
 }
 

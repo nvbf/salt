@@ -62,40 +62,51 @@ export default class Signup extends React.Component {
           log(`createError ${JSON.stringify(createErr)}`);
         }
         var button = document.querySelector("#submit-button");
-        button.addEventListener("click", () => {
+        button.addEventListener("click", event => {
+          event.preventDefault();
           instance.requestPaymentMethod((requestPaymentMethodErr, payload) => {
-            log("payload.nounce", payload.nounce);
-            this.signup(payload.nounce);
+            if (requestPaymentMethodErr) {
+              return log(`requestPaymentMethodErr ${requestPaymentMethodErr}`);
+            }
+            log("payload.nonce", payload.nonce);
+            this.signup(payload.nonce);
           });
         });
       }
     );
   }
 
-  signup(nounce = "free") {
+  signup(nonce = "free") {
+    const data = JSON.stringify({
+      nonce: nonce,
+      tournamentId: getIdFromPath(),
+      player1: getSelectedValueFromDropDownWithId("#player1"),
+      player2: getSelectedValueFromDropDownWithId("#player2"),
+      klasse: this.state.signupClass,
+      email: document.querySelector("#email").value
+    });
+
+    log(`signup data: ${data}`);
+
     const res = fetch("/tournaments/checkout/", {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json"
       },
       method: "POST",
-      body: JSON.stringify({
-        nonce: nounce,
-        tournamentId: getIdFromPath(),
-        player1: getSelectedValueFromDropDownWithId("#player1"),
-        player2: getSelectedValueFromDropDownWithId("#player2"),
-        klasse: this.state.signupClass,
-        email: document.querySelector("#email").value
-      })
+      body: data
     })
       .then(this.handleValidResponse)
       .catch(this.handleErrorResponse);
   }
 
   async handleValidResponse(res) {
-    const { statusText, error } = await res.json();
-    console.log("statusText, error", statusText, error);
-    this.setState({ paymentStatus: statusText, paymentMessage: error });
+    const { statusText, error, message = "" } = await res.json();
+    console.log("statusText, error, message", statusText, error, message);
+    this.setState({
+      paymentStatus: statusText,
+      paymentMessage: error || message
+    });
   }
 
   handleErrorResponse(res) {

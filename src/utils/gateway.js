@@ -1,4 +1,13 @@
 const braintree = require("braintree");
+const log = require("debug")("salt:gateway");
+
+log(
+  `Using env:: ${JSON.stringify(
+    process.env.BT_SANDBOX
+      ? braintree.Environment.Sandbox
+      : braintree.Environment.Production
+  )}`
+);
 
 const gateway = braintree.connect({
   environment: process.env.BT_SANDBOX

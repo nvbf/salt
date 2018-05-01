@@ -54,13 +54,15 @@ function renderRanking(points) {
   }
   return (
     <React.Fragment>
-      <h3>Ranking </h3>
+      <h3>Resultater </h3>
       <ul>
-        {points.map(({ tournamentType, tournamentName, points, place }) => (
-          <li>
-            {place}.plass {tournamentName} ({tournamentType}) - {points} poeng{" "}
-          </li>
-        ))}
+        {points.map(
+          ({ tournamentType, tournamentName, points, place }, index) => (
+            <li key={index}>
+              {place}.plass {tournamentName} ({tournamentType}) - {points} poeng{" "}
+            </li>
+          )
+        )}
       </ul>
     </React.Fragment>
   );
