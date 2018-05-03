@@ -8,6 +8,7 @@ import { ClassSelect } from "../components/ClassSelect";
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 import { resolve } from "upath";
+import { groupByGender } from "../src/utils/groupByGender";
 
 const dropin = require("braintree-web-drop-in");
 const log = debug("players");
@@ -24,11 +25,13 @@ export default class Signup extends React.Component {
 
     this.state = {
       signupClass: false,
-      players: [],
+      male: [],
+      female: [],
       tournament: {},
       loading: true,
       paymentMessage: "",
-      paymentStatus: ""
+      paymentStatus: "",
+      error: null
     };
   }
 
@@ -46,6 +49,8 @@ export default class Signup extends React.Component {
       const token = await getClientToken();
       return { clientToken: token };
     } else {
+      // TODO:this do not work, seems like braintree to not accept it,
+      // we need to do a page refresh and create it on the server side.
       const token = await fetch("/client_token");
       return { clientToken: token };
     }
@@ -65,6 +70,7 @@ export default class Signup extends React.Component {
         button.addEventListener("click", event => {
           event.preventDefault();
           instance.requestPaymentMethod((requestPaymentMethodErr, payload) => {
+            button.disabled = true;
             if (requestPaymentMethodErr) {
               return log(`requestPaymentMethodErr ${requestPaymentMethodErr}`);
             }
@@ -124,12 +130,13 @@ export default class Signup extends React.Component {
       const players = await getJson("/api/players");
       const tournament = await getJson(`/api/tournaments/${id}`);
       this.setState({
-        players: players,
+        ...groupByGender(players),
         tournament: tournament,
         loading: false
       });
     } catch (err) {
       //TODO: make this visibale for the end user
+      log(err);
       this.setState({ error: "Problem..." });
     }
   }
@@ -157,13 +164,28 @@ export default class Signup extends React.Component {
     );
   }
 
+  renderError() {
+    return (
+      <Main>
+        <h1> {name}</h1>
+        <h3>Error</h3>
+        <p>
+          Beklager en ukjent feil skjedde! Prøv igjen nå eller om en liten
+          stund.
+        </p>
+      </Main>
+    );
+  }
+
   render() {
     const {
-      players,
+      male,
+      female,
       tournament: { name, classes },
       loading,
       paymentStatus,
-      signupClass
+      signupClass,
+      error
     } = this.state;
     if (loading) {
       return <Main>Loading...</Main>;
@@ -173,6 +195,9 @@ export default class Signup extends React.Component {
     }
     if (paymentStatus === "error") {
       return this.renderPaymentStatusError();
+    }
+    if (error) {
+      this.renderError();
     }
 
     if (!signupClass) {
@@ -184,13 +209,28 @@ export default class Signup extends React.Component {
       );
     }
     const correctClass = getClassInfoFromClass(signupClass, classes);
+    const klass1 = correctClass["class"];
+    let players;
+    log("klass1", klass1);
+    if (klass1 == "K") {
+      players = female;
+    } else if (klass1 == "M") {
+      players = male;
+    } else {
+      players = female.concat(male);
+    }
+
     return (
       <Main>
         <h1> {name}</h1>
         {renderSignup(players, correctClass.price)}
+        <p>
+          Mangler det et navn? Send mail til{" "}
+          <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
+        </p>
         <h4> Email for kvittering:</h4>
         <input type="text" id="email" />
-        <h4>Klasse: {correctClass["class"]} </h4>
+        <h4>Klasse: {klass1} </h4>
         <h4>Pris: {correctClass.price || "Gratis"} </h4>
         <div id="dropin-container" />
         <button onClick={this.showPayment} id="submit-button">
@@ -221,13 +261,21 @@ function getSelectedValueFromDropDownWithId(selector) {
 }
 
 function listPlayers(players) {
+  players = players.sort(compareOnLastname);
   return players.map(({ firstname, lastname, id }) => {
     return (
       <option key={id} value={id}>
-        {firstname} {lastname}
+        {lastname}, {firstname}
       </option>
     );
   });
+}
+
+function compareOnLastname(a, b) {
+  if (`${a.lastname} ${a.firstname}` < `${b.lastname} ${b.firstname}`)
+    return -1;
+  if (`${a.lastname} ${a.firstname}` > `${b.lastname} ${b.firstname}`) return 1;
+  return 0;
 }
 
 function getClassInfoFromClass(klass, classes) {

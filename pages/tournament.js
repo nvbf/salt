@@ -143,6 +143,7 @@ function renderSignupLink(tournament) {
 }
 
 function renderSeeding(klass) {
+  const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
   return (
     <table>
       <thead>
@@ -154,11 +155,11 @@ function renderSeeding(klass) {
         </tr>
       </thead>
       <tbody>
-        {klass.teams.map((team, index) => {
+        {teams.map((team, index) => {
           const players = team.teamName.split("/");
           return (
             <tr key={index}>
-              <td>{index}</td>
+              <td>{index + 1}</td>
               <td>
                 <PlayerLink id={team.player1Id}>
                   <span>

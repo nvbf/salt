@@ -4,6 +4,8 @@ const CircularJSON = require("circular-json");
 const API_URL = process.env.API_URL;
 const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
 
+const groupByGender = require("../../utils/groupByGender");
+
 async function apiRegisterTeamForTournament(data) {
   try {
     log(`Send to axios: ${CircularJSON.stringify(data)}`);
@@ -74,20 +76,6 @@ async function apiGetRanking() {
   const sortedRanking = playerObjects.sort((a, b) => b.sum - a.sum);
   const sortedRankingByGroups = groupByGender(sortedRanking);
   return sortedRankingByGroups;
-}
-
-function groupByGender(list) {
-  return list.reduce(
-    (groups, currentPlayer) => {
-      if (currentPlayer.gender === "M") {
-        groups.male.push(currentPlayer);
-      } else {
-        groups.female.push(currentPlayer);
-      }
-      return groups;
-    },
-    { male: [], female: [] }
-  );
 }
 
 async function apiGetPlayer(id) {
