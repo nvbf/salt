@@ -78,6 +78,10 @@ class StepChoosePlayers extends React.Component
                         <h4>Spiller 2</h4>
                         <PlayerSelect players={players} defaultItem={player2} placeHolder={"Finn Spiller 2"} onChange={this.onSetPlayer2} />
                     </section>
+                    <p>
+                        Mangler det et navn? Send mail til{" "}
+                        <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
+                    </p>
                 </Typography>
                 <div className={classes.actionsContainer}>
                     <div>

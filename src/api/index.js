@@ -30,10 +30,11 @@ async function getPlayer(id) {
 async function getPlayers() {
   const apiPlayers = await apiGetPlayers();
   const players = mapToObject(apiPlayers);
-  const simplePlayers = players.map(({ id, firstname, lastname }) => ({
+  const simplePlayers = players.map(({ id, firstname, lastname, gender }) => ({
     id,
     firstname,
-    lastname
+    lastname,
+    gender
   }));
   return simplePlayers.filter(({ id }) => id != 0);
 }
