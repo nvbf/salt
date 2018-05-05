@@ -165,7 +165,15 @@ class SignupPage extends React.Component {
     async componentDidMount() {
         try {
             const id = getIdFromPath();
-            const players = await getJson("/api/players");
+            let players = await getJson("/api/players");
+
+            players.sort( (a, b) => {
+                if (`${a.firstname} {a.lastname}` < `${b.firstname} {b.lastname}`)
+                    return -1
+                if (`${a.firstname} {a.lastname}` > `${b.firstname} {b.lastname}`)
+                return 0;
+            });
+
             const tournament = await getJson(`/api/tournaments/${id}`);
             this.setState({
                 players: players,
@@ -229,6 +237,11 @@ class SignupPage extends React.Component {
             return this.renderPaymentStatusError();
         }
 
+        let currentPlayers = players;
+
+        if (signupClass) {
+            currentPlayers = players.filter( player => player.gender === signupClass);
+        }
 
         return (
             <Main>
@@ -245,7 +258,7 @@ class SignupPage extends React.Component {
                         <StepLabel>Velg Spillere
                             {player1 && <div>{player1.firstname} {player1.lastname} og {player2.firstname} {player2.lastname}</div>}</StepLabel>
                         <StepContent>
-                            <StepChoosePlayers players={players} player1={player1} player2={player2} onSetPlayers={this.onSetPlayers} onGoBack={this.onGoBack} />
+                            <StepChoosePlayers players={currentPlayers} player1={player1} player2={player2} onSetPlayers={this.onSetPlayers} onGoBack={this.onGoBack} />
                         </StepContent>
                     </Step>
                     <Step>
