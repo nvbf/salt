@@ -70,7 +70,7 @@ class StepPayment extends React.Component
                         variant="raised"
                         color="primary"
                         onClick={this.onSignUp}
-                    >{text}</Button>
+                    >Bekreft Påmelding</Button>
                 </div>}
             </div>
         )
