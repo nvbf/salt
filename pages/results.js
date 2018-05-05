@@ -4,9 +4,12 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 
+import { withStyles } from 'material-ui/styles';
+import withRoot from "../src/withRoot";
+
 const log = debug("tournaments");
 
-export default class extends React.Component {
+class ResultsPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { players: [], loading: true };
@@ -90,3 +93,4 @@ function renderTableData(props) {
   return keys.map(key => <td key={key}>{props[key]}</td>);
 }
 
+export default withRoot(withStyles({})(ResultsPage));

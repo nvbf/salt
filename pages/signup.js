@@ -16,6 +16,7 @@ import { withStyles } from 'material-ui/styles';
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 import { resolve } from "upath";
+import withRoot from "../src/withRoot";
 
 const log = debug("players");
 
@@ -169,8 +170,9 @@ class SignupPage extends React.Component {
 
             players.sort( (a, b) => {
                 if (`${a.firstname} {a.lastname}` < `${b.firstname} {b.lastname}`)
-                    return -1
+                    return -1;
                 if (`${a.firstname} {a.lastname}` > `${b.firstname} {b.lastname}`)
+                    return 1;
                 return 0;
             });
 
@@ -288,4 +290,4 @@ function getClassInfoFromClass(klass, classes) {
     return correctClass[0];
 }
 
-export default withStyles(styles)(SignupPage);
+export default withRoot(withStyles(styles)(SignupPage));

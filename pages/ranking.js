@@ -1,12 +1,14 @@
 import React from "react";
 import debug from "debug";
 import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
+
+
 import { LoadingPage } from "../components/loading-page";
 import { ErrorPage } from "../components/error-page";
 import { getJson } from "../src/utils/getJson";
 import { withStyles } from 'material-ui/styles';
+import withRoot from "../src/withRoot";
 
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
@@ -39,7 +41,11 @@ class RankingPage extends React.Component {
   }
 
   async componentDidMount() {
-    const { male, female } = await getJson("/api/ranking");
+    const players = await getJson("/api/ranking");
+
+    const male = players.filter(player => player.gender == 'M');
+    const female = players.filter(player => player.gender == 'K');
+
     this.setState({ male, female, loading: false });
   }
 
@@ -110,4 +116,4 @@ function listTournaments(players) {
   });
 }
 
-export default withStyles(styles)(RankingPage)
+export default withRoot(withStyles(styles)(RankingPage))

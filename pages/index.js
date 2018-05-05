@@ -1,6 +1,8 @@
 import React from "react";
+import Main from "../components/Main"
 import Link from "next/link";
-import Main from "../components/Main";
+import withRoot from "../src/withRoot";
+
 import Typography from 'material-ui/Typography';
 import { withStyles } from 'material-ui/styles';
 import Grid from "material-ui/Grid";
@@ -82,4 +84,4 @@ class IndexPage extends React.Component {
     }
 }
 
-export default withStyles(styles)(IndexPage)
+export default withRoot(withStyles(styles)(IndexPage))

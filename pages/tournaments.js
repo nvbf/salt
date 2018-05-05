@@ -2,11 +2,13 @@ import React from "react";
 import debug from "debug";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
+
 import Main from "../components/Main"
 import Paper from 'material-ui/Paper';
 import Typography from 'material-ui/Typography';
 import Button from 'material-ui/Button';
 import { withStyles } from 'material-ui/styles';
+import withRoot from "../src/withRoot";
 
 const log = debug("tournaments");
 
@@ -70,10 +72,10 @@ class Tournaments extends React.Component {
             <Main>
                 <Typography variant="display1" className={classes.tournamentTitle}>Turneringer</Typography>
                 <ul className={classes.tournamentList}>
-                    {tournaments.map( ({id, name, deadline, startDate, classesText}, tournament) => {
+                    {tournaments.map( ({id, name, deadline, startDate, classesText, playerVenue}, tournament) => {
                         return (<li  className={classes.tournamentListItem}>
                             <Paper key={tournament} className={classes.tournamentPaper}>
-                                <Typography variant="title">{name} {startDate}</Typography>
+                                <Typography variant="title">{name} {playerVenue || ""} {startDate}</Typography>
                                 <p>
                                     <Typography variant="body2">Påmeldingsfrist: {deadline}</Typography>
                                 </p>
@@ -102,4 +104,4 @@ function renderTableData(props) {
 }
 
 
-export default withStyles(styles)(Tournaments);
+export default withRoot(withStyles(styles)(Tournaments));

@@ -3,8 +3,17 @@ import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 import Typography from 'material-ui/Typography';
+import Hidden from 'material-ui/Hidden';
 
-export default class extends React.Component {
+import { withStyles } from 'material-ui/styles';
+import withRoot from "../src/withRoot";
+
+// Set some styles here later:
+const styles = theme => ({
+
+});
+
+class PlayerPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = { player: [], loading: true };
@@ -55,9 +64,11 @@ function renderRanking(points) {
             <Table>
                 <TableHead>
                     <TableRow>
-                        <TableCell>Plassering</TableCell>
+                        <TableCell>#</TableCell>
                         <TableCell>Turnering</TableCell>
-                        <TableCell>Type</TableCell>
+                        <Hidden smDown>
+                            <TableCell>Type</TableCell>
+                        </Hidden>
                         <TableCell numeric>Poeng</TableCell>
                     </TableRow>
                 </TableHead>
@@ -65,9 +76,11 @@ function renderRanking(points) {
                     {points.map(
                         ({ tournamentType, tournamentName, points, place }, index) => (
                             <TableRow key={index}>
-                                <TableCell>{place}</TableCell>
+                                <TableCell numeric>{place}</TableCell>
                                 <TableCell>{tournamentName}</TableCell>
-                                <TableCell>{tournamentType}</TableCell>
+                                <Hidden smDown>
+                                    <TableCell>{tournamentType}</TableCell>
+                                </Hidden>
                                 <TableCell numeric>{points}</TableCell>
                             </TableRow>
                         )
@@ -89,3 +102,6 @@ function renderPlayer({ id, firstname, lastname, dateOfBith }) {
     </div>
     );
 }
+
+
+export default withRoot(withStyles(styles)(PlayerPage))

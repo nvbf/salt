@@ -6,7 +6,7 @@ const styles = theme => ({
         marginLeft: 'auto',
         padding: theme.spacing.unit,
         [theme.breakpoints.up('md')]: {
-            width: '960px',
+            maxWidth: '960px',
         },
     }
 });

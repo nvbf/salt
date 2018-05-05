@@ -53,7 +53,7 @@ class StepChooseClass extends React.Component
         return (
             <div>
                 <Typography>
-                    <FormControl>
+
                         <InputLabel htmlFor="klasse">Klasse</InputLabel>
                         <Select
                             value={currentClass}
@@ -65,7 +65,6 @@ class StepChooseClass extends React.Component
                         >
                             {listOptions(tournamentClasses)}
                         </Select>
-                    </FormControl>
                 </Typography>
                 <div className={classes.actionsContainer}>
                     <div>
@@ -97,7 +96,7 @@ function listOptions(classes) {
     const classesAsOptions = classes.map(klass => {
         const klass1 = klass["class"];
         return (
-            <MenuItem value={klass1}>{klass1}</MenuItem>
+            <MenuItem key={klass1} value={klass1}>{klass1}</MenuItem>
         );
     });
     return classesAsOptions;

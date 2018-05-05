@@ -74,8 +74,7 @@ async function apiGetRanking() {
     sum: playerSum[key].sum
   }));
   const sortedRanking = playerObjects.sort((a, b) => b.sum - a.sum);
-  const sortedRankingByGroups = groupByGender(sortedRanking);
-  return sortedRankingByGroups;
+  return sortedRanking;
 }
 
 async function apiGetPlayer(id) {
