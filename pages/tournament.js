@@ -1,7 +1,6 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import Main from "../components/Main";
 import debug from "debug";
 import moment from "moment";
 import Link from "next/link";
@@ -47,29 +46,23 @@ export default class extends React.Component {
     log(tournament);
     if (error) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
+        <Main>
           <p>Error:{error}</p>
-        </div>
+        </Main>
       );
     }
 
     if (loading) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
+        <Main>
           Loading...
-        </div>
+        </Main>
       );
     }
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
+     <Main>
         {renderTournament(tournament)}
-      </div>
+     </Main>
     );
   }
 }

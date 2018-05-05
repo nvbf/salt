@@ -2,8 +2,7 @@ import React from "react";
 import debug from "debug";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import Main from "../components/Main";
 
 const log = debug("tournaments");
 
@@ -26,28 +25,22 @@ export default class extends React.Component {
     log(tournaments);
     if (error) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
+       <Main>
           Noe feil skjedde :\ <p>{error}</p>
-        </div>
+        </Main>
       );
     }
     if (loading) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
+        <Main>
           Loading...
-        </div>
+        </Main>
       );
     }
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
+      <Main>
         {renderTournaments(tournaments)}
-      </div>
+      </Main>
     );
   }
 }

@@ -1,5 +1,7 @@
-import Head from "./head";
+
 import Link from "next/link";
+import AppBar from 'material-ui/AppBar';
+import Typography from 'material-ui/Typography';
 
 const links = [
   { href: "http://norgestour.no/", label: "norgestour.no" },
@@ -14,10 +16,15 @@ const links = [
 
 const Nav = () => (
   <nav>
+    <AppBar position="static">
     <ul>
       <li>
         <Link prefetch href="/">
-          <a>Home</a>
+            <a>
+            <Typography variant="title">
+                Hjem
+            </Typography>
+            </a>
         </Link>
       </li>
       <ul>
@@ -30,6 +37,7 @@ const Nav = () => (
         ))}
       </ul>
     </ul>
+    </AppBar>
 
     <style jsx>{`
       :global(body) {

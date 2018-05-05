@@ -1,7 +1,8 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import Main from "../components/Main";
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
+import Typography from 'material-ui/Typography';
 
 export default class extends React.Component {
   constructor(props) {
@@ -25,20 +26,16 @@ export default class extends React.Component {
     const { player, loading, points } = this.state;
     if (loading) {
       return (
-        <div>
-          <Head title="Home" />
-          <Nav />
+        <Main>
           Loading...
-        </div>
+        </Main>
       );
     }
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
+      <Main>
         {renderPlayer(player)}
         {renderRanking(points)}
-      </div>
+      </Main>
     );
   }
 }
@@ -52,31 +49,43 @@ function renderRanking(points) {
       </React.Fragment>
     );
   }
-  return (
-    <React.Fragment>
-      <h3>Resultater </h3>
-      <ul>
-        {points.map(
-          ({ tournamentType, tournamentName, points, place }, index) => (
-            <li key={index}>
-              {place}.plass {tournamentName} ({tournamentType}) - {points} poeng{" "}
-            </li>
-          )
-        )}
-      </ul>
-    </React.Fragment>
-  );
+    return (
+        <React.Fragment>
+            <Typography variant="title">Resultater </Typography>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Plassering</TableCell>
+                        <TableCell>Turnering</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell numeric>Poeng</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {points.map(
+                        ({ tournamentType, tournamentName, points, place }, index) => (
+                            <TableRow key={index}>
+                                <TableCell>{place}</TableCell>
+                                <TableCell>{tournamentName}</TableCell>
+                                <TableCell>{tournamentType}</TableCell>
+                                <TableCell numeric>{points}</TableCell>
+                            </TableRow>
+                        )
+                    )}
+                </TableBody>
+            </Table>
+        </React.Fragment>);
 }
 function renderPlayer({ id, firstname, lastname, dateOfBith }) {
-  if (!id) {
+    if (!id) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
-  }
-  return (
+}
+    return (
     <div>
-      <h2>
-        {firstname} {lastname}
-      </h2>
-      <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
+    <Typography variant="headline">
+    {firstname} {lastname}
+    </Typography>
+    <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
-  );
+    );
 }

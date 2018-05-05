@@ -5,7 +5,7 @@
     "dev-start": "node --trace-warnings src/server",
     "postinstall": "next build",
     "build": "next build",
-    "start": "NODE_ENV=production node src/server"
+    "start": "set NODE_ENV=production node src/server"
   },
   "engines": {
     "node": "9"
@@ -15,15 +15,18 @@
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
     "braintree": "2.10.0",
+    "braintree-dropin-react": "^0.1.0",
     "braintree-web-drop-in": "^1.10.0",
     "circular-json": "^0.5.1",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",
+    "downshift": "^1.31.14",
     "express": "^4.16.3",
     "google-auth-library": "^1.3.2",
     "googleapis": "^28.0.1",
     "isomorphic-unfetch": "^2.0.0",
     "lodash": "^4.17.5",
+    "material-ui": "^1.0.0-beta.44",
     "moment": "^2.22.0",
     "next": "^5.1.0",
     "npm-check-updates": "^2.14.1",
