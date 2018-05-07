@@ -13,34 +13,44 @@ import Hidden from "material-ui/Hidden";
 import { withStyles } from "material-ui/styles";
 import withRoot from "../src/withRoot";
 
+import { getJson } from "../src/utils/getJson";
+const CircularJSON = require("circular-json");
+const log = require("debug")("salt:player");
+
 // Set some styles here later:
 const styles = theme => ({});
 
 class PlayerPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { player: [], loading: true };
+    this.state = {
+      player: {},
+      loading: true
+    };
   }
 
   async componentDidMount() {
-    const path = location.pathname.split("/");
-    const id = path[path.length - 1];
-    const res = await fetch(`/api/players/${id}`);
-    const statusCode = res.statusCode > 200 ? res.statusCode : false;
-    const json = await res.json();
-
-    const resPoints = await fetch(`/api/points/${id}`);
-    const points = await resPoints.json();
-    this.setState({ player: json, points, loading: false });
+    try {
+      const path = location.pathname.split("/");
+      const id = path[path.length - 1];
+      const res = await fetch(`/api/players/${id}`);
+      const player = await getJson(`/api/players/${id}`);
+      const points = await getJson(`/api/points/${id}`);
+      this.setState({ player, points, loading: false });
+    } catch (err) {
+      log(err);
+      this.setState({
+        loading: false,
+        error: true,
+        errorDetails: CircularJSON.stringify(err)
+      });
+    }
   }
 
   render() {
     const { player, loading, points } = this.state;
-    if (loading) {
-      return <Main>Loading...</Main>;
-    }
     return (
-      <Main>
+      <Main error loading>
         {renderPlayer(player)}
         {renderRanking(points)}
       </Main>

@@ -32,10 +32,6 @@ async function apiRegisterTeamForTournament(data) {
 
 async function apiGetPointsFromPlayer(id) {
   const res = await axios.get(`${API_URL}/points?SpillerId=${id}`);
-  log("res.data");
-  log(id);
-
-  log(res.data);
   return res.data;
 }
 
@@ -55,8 +51,6 @@ async function apiGetRanking() {
       const playerArray = playerData.filter(
         player => player.SpillerId === lastValue.currentSpillerId
       );
-      log(`lastValue.currentSpillerId ${lastValue.currentSpillerId}`);
-      log(`playerArray ${CircularJSON.stringify(playerArray)}`);
       lastValue[currentValue.SpillerId] = {};
       lastValue[currentValue.SpillerId].name =
         playerArray[0].Fornavn + " " + playerArray[0].Etternavn;
@@ -108,13 +102,6 @@ async function apiGetTournaments(extraQueryString = "") {
   return data;
 }
 
-async function apiGetNorwegianTournaments() {
-  const tournaments = await apiGetTournaments();
-  return tournaments.filter(({ Turneringstype }) =>
-    norwegianTournamentsTypes.includes(Turneringstype)
-  );
-}
-
 function getData(result) {
   if (result.status !== 200) {
     throw new Error(`Did not get a 200 response from API, details: ${result}`);
@@ -128,7 +115,6 @@ module.exports = {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
-  apiGetNorwegianTournaments,
   apiRegisterTeamForTournament,
   apiGetPointsFromPlayer
 };

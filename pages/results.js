@@ -6,15 +6,34 @@ import Main from "../components/Main";
 
 import { withStyles } from 'material-ui/styles';
 import withRoot from "../src/withRoot";
+import { getJson } from "../src/utils/getJson";
+const CircularJSON = require("circular-json");
 
 const log = debug("tournaments");
 
 class ResultsPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { players: [], loading: true };
+
+    this.getTournaments = this.getTournaments.bind(this);
+
+    this.defaultState = { players: [], errror: false, loading: true };
+    this.state = Object.assign({}, this.defaultState);
   }
 
+  async getTournaments() {
+    this.setState(this.defaultState);
+    try {
+      const json = await getJson("/api/tournaments/future");
+      this.setState({ tournaments: json, loading: false });
+    } catch (err) {
+      this.setState({
+        loading: false,
+        error: true,
+        errorDetails: CircularJSON.stringify(err)
+      });
+    }
+  }
   async componentDidMount() {
     const res = await fetch("/api/tournaments/finished");
     const statusCode = res.statusCode > 200 ? res.statusCode : false;
@@ -24,24 +43,10 @@ class ResultsPage extends React.Component {
   }
 
   render() {
-    const { tournaments = [], loading, error } = this.state;
-    log(tournaments);
-    if (error) {
-      return (
-       <Main>
-          Noe feil skjedde :\ <p>{error}</p>
-        </Main>
-      );
-    }
-    if (loading) {
-      return (
-        <Main>
-          Loading...
-        </Main>
-      );
-    }
+    const { tournaments = [], loading, error, errorDetails } = this.state;
+  
     return (
-      <Main>
+      <Main error loading errorDetails={errorDetails} >
         {renderTournaments(tournaments)}
       </Main>
     );

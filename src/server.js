@@ -1,4 +1,6 @@
 require("dotenv").config();
+var Rollbar = require("rollbar");
+var rollbar = new Rollbar(process.env.ROLLBAR_API_KEY);
 
 const express = require("express");
 
@@ -252,7 +254,8 @@ app.prepare().then(() => {
 
   server.listen(process.env.PORT || 3000, err => {
     if (err) throw err;
-    log("Server ready on http://localhost:3000");
+    log("Server ready on http://localhost:" + (process.env.PORT || 3000));
+    rollbar.info(`Server starts on port ${process.env.PORT || 3000}`);
   });
 });
 
@@ -260,6 +263,7 @@ async function errorHandlerJson(handler, req, res, next) {
   try {
     return await handler(req, res, next);
   } catch (err) {
+    rollbar.error(err);
     log(`Error in handler: ${err}, ${CircularJSON.stringify(err)}`);
     res.status(500).json({
       error: "Internal Server Error",
