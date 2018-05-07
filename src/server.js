@@ -67,7 +67,7 @@ const tournamentHandler = async (req, res, next) => {
   const tournament = await getTournament(req.params.id);
   if (tournament.noSuchTournament) {
     log("noSuchTournament - going to next handler");
-    return next();
+    return res.status(404).send("404");
   }
   return res.json(tournament);
 };
