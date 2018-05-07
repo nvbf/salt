@@ -19,7 +19,7 @@ import Button from "material-ui/Button";
 
 const { getRanking } = require("../src/api/index");
 const CircularJSON = require("circular-json");
-const log = debug("players");
+const log = debug("salt:ranking");
 
 const styles = theme => ({
   title: {
@@ -173,16 +173,12 @@ function listTournaments(players) {
 
 async function getRankingAsProps() {
   try {
-    log("1");
     const players = await getRanking();
-    log("2");
     const male = players.filter(player => player.gender == "M");
-    log("3");
     const female = players.filter(player => player.gender == "K");
-    log("4");
     return { male, female, loading: false };
   } catch (err) {
-    log(Object.keys(err));
+    log(`error ${CircularJSON.stringify(err)}`);
     return {
       loading: false,
       error: true,

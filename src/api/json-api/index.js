@@ -104,6 +104,7 @@ async function apiGetTournaments(extraQueryString = "") {
 
 function getData(result) {
   if (result.status !== 200) {
+    log(`Did not get a 200 response from API, details: ${result}`);
     throw new Error(`Did not get a 200 response from API, details: ${result}`);
   }
   return result.data;

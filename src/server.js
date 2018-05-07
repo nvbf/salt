@@ -69,15 +69,9 @@ const tournamentHandler = async (req, res, next) => {
   const tournament = await getTournament(req.params.id);
   if (tournament.noSuchTournament) {
     log("noSuchTournament - going to next handler");
-    return next();
+    return res.status(404).end("404");
   }
   return res.json(tournament);
-};
-
-const norwegianTournamentHandler = async (req, res) => {
-  log("norwegianTournamentHandler");
-  const norwegian = await getNorwegianTournaments();
-  return res.json(norwegian);
 };
 
 app.prepare().then(() => {
@@ -97,11 +91,6 @@ app.prepare().then(() => {
   });
 
   server.use("/api/ranking", errorHandlerJson.bind(null, getRankingHandler));
-
-  server.use(
-    "/api/tournaments/norwegian",
-    errorHandlerJson.bind(null, norwegianTournamentHandler)
-  );
 
   server.use(
     "/api/tournaments/future",

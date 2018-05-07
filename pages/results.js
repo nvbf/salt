@@ -6,10 +6,10 @@ import Main from "../components/Main";
 
 import { withStyles } from 'material-ui/styles';
 import withRoot from "../src/withRoot";
-import { getJson } from "../src/utils/getJson";
+import { getTournaments } from '../src/api'
 const CircularJSON = require("circular-json");
 
-const log = debug("tournaments");
+const log = debug("results");
 
 class ResultsPage extends React.Component {
   constructor(props) {
@@ -23,24 +23,9 @@ class ResultsPage extends React.Component {
 
   async getTournaments() {
     this.setState(this.defaultState);
-    try {
-      const json = await getJson("/api/tournaments/future");
-      this.setState({ tournaments: json, loading: false });
-    } catch (err) {
-      this.setState({
-        loading: false,
-        error: true,
-        errorDetails: CircularJSON.stringify(err)
-      });
-    }
+    
   }
-  async componentDidMount() {
-    const res = await fetch("/api/tournaments/finished");
-    const statusCode = res.statusCode > 200 ? res.statusCode : false;
-    const json = await res.json();
-
-    this.setState({ tournaments: json, loading: false });
-  }
+  this.setState({ tournaments: json, loading: false });
 
   render() {
     const { tournaments = [], loading, error, errorDetails } = this.state;
@@ -97,5 +82,20 @@ function renderTableData(props) {
   const keys =  ["startDate", "deadline", "classesText"];
   return keys.map(key => <td key={key}>{props[key]}</td>);
 }
+
+async function getResultsAsProps() {
+  try {
+    const json = await getTournaments();
+    this.setState({ tournaments: json, loading: false });
+  } catch (err) {
+    log(err)
+    this.setState({
+      loading: false,
+      error: true,
+      errorDetails: CircularJSON.stringify(err)
+    });
+  }
+}
+
 
 export default withRoot(withStyles({})(ResultsPage));
