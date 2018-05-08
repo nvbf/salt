@@ -9,7 +9,7 @@ import Typography from "material-ui/Typography";
 import Button from "material-ui/Button";
 import { withStyles } from "material-ui/styles";
 import withRoot from "../src/withRoot";
-import { getJson } from "../src/utils/getJson";
+import { getTournamentsInTheFuture } from "../src/api";
 
 const CircularJSON = require("circular-json");
 const log = debug("tournaments");
@@ -34,34 +34,36 @@ const styles = theme => ({
 class Tournaments extends React.Component {
   constructor(props) {
     super(props);
+    this.retryGetTournaments = this.retryGetTournaments.bind(this);
+    this.defaultState = { tournaments: [], loading: true, error: true };
 
-    this.getTournaments = this.getTournaments.bind(this);
-
-    this.defaultState = { players: [], loading: true };
-    this.state = Object.assign({}, this.defaultState);
+    const { tournaments, error, loading } = this.props;
+    this.state = Object.assign({}, this.defaultState, {
+      tournaments,
+      error,
+      loading
+    });
   }
 
-  async getTournaments() {
+  static async getInitialProps() {
+    return await getTournamentsAsProps();
+  }
+
+  retryGetTournaments() {
     this.setState(this.defaultState);
-    try {
-      const json = await getJson("/api/tournaments/future");
-      this.setState({ tournaments: json, loading: false });
-    } catch (err) {
-      this.setState({
-        loading: false,
-        error: true,
-        errorDetails: CircularJSON.stringify(err)
-      });
-    }
-  }
-  async getInitalPage() {
-    await this.getTournaments();
+    this.setState(getTournamentsAsProps());
   }
 
   render() {
+    const { error, loading, errorDetails } = this.state;
     const content = this.getContent();
     return (
-      <Main error errorDetails loading retryHandler={this.getTournaments}>
+      <Main
+        error={error}
+        errorDetails={errorDetails}
+        loading={loading}
+        retryHandler={this.retryGetTournaments}
+      >
         {content}
       </Main>
     );
@@ -69,10 +71,11 @@ class Tournaments extends React.Component {
 
   getContent() {
     const { tournaments = [], loading, error } = this.state;
+    const { classes } = this.props;
+
     if (tournaments.length == 0) {
       return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }
-    const { classes } = this.props;
 
     return (
       <React.Fragment>
@@ -86,8 +89,8 @@ class Tournaments extends React.Component {
               tournament
             ) => {
               return (
-                <li className={classes.tournamentListItem}>
-                  <Paper key={tournament} className={classes.tournamentPaper}>
+                <li key={tournament} className={classes.tournamentListItem}>
+                  <Paper className={classes.tournamentPaper}>
                     <Typography variant="title">
                       {name} {playerVenue || ""} {startDate}
                     </Typography>
@@ -118,9 +121,24 @@ class Tournaments extends React.Component {
     );
   }
 }
+
 function renderTableData(props) {
   const keys = ["startDate", "deadline", "classesText"];
   return keys.map(key => <td key={key}>{props[key]}</td>);
+}
+
+async function getTournamentsAsProps() {
+  try {
+    const json = await getTournamentsInTheFuture();
+    return { tournaments: json, loading: false };
+  } catch (err) {
+    log(err);
+    return {
+      loading: false,
+      error: true,
+      errorDetails: CircularJSON.stringify(err)
+    };
+  }
 }
 
 export default withRoot(withStyles(styles)(Tournaments));

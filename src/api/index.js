@@ -75,7 +75,9 @@ async function getTournamentsInTheFuture() {
   }
   const tournaments = await getTournaments();
   const tournamentsInTheFuture = tournaments.filter(({ deadline }) => {
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
+    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+      .endOf("day")
+      .diff(moment.now());
     return timeToDeadLine > 0;
   });
   return tournamentsInTheFuture;

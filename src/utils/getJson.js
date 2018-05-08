@@ -8,7 +8,6 @@ async function getJson(url) {
     log("Status code from api is not ok");
     throw Error(`Failed to fetch ${url}`);
   }
-  log("seems ok");
   return await res.json();
 }
 

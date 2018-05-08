@@ -4,9 +4,9 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from "material-ui/styles";
 import withRoot from "../src/withRoot";
-import { getTournaments } from '../src/api'
+import { getTournaments } from "../src/api";
 const CircularJSON = require("circular-json");
 
 const log = debug("results");
@@ -14,24 +14,41 @@ const log = debug("results");
 class ResultsPage extends React.Component {
   constructor(props) {
     super(props);
+    this.defaultState = { tournaments: [], errror: false, loading: true };
+    this.retryGetRanking = this.retryGetRanking.bind(this);
 
-    this.getTournaments = this.getTournaments.bind(this);
+    const {
+      tournaments = this.defaultState.tournaments,
+      error = this.defaultState.error,
+      loading = this.defaultState.loading
+    } = this.props;
 
-    this.defaultState = { players: [], errror: false, loading: true };
-    this.state = Object.assign({}, this.defaultState);
+    this.state = Object.assign({}, this.defaultState, {
+      tournaments,
+      error,
+      loading
+    });
   }
 
-  async getTournaments() {
-    this.setState(this.defaultState);
-    
+  async retryGetRanking() {
+    this.setState(Object.assign({}, this.defaultState));
+    //this.setState(await getResultsAsProps());
   }
-  this.setState({ tournaments: json, loading: false });
+
+  static async getInitialProps() {
+    return await getResultsAsProps();
+  }
 
   render() {
     const { tournaments = [], loading, error, errorDetails } = this.state;
-  
+
     return (
-      <Main error loading errorDetails={errorDetails} >
+      <Main
+        error={error}
+        loading={loading}
+        errorDetails={errorDetails}
+        retryHandler={this.retryGetRanking}
+      >
         {renderTournaments(tournaments)}
       </Main>
     );
@@ -59,7 +76,7 @@ function listRow(tournaments) {
     return (
       <tr key={key}>
         <td>
-          <Link href={"/tournament"} as={`/tournaments/${id}`}  >
+          <Link href={"/tournament"} as={`/tournaments/${id}`}>
             <a>{name}</a>
           </Link>
         </td>
@@ -69,33 +86,38 @@ function listRow(tournaments) {
   });
 }
 
-function renderTableHead({id, timestamp, ...rest, }) {
-  const keys =  ["Navn", "Startdato", "Pameldingsfrist", "Klasser"];
+function renderTableHead({ id, timestamp, ...rest }) {
+  const keys = ["Navn", "Startdato", "Pameldingsfrist", "Klasser"];
   return (
     <thead>
-      <tr>{keys.map(key => <td key={key}><strong>{key}</strong></td>)}</tr>
+      <tr>
+        {keys.map(key => (
+          <td key={key}>
+            <strong>{key}</strong>
+          </td>
+        ))}
+      </tr>
     </thead>
   );
 }
 
 function renderTableData(props) {
-  const keys =  ["startDate", "deadline", "classesText"];
+  const keys = ["startDate", "deadline", "classesText"];
   return keys.map(key => <td key={key}>{props[key]}</td>);
 }
 
 async function getResultsAsProps() {
   try {
     const json = await getTournaments();
-    this.setState({ tournaments: json, loading: false });
+    return { tournaments: json, loading: false };
   } catch (err) {
-    log(err)
-    this.setState({
+    log(err);
+    return {
       loading: false,
       error: true,
       errorDetails: CircularJSON.stringify(err)
-    });
+    };
   }
 }
-
 
 export default withRoot(withStyles({})(ResultsPage));

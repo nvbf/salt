@@ -51,9 +51,7 @@ class RankingPage extends React.Component {
       male = this.defaultState.male,
       female = this.defaultState.female
     } = props;
-    log(
-      "constructor " + CircularJSON.stringify({ loading, error, male, female })
-    );
+
     this.state = Object.assign({}, this.defaultState, {
       loading,
       error,
@@ -62,13 +60,12 @@ class RankingPage extends React.Component {
     });
   }
 
-  retryGetRanking() {
+  async retryGetRanking() {
     this.setState(Object.assign({}, this.defaultState));
-    this.setState(getRankingAsProps());
+    this.setState(await getRankingAsProps());
   }
 
   static async getInitialProps() {
-    log("running getInitialProps");
     return getRankingAsProps();
   }
 

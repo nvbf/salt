@@ -13,7 +13,7 @@ import Hidden from "material-ui/Hidden";
 import { withStyles } from "material-ui/styles";
 import withRoot from "../src/withRoot";
 
-import { getJson } from "../src/utils/getJson";
+import { getPlayer, getPointsFromPlayer } from "../src/api/";
 const CircularJSON = require("circular-json");
 const log = require("debug")("salt:player");
 
@@ -23,34 +23,44 @@ const styles = theme => ({});
 class PlayerPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.defaultState = {
       player: {},
+      points: [],
+      error: false,
       loading: true
     };
+
+    this.retryGetPlayers = this.retryGetPlayers.bind(this);
+
+    const {
+      loading = this.defaultState.loading,
+      error = this.defaultState.error,
+      points = this.defaultState.points,
+      player = this.defaultState.player,
+      errorDetails = ""
+    } = this.props;
+    this.state = Object.assign({}, this.defaultState, {
+      loading,
+      error,
+      errorDetails,
+      points,
+      player
+    });
   }
 
-  async componentDidMount() {
-    try {
-      const path = location.pathname.split("/");
-      const id = path[path.length - 1];
-      const res = await fetch(`/api/players/${id}`);
-      const player = await getJson(`/api/players/${id}`);
-      const points = await getJson(`/api/points/${id}`);
-      this.setState({ player, points, loading: false });
-    } catch (err) {
-      log(err);
-      this.setState({
-        loading: false,
-        error: true,
-        errorDetails: CircularJSON.stringify(err)
-      });
-    }
+  static async getInitialProps({ asPath }) {
+    return await getPlayerAsProps(asPath);
+  }
+
+  retryGetPlayers() {
+    this.setState(this.defaultState);
+    this.setState(getPlayerAsProps(location.pathname));
   }
 
   render() {
-    const { player, loading, points } = this.state;
+    const { loading, error, player, points } = this.state;
     return (
-      <Main error loading>
+      <Main error={error} loading={loading} retryHandler={this.retryGetPlayers}>
         {renderPlayer(player)}
         {renderRanking(points)}
       </Main>
@@ -103,6 +113,7 @@ function renderRanking(points) {
     </React.Fragment>
   );
 }
+
 function renderPlayer({ id, firstname, lastname, dateOfBith }) {
   if (!id) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
@@ -115,6 +126,24 @@ function renderPlayer({ id, firstname, lastname, dateOfBith }) {
       <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
   );
+}
+
+async function getPlayerAsProps(pathname) {
+  try {
+    const path = pathname.split("/");
+    const id = path[path.length - 1];
+    log(`id is: ${id} ${pathname}`);
+    const player = await getPlayer(id);
+    const points = await getPointsFromPlayer(id);
+    return { player, points, loading: false };
+  } catch (err) {
+    log(err);
+    return {
+      loading: false,
+      error: true,
+      errorDetails: CircularJSON.stringify(err)
+    };
+  }
 }
 
 export default withRoot(withStyles(styles)(PlayerPage));
