@@ -36,10 +36,12 @@ async function apiGetPointsFromPlayer(id) {
 }
 
 async function apiGetRanking() {
+  console.log(`${API_URL}/points`);
   const result = await axios.get(`${API_URL}/points`);
   const playersRes = await axios.get(`${API_URL}/players`);
   const playerData = getData(playersRes);
   const data = getData(result);
+
   const playerSum = data.reduce((lastValue = {}, currentValue, index, {}) => {
     //console.log('lastValue.currentSpillerId', lastValue.currentSpillerId)
     //console.log('currentValue', currentValue)
@@ -107,6 +109,13 @@ function getData(result) {
     log(`Did not get a 200 response from API, details: ${result}`);
     throw new Error(`Did not get a 200 response from API, details: ${result}`);
   }
+
+  if (typeof(result.data) == "string") {
+    console.log('Hacking');
+      const newData = result.data.replace(/select \* from Turnering[\t\s\r\n]+/g, "");
+      return JSON.parse(newData);
+  }
+
   return result.data;
 }
 
