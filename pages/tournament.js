@@ -146,7 +146,9 @@ function renderClasses(tournament, classes) {
 function renderSignupLink(tournament) {
   console.log("renderSignupLink", tournament);
   const { deadline, id } = tournament;
-  const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
+  const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+    .endOf("day")
+    .diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
   if (signupAllowd) {
     return <a href={`/signup/${id}`}>Meld deg på</a>;
