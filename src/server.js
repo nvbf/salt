@@ -27,7 +27,9 @@ const handle = app.getRequestHandler();
 const { parse } = require("url");
 const log = require("debug")("salt:server");
 const CircularJSON = require("circular-json");
-const fetch = require("isomorphic-unfetch");
+
+var routeCache = require('route-cache');
+
 
 const getRankingHandler = async (req, res) => {
   const ranking = await getRanking();
@@ -72,12 +74,6 @@ const tournamentHandler = async (req, res, next) => {
   return res.json(tournament);
 };
 
-const norwegianTournamentHandler = async (req, res) => {
-  log("norwegianTournamentHandler");
-  const norwegian = await getNorwegianTournaments();
-  return res.json(norwegian);
-};
-
 app.prepare().then(() => {
   const server = express();
   var checkoutRoute = express.Router();
@@ -94,38 +90,28 @@ app.prepare().then(() => {
     }
   });
 
-  server.use("/api/ranking", errorHandlerJson.bind(null, getRankingHandler));
+  server.get("/api/ranking", routeCache.cacheSeconds(600), errorHandlerJson.bind(null, getRankingHandler));
 
-  server.use(
-    "/api/tournaments/norwegian",
-    errorHandlerJson.bind(null, norwegianTournamentHandler)
-  );
-
-  server.use(
-    "/api/tournaments/future",
+  server.get(
+    "/api/tournaments/future", routeCache.cacheSeconds(300),
     errorHandlerJson.bind(null, tournamentsInTheFutureHandler)
   );
 
-  server.use(
-    "/api/tournaments/:id",
+  server.get(
+    "/api/tournaments/:id", routeCache.cacheSeconds(30),
     errorHandlerJson.bind(null, tournamentHandler)
   );
 
-  server.use(
-    "/api/tournaments",
+  server.get(
+    "/api/tournaments", routeCache.cacheSeconds(400),
     errorHandlerJson.bind(null, tournamentsHandler)
   );
 
-  server.use(
-    "/api/tournaments",
-    errorHandlerJson.bind(null, tournamentsHandler)
-  );
+  server.get("/api/points/:id", routeCache.cacheSeconds(300),  errorHandlerJson.bind(null, pointsHandler));
 
-  server.use("/api/points/:id", errorHandlerJson.bind(null, pointsHandler));
+  server.get("/api/players/:id", routeCache.cacheSeconds(400), errorHandlerJson.bind(null, playerHandler));
 
-  server.use("/api/players/:id", errorHandlerJson.bind(null, playerHandler));
-
-  server.use("/api/players/", errorHandlerJson.bind(null, playersHandler));
+  server.get("/api/players/", routeCache.cacheSeconds(450), errorHandlerJson.bind(null, playersHandler));
 
   server.get("/players/:id", (req, res) => {
     return app.render(req, res, "/player", { id: req.params.id });

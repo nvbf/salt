@@ -30,6 +30,7 @@
     "path-match": "^1.2.4",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
+    "route-cache": "^0.4.4",
     "sendgrid": "^5.2.3",
     "styled-components": "^3.2.5"
   },
