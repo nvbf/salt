@@ -1,44 +1,69 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import Main from "../components/Main";
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from "material-ui/Table";
+import Typography from "material-ui/Typography";
+import Hidden from "material-ui/Hidden";
 
-export default class extends React.Component {
+import { withStyles } from "material-ui/styles";
+import withRoot from "../src/withRoot";
+
+import { getPlayer, getPointsFromPlayer } from "../src/api/";
+const CircularJSON = require("circular-json");
+const log = require("debug")("salt:player");
+
+// Set some styles here later:
+const styles = theme => ({});
+
+class PlayerPage extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { player: [], loading: true };
+    this.defaultState = {
+      player: {},
+      points: [],
+      error: false,
+      loading: true
+    };
+
+    this.retryGetPlayers = this.retryGetPlayers.bind(this);
+
+    const {
+      loading = this.defaultState.loading,
+      error = this.defaultState.error,
+      points = this.defaultState.points,
+      player = this.defaultState.player,
+      errorDetails = ""
+    } = this.props;
+    this.state = Object.assign({}, this.defaultState, {
+      loading,
+      error,
+      errorDetails,
+      points,
+      player
+    });
   }
 
-  async componentDidMount() {
-    const path = location.pathname.split("/");
-    const id = path[path.length - 1];
-    const res = await fetch(`/api/players/${id}`);
-    const statusCode = res.statusCode > 200 ? res.statusCode : false;
-    const json = await res.json();
+  static async getInitialProps({ asPath }) {
+    return await getPlayerAsProps(asPath);
+  }
 
-    const resPoints = await fetch(`/api/points/${id}`);
-    const points = await resPoints.json();
-    this.setState({ player: json, points, loading: false });
+  retryGetPlayers() {
+    this.setState(this.defaultState);
+    this.setState(getPlayerAsProps(location.pathname));
   }
 
   render() {
-    const { player, loading, points } = this.state;
-    if (loading) {
-      return (
-        <div>
-          <Head title="Home" />
-          <Nav />
-          Loading...
-        </div>
-      );
-    }
+    const { loading, error, player, points } = this.state;
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
+      <Main error={error} loading={loading} retryHandler={this.retryGetPlayers}>
         {renderPlayer(player)}
         {renderRanking(points)}
-      </div>
+      </Main>
     );
   }
 }
@@ -54,29 +79,71 @@ function renderRanking(points) {
   }
   return (
     <React.Fragment>
-      <h3>Resultater </h3>
-      <ul>
-        {points.map(
-          ({ tournamentType, tournamentName, points, place }, index) => (
-            <li key={index}>
-              {place}.plass {tournamentName} ({tournamentType}) - {points} poeng{" "}
-            </li>
-          )
+      <Typography variant="title">Resultater </Typography>
+      {(!points || !points.map) && <p>Ingen poeng registert</p>}
+      {points &&
+        points.map && (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Turnering</TableCell>
+                <Hidden smDown>
+                  <TableCell>Type</TableCell>
+                </Hidden>
+                <TableCell numeric>Poeng</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {points.map(
+                ({ tournamentType, tournamentName, points, place }, index) => (
+                  <TableRow key={index}>
+                    <TableCell numeric>{place}</TableCell>
+                    <TableCell>{tournamentName}</TableCell>
+                    <Hidden smDown>
+                      <TableCell>{tournamentType}</TableCell>
+                    </Hidden>
+                    <TableCell numeric>{points}</TableCell>
+                  </TableRow>
+                )
+              )}
+            </TableBody>
+          </Table>
         )}
-      </ul>
     </React.Fragment>
   );
 }
+
 function renderPlayer({ id, firstname, lastname, dateOfBith }) {
   if (!id) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
   }
   return (
     <div>
-      <h2>
+      <Typography variant="headline">
         {firstname} {lastname}
-      </h2>
+      </Typography>
       <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
   );
 }
+
+async function getPlayerAsProps(pathname) {
+  try {
+    const path = pathname.split("/");
+    const id = path[path.length - 1];
+    log(`id is: ${id} ${pathname}`);
+    const player = await getPlayer(id);
+    const points = await getPointsFromPlayer(id);
+    return { player, points, loading: false };
+  } catch (err) {
+    log(err);
+    return {
+      loading: false,
+      error: true,
+      errorDetails: CircularJSON.stringify(err)
+    };
+  }
+}
+
+export default withRoot(withStyles(styles)(PlayerPage));

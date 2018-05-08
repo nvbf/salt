@@ -2,98 +2,143 @@ import React from "react";
 import debug from "debug";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
-import Head from "../components/head";
-import Nav from "../components/nav";
 
+import Main from "../components/Main";
+import Paper from "material-ui/Paper";
+import Typography from "material-ui/Typography";
+import Button from "material-ui/Button";
+import { withStyles } from "material-ui/styles";
+import withRoot from "../src/withRoot";
+import { getTournamentsInTheFuture } from "../src/api";
+
+const CircularJSON = require("circular-json");
 const log = debug("tournaments");
 
-export default class extends React.Component {
+const styles = theme => ({
+  tournamentTitle: {
+    marginBottom: theme.spacing.unit * 2
+  },
+  tournamentPaper: theme.mixins.gutters({
+    padding: theme.spacing.unit
+  }),
+  tournamentList: {
+    listStyle: "none",
+    padding: 0,
+    margin: 0
+  },
+  tournamentListItem: {
+    marginBottom: theme.spacing.unit
+  }
+});
+
+class Tournaments extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { players: [], loading: true };
+    this.retryGetTournaments = this.retryGetTournaments.bind(this);
+    this.defaultState = { tournaments: [], loading: true, error: true };
+
+    const { tournaments, error, loading } = this.props;
+    this.state = Object.assign({}, this.defaultState, {
+      tournaments,
+      error,
+      loading
+    });
   }
 
-  async componentDidMount() {
-    const res = await fetch("/api/tournaments/future");
-    const statusCode = res.statusCode > 200 ? res.statusCode : false;
-    const json = await res.json();
+  static async getInitialProps() {
+    return await getTournamentsAsProps();
+  }
 
-    this.setState({ tournaments: json, loading: false });
+  retryGetTournaments() {
+    this.setState(this.defaultState);
+    this.setState(getTournamentsAsProps());
   }
 
   render() {
+    const { error, loading, errorDetails } = this.state;
+    const content = this.getContent();
+    return (
+      <Main
+        error={error}
+        errorDetails={errorDetails}
+        loading={loading}
+        retryHandler={this.retryGetTournaments}
+      >
+        {content}
+      </Main>
+    );
+  }
+
+  getContent() {
     const { tournaments = [], loading, error } = this.state;
-    log(tournaments);
-    if (error) {
-      return (
-        <div>
-          <Head title="Home" />
-          <Nav />
-          Noe feil skjedde :\ <p>{error}</p>
-        </div>
-      );
+    const { classes } = this.props;
+
+    if (tournaments.length == 0) {
+      return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }
-    if (loading) {
-      return (
-        <div>
-          <Head title="Home" />
-          <Nav />
-          Loading...
-        </div>
-      );
-    }
+
     return (
-      <div>
-        <Head title="Home" />
-        <Nav />
-        {renderTournaments(tournaments)}
-      </div>
+      <React.Fragment>
+        <Typography variant="display1" className={classes.tournamentTitle}>
+          Turneringer
+        </Typography>
+        <ul className={classes.tournamentList}>
+          {tournaments.map(
+            (
+              { id, name, deadline, startDate, classesText, playerVenue },
+              tournament
+            ) => {
+              return (
+                <li key={tournament} className={classes.tournamentListItem}>
+                  <Paper className={classes.tournamentPaper}>
+                    <Typography variant="title">
+                      {name} {playerVenue || ""} {startDate}
+                    </Typography>
+                    <p>
+                      <Typography variant="body2">
+                        Påmeldingsfrist: {deadline}
+                      </Typography>
+                    </p>
+                    <p>
+                      <Typography variant="body1">
+                        Klasser: {classesText}
+                      </Typography>
+                    </p>
+
+                    <Link href={"/tournament"} as={`/tournaments/${id}`}>
+                      <Button color="primary">Påmeldte</Button>
+                    </Link>
+                    <Link href={"/signup"} as={`/signup/${id}`}>
+                      <Button color="primary">Meld deg på</Button>
+                    </Link>
+                  </Paper>
+                </li>
+              );
+            }
+          )}
+        </ul>
+      </React.Fragment>
     );
   }
-}
-
-function renderTournaments(tournaments) {
-  if (tournaments.length > 0) {
-    return listTournaments(tournaments);
-  }
-  return <div>Ingen turneringer er på plass enda, prøve igjen senere</div>;
-}
-
-function listTournaments(tournaments) {
-  return (
-    <table>
-      {renderTableHead(tournaments[0])}
-      <tbody>{listRow(tournaments)}</tbody>
-    </table>
-  );
-}
-
-function listRow(tournaments) {
-  return tournaments.map(({ id, name, ...rest }, key) => {
-    return (
-      <tr key={key}>
-        <td>
-          <Link href={"/tournament"} as={`/tournaments/${id}`}  >
-            <a>{name}</a>
-          </Link>
-        </td>
-        {renderTableData(rest)}
-      </tr>
-    );
-  });
-}
-
-function renderTableHead({id, timestamp, ...rest, }) {
-  const keys =  ["Navn", "Startdato", "Pameldingsfrist", "Klasser"];
-  return (
-    <thead>
-      <tr>{keys.map(key => <td key={key}><strong>{key}</strong></td>)}</tr>
-    </thead>
-  );
 }
 
 function renderTableData(props) {
-  const keys =  ["startDate", "deadline", "classesText"];
+  const keys = ["startDate", "deadline", "classesText"];
   return keys.map(key => <td key={key}>{props[key]}</td>);
 }
 
+async function getTournamentsAsProps() {
+  try {
+    const json = await getTournamentsInTheFuture();
+    return { tournaments: json, loading: false };
+  } catch (err) {
+    log(err);
+    return {
+      loading: false,
+      error: true,
+      errorDetails: CircularJSON.stringify(err)
+    };
+  }
+}
+
+export default withRoot(withStyles(styles)(Tournaments));

@@ -1,88 +1,94 @@
 import React from "react";
+import Main from "../components/Main";
 import Link from "next/link";
-import Head from "../components/head";
-import Nav from "../components/nav";
+import withRoot from "../src/withRoot";
 
-export default () => (
-  <div>
-    <Head title="Home" />
-    <Nav />
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
+import Grid from "material-ui/Grid";
+import Paper from "material-ui/Paper";
+import Button from "material-ui/Button";
 
-    <div className="hero">
-      <h1 className="title">Sandvolleyballturneringer i Norge</h1>
-      <p className="description">
-        Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
-        sesongen 2018. Du vil også kunne foreløpig seeding, og hvilke
-        turneringer de er basert på. Vi jobber fortløpende med og forbedre siden
-      </p>
+const styles = theme => ({
+  paperContainer: {
+    padding: theme.spacing.unit,
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    p: {
+      flexGrow: 1,
+      backgroundColor: "red"
+    }
+  },
 
-      <div className="row">
-        <Link href="/ranking">
-          <a className="card">
-            <h3>Rankinglista &rarr;</h3>
-            <p>Se rankinglista!</p>
-          </a>
-        </Link>
-        <Link href="/tournaments">
-          <a className="card">
-            <h3>Turneringer &rarr;</h3>
-            <p>Se årets turneringer og meld deg på </p>
-          </a>
-        </Link>
-        <Link href="/results">
-          <a className="card">
-            <h3>Resultater &rarr;</h3>
-            <p>Se resultater fra de siste turneringene som har vært</p>
-          </a>
-        </Link>
-      </div>
-    </div>
+  buttonLink: {
+    flexGrow: 0
+  },
 
-    <style jsx>{`
-      .hero {
-        width: 100%;
-        color: #333;
+  description: {
+    display: "block"
+  }
+});
+
+class IndexPage extends React.Component {
+  render() {
+    const { classes } = this.props;
+
+    const items = [
+      {
+        title: "Turneringer",
+        description: "Påmeldte og påmelding for turneringer",
+        linkText: "Vis turneringer",
+        link: "/tournaments"
+      },
+      {
+        title: "Resultater",
+        description: "Se resultater fra de siste turneringene som har vært",
+        linkText: "Se resultater",
+        link: "/results"
+      },
+      {
+        title: "Rankinglista",
+        description: "Spillerrangering for 2018",
+        linkText: "Se rankinglista!",
+        link: "/ranking"
       }
-      .title {
-        margin: 0;
-        width: 100%;
-        padding-top: 80px;
-        line-height: 1.15;
-        font-size: 48px;
-      }
-      .title,
-      .description {
-        text-align: center;
-      }
-      .row {
-        max-width: 880px;
-        margin: 80px auto 40px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-      }
-      .card {
-        padding: 18px 18px 24px;
-        width: 220px;
-        text-align: left;
-        text-decoration: none;
-        color: #434343;
-        border: 1px solid #9b9b9b;
-      }
-      .card:hover {
-        border-color: #067df7;
-      }
-      .card h3 {
-        margin: 0;
-        color: #067df7;
-        font-size: 18px;
-      }
-      .card p {
-        margin: 0;
-        padding: 12px 0 0;
-        font-size: 13px;
-        color: #333;
-      }
-    `}</style>
-  </div>
-);
+    ];
+
+    return (
+      <Main>
+        <Typography variant="display1" gutterBottom>
+          Sandvolleyballturneringer i Norge
+        </Typography>
+        <p className="description">
+          Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
+          sesongen 2018. Du vil også kunne foreløpig seeding, og hvilke
+          turneringer de er basert på. Vi jobber fortløpende med og forbedre
+          siden
+        </p>
+
+        <Grid container spacing={16}>
+          {items.map((item, index) => {
+            return (
+              <Grid item key={index} xs={12} md={4}>
+                <Paper className={classes.paperContainer}>
+                  <Typography variant="headline">{item.title}</Typography>
+                  <span style={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
+                    <Typography variant="body1">{item.description}</Typography>
+                  </span>
+                  <Link href={item.link}>
+                    <Button color="primary" className={classes.buttonLink}>
+                      {item.linkText}
+                    </Button>
+                  </Link>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Main>
+    );
+  }
+}
+
+export default withRoot(withStyles(styles)(IndexPage));

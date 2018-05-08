@@ -6,28 +6,42 @@ const {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
-  apiGetNorwegianTournaments,
   apiRegisterTeamForTournament,
   apiGetPointsFromPlayer
 } = require("./json-api");
 
+const { getJson } = require("../utils/getJson");
+
 const log = require("debug")("salt:src:api");
+const isServer = typeof window === "undefined";
 
 async function getRanking() {
+  if (!isServer) {
+    return getJson("/api/ranking");
+  }
   return await apiGetRanking();
 }
 
 async function getPointsFromPlayer(id) {
+  if (!isServer) {
+    return getJson(`/api/points/${id}`);
+  }
   const points = await apiGetPointsFromPlayer(id);
   return mapToObject(points);
 }
 
 async function getPlayer(id) {
+  if (!isServer) {
+    return getJson(`/api/players/${id}`);
+  }
   const player = await apiGetPlayer(id);
   return mapToObject(player);
 }
 
 async function getPlayers() {
+  if (!isServer) {
+    return getJson(`/api/players`);
+  }
   const apiPlayers = await apiGetPlayers();
   const players = mapToObject(apiPlayers);
   const simplePlayers = players.map(({ id, firstname, lastname, gender }) => ({
@@ -40,26 +54,33 @@ async function getPlayers() {
 }
 
 async function getTournament(id) {
+  if (!isServer) {
+    return getJson(`/api/tournaments/${id}`);
+  }
   const apiTournament = await apiGetTournament(id);
   return mapToObject(apiTournament);
 }
 
 async function getTournaments() {
+  if (!isServer) {
+    return getJson(`/api/tournaments/`);
+  }
   const tournaments = await apiGetTournaments();
   return mapToObject(tournaments);
 }
 
 async function getTournamentsInTheFuture() {
+  if (!isServer) {
+    return getJson(`/api/tournaments/future`);
+  }
   const tournaments = await getTournaments();
   const tournamentsInTheFuture = tournaments.filter(({ deadline }) => {
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY").diff(moment.now());
+    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+      .endOf("day")
+      .diff(moment.now());
     return timeToDeadLine > 0;
   });
   return tournamentsInTheFuture;
-}
-
-async function getNorwegianTournaments() {
-  return await apiGetNorwegianTournaments();
 }
 
 async function registerTeamForTournament(
@@ -171,7 +192,6 @@ module.exports = {
   getPlayers,
   getTournament,
   getTournaments,
-  getNorwegianTournaments,
   registerTeamForTournament,
   getPointsFromPlayer,
   getTournamentsInTheFuture

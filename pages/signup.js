@@ -2,286 +2,292 @@ import React from "react";
 import debug from "debug";
 import Link from "next/link";
 import fetch from "isomorphic-unfetch";
-import { Main } from "../components/Main";
-import { ClassSelect } from "../components/ClassSelect";
+import Main from "../components/Main";
+import StepChooseClass from "../components/StepChooseClass";
+import StepChoosePlayers from "../components/StepChoosePlayers";
+import StepEmailReceipt from "../components/StepEmailReceipt";
+import StepPayment from "../components/StepPayment";
 
+import Typography from 'material-ui/Typography';
+import Button from "material-ui/Button";
+
+import Stepper, { Step, StepLabel, StepContent} from 'material-ui/Stepper';
+import { withStyles } from 'material-ui/styles';
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 import { resolve } from "upath";
-import { groupByGender } from "../src/utils/groupByGender";
+import withRoot from "../src/withRoot";
 
-const dropin = require("braintree-web-drop-in");
 const log = debug("players");
 
-export default class Signup extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.showPayment = this.showPayment.bind(this);
-    this.signup = this.signup.bind(this);
-    this.handleErrorResponse = this.handleErrorResponse.bind(this);
-    this.handleValidResponse = this.handleValidResponse.bind(this);
-
-    this.state = {
-      signupClass: false,
-      male: [],
-      female: [],
-      tournament: {},
-      loading: true,
-      paymentMessage: "",
-      paymentStatus: "",
-      error: null
-    };
-  }
-
-  handleChange(event) {
-    // de not set state on defaultValue
-    if (event.target.value == " ") {
-      return;
+const styles = theme => ({
+    root: {
+        color: 'red'
+    },
+    actionsContainer: {
+        marginBottom: theme.spacing.unit * 2,
     }
-    this.setState({ signupClass: event.target.value });
-  }
+});
 
-  static async getInitialProps({ query, req }) {
-    if (req) {
-      const getClientToken = require("./../src/utils/getClientToken");
-      const token = await getClientToken();
-      return { clientToken: token };
-    } else {
-      // TODO:this do not work, seems like braintree to not accept it,
-      // we need to do a page refresh and create it on the server side.
-      const token = await fetch("/client_token");
-      return { clientToken: token };
+
+class SignupPage extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.onSetClass = this.onSetClass.bind(this);
+        this.onSetPlayers = this.onSetPlayers.bind(this);
+        this.onSetReceiptEmail = this.onSetReceiptEmail.bind(this);
+
+        this.onSignUp = this.onSignUp.bind(this);
+
+        this.onGoBack = this.onGoBack.bind(this);
+
+        this.handleErrorResponse = this.handleErrorResponse.bind(this);
+        this.handleValidResponse = this.handleValidResponse.bind(this);
+
+        this.state = {
+            signupClass: false,
+            receiptEmail: "",
+            players: [],
+            player1: null,
+            player2: null,
+            tournament: {},
+            loading: true,
+            priceToPay: 0,
+            paymentMessage: "",
+            paymentStatus: "",
+            activeStep: 0
+        };
     }
-  }
 
-  showPayment() {
-    dropin.create(
-      {
-        authorization: this.props.clientToken,
-        container: "#dropin-container"
-      },
-      (createErr, instance) => {
-        if (createErr) {
-          log(`createError ${JSON.stringify(createErr)}`);
-        }
-        var button = document.querySelector("#submit-button");
-        button.addEventListener("click", event => {
-          event.preventDefault();
-          instance.requestPaymentMethod((requestPaymentMethodErr, payload) => {
-            button.disabled = true;
-            if (requestPaymentMethodErr) {
-              return log(`requestPaymentMethodErr ${requestPaymentMethodErr}`);
-            }
-            log("payload.nonce", payload.nonce);
-            this.signup(payload.nonce);
-          });
+    onSetClass(className) {
+        const {
+            activeStep,
+            tournament,
+        } = this.state;
+
+        const correctClass = getClassInfoFromClass(className, tournament.classes);
+
+        this.setState({
+            signupClass: className,
+            priceToPay: correctClass.price,
+            activeStep: activeStep + 1
         });
-      }
-    );
-  }
-
-  signup(nonce = "free") {
-    const data = JSON.stringify({
-      nonce: nonce,
-      tournamentId: getIdFromPath(),
-      player1: getSelectedValueFromDropDownWithId("#player1"),
-      player2: getSelectedValueFromDropDownWithId("#player2"),
-      klasse: this.state.signupClass,
-      email: document.querySelector("#email").value
-    });
-
-    log(`signup data: ${data}`);
-
-    const res = fetch("/tournaments/checkout/", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: data
-    })
-      .then(this.handleValidResponse)
-      .catch(this.handleErrorResponse);
-  }
-
-  async handleValidResponse(res) {
-    const { statusText, error, message = "" } = await res.json();
-    console.log("statusText, error, message", statusText, error, message);
-    this.setState({
-      paymentStatus: statusText,
-      paymentMessage: error || message
-    });
-  }
-
-  handleErrorResponse(res) {
-    console.log("error res", res);
-    this.setState({
-      paymentStatus: "error",
-      paymentMessage:
-        "En feil har oppstått, prøv igjen. Får du denne feilmeldingen flere ganger send en sms til 93008598 og gi beskjed"
-    });
-  }
-
-  async componentDidMount() {
-    try {
-      const id = getIdFromPath();
-      const players = await getJson("/api/players");
-      const tournament = await getJson(`/api/tournaments/${id}`);
-      this.setState({
-        ...groupByGender(players),
-        tournament: tournament,
-        loading: false
-      });
-    } catch (err) {
-      //TODO: make this visibale for the end user
-      log(err);
-      this.setState({ error: "Problem..." });
-    }
-  }
-
-  renderPaymentStatusOK() {
-    const { name } = this.state.tournament;
-    return (
-      <Main>
-        <h1> {name}</h1>
-        <p>
-          Betalingen er registert og dere er påmeldt til turneringen. Kvittering
-          er sendt på mail
-        </p>
-      </Main>
-    );
-  }
-
-  renderPaymentStatusError() {
-    return (
-      <Main>
-        <h1> {name}</h1>
-        <h3>Error</h3>
-        <p>{this.state.paymentMessage}</p>
-      </Main>
-    );
-  }
-
-  renderError() {
-    return (
-      <Main>
-        <h1> {name}</h1>
-        <h3>Error</h3>
-        <p>
-          Beklager en ukjent feil skjedde! Prøv igjen nå eller om en liten
-          stund.
-        </p>
-      </Main>
-    );
-  }
-
-  render() {
-    const {
-      male,
-      female,
-      tournament: { name, classes },
-      loading,
-      paymentStatus,
-      signupClass,
-      error
-    } = this.state;
-    if (loading) {
-      return <Main>Loading...</Main>;
-    }
-    if (paymentStatus === "OK") {
-      return this.renderPaymentStatusOK();
-    }
-    if (paymentStatus === "error") {
-      return this.renderPaymentStatusError();
-    }
-    if (error) {
-      this.renderError();
     }
 
-    if (!signupClass) {
-      return (
-        <Main>
-          <h1> {name}</h1>
-          <ClassSelect classes={classes} handleChange={this.handleChange} />
-        </Main>
-      );
-    }
-    const correctClass = getClassInfoFromClass(signupClass, classes);
-    const klass1 = correctClass["class"];
-    let players;
-    log("klass1", klass1);
-    if (klass1 == "K") {
-      players = female;
-    } else if (klass1 == "M") {
-      players = male;
-    } else {
-      players = female.concat(male);
+    onGoBack() {
+        const { activeStep } = this.state;
+        this.setState({
+            activeStep: activeStep - 1
+        });
     }
 
-    return (
-      <Main>
-        <h1> {name}</h1>
-        {renderSignup(players, correctClass.price)}
-        <p>
-          Mangler det et navn? Send mail til{" "}
-          <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
-        </p>
-        <h4> Email for kvittering:</h4>
-        <input type="text" id="email" />
-        <h4>Klasse: {klass1} </h4>
-        <h4>Pris: {correctClass.price || "Gratis"} </h4>
-        <div id="dropin-container" />
-        <button onClick={this.showPayment} id="submit-button">
-          Betale
-        </button>
-      </Main>
-    );
-  }
-}
+    onSetPlayers(players) {
+        const { activeStep } = this.state;
 
-function renderSignup(players) {
-  if (players.length > 1) {
-    return (
-      <section>
-        <h4> Spiller 1</h4>
-        <select id="player1">{listPlayers(players)}</select>
-        <h4> Spiller 2</h4>
-        <select id="player2">{listPlayers(players)}</select>
-      </section>
-    );
-  }
-  return <div>Ingen spillere er registert</div>;
-}
+        this.setState({
+            player1: players[0],
+            player2: players[1],
+            activeStep: activeStep + 1
+        })
+    }
 
-function getSelectedValueFromDropDownWithId(selector) {
-  var dropdown = document.querySelector(selector);
-  return dropdown.options[dropdown.selectedIndex].value;
-}
+    onSetReceiptEmail(emailAddress) {
+        const { activeStep } = this.state;
 
-function listPlayers(players) {
-  players = players.sort(compareOnLastname);
-  return players.map(({ firstname, lastname, id }) => {
-    return (
-      <option key={id} value={id}>
-        {lastname}, {firstname}
-      </option>
-    );
-  });
-}
+        this.setState({
+            receiptEmail: emailAddress,
+            activeStep: activeStep + 1
+        })
+    }
 
-function compareOnLastname(a, b) {
-  if (`${a.lastname} ${a.firstname}` < `${b.lastname} ${b.firstname}`)
-    return -1;
-  if (`${a.lastname} ${a.firstname}` > `${b.lastname} ${b.firstname}`) return 1;
-  return 0;
+
+    onSignUp(nonce = "free") {
+
+        const {
+            player1,
+            player2,
+            signupClass,
+            receiptEmail
+        } = this.state;
+
+        const data = JSON.stringify({
+            nonce: nonce,
+            tournamentId: getIdFromPath(),
+            player1: player1.id,
+            player2: player2.id,
+            klasse: signupClass,
+            email: receiptEmail
+        });
+
+        log(`signup data: ${data}`);
+
+        const res = fetch("/tournaments/checkout/", {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: data
+        })
+            .then(this.handleValidResponse)
+            .catch(this.handleErrorResponse);
+    }
+
+    static async getInitialProps({ query, req }) {
+        if (req) {
+            const getClientToken = require("./../src/utils/getClientToken");
+            const token = await getClientToken();
+            return { clientToken: token };
+        } else {
+            const token = await fetch("/client_token");
+            return { clientToken: token };
+        }
+    }
+
+    async handleValidResponse(res) {
+        const { statusText, error, message = "" } = await res.json();
+        console.log("statusText, error, message", statusText, error, message);
+        this.setState({
+            paymentStatus: statusText,
+            paymentMessage: error || message
+        });
+    }
+
+    handleErrorResponse(res) {
+        console.log("error res", res);
+        this.setState({
+            paymentStatus: "error",
+            paymentMessage:
+                "En feil har oppstått, prøv igjen. Får du denne feilmeldingen flere ganger send en sms til 93008598 og gi beskjed"
+        });
+    }
+
+    async componentDidMount() {
+        try {
+            const id = getIdFromPath();
+            let players = await getJson("/api/players");
+
+            players.sort( (a, b) => {
+                if (`${a.firstname} {a.lastname}` < `${b.firstname} {b.lastname}`)
+                    return -1;
+                if (`${a.firstname} {a.lastname}` > `${b.firstname} {b.lastname}`)
+                    return 1;
+                return 0;
+            });
+
+            const tournament = await getJson(`/api/tournaments/${id}`);
+            this.setState({
+                players: players,
+                tournament: tournament,
+                loading: false
+            });
+        } catch (err) {
+            //TODO: make this visibale for the end user
+            this.setState({ error: "Problem..." });
+        }
+    }
+
+    renderPaymentStatusOK() {
+        const { name } = this.state.tournament;
+        return (
+            <Main>
+                <h1> {name}</h1>
+                <p>
+                    Betalingen er registert og dere er påmeldt til turneringen. Kvittering
+                    er sendt på mail
+                </p>
+            </Main>
+        );
+    }
+
+    renderPaymentStatusError() {
+        return (
+            <Main>
+                <h1> {name}</h1>
+                <h3>Error</h3>
+                <p>{this.state.paymentMessage}</p>
+            </Main>
+        );
+    }
+
+    render() {
+        const {
+            players,
+            tournament,
+            loading,
+            paymentStatus,
+            signupClass,
+            activeStep,
+            priceToPay,
+            player1,
+            player2,
+            receiptEmail
+        } = this.state;
+
+        const {
+            clientToken
+        } = this.props;
+
+        if (loading) {
+            return <Main>Loading...</Main>;
+        }
+        if (paymentStatus === "OK") {
+            return this.renderPaymentStatusOK();
+        }
+        if (paymentStatus === "error") {
+            return this.renderPaymentStatusError();
+        }
+
+        let currentPlayers = players;
+
+        if (signupClass) {
+            currentPlayers = players.filter( player => player.gender === signupClass);
+        }
+
+        return (
+            <Main>
+                <Typography variant="title">Påmelding {tournament.name}</Typography>
+                <Stepper activeStep={activeStep} orientation="vertical">
+                    <Step>
+                        <StepLabel>Velg Klasse
+                            {signupClass && <div>{signupClass}</div>}</StepLabel>
+                        <StepContent>
+                            <StepChooseClass currentClass={signupClass} tournamentClasses={tournament.classes} onSetClass={this.onSetClass} />
+                        </StepContent>
+                    </Step>
+                    <Step>
+                        <StepLabel>Velg Spillere
+                            {player1 && <div>{player1.firstname} {player1.lastname} og {player2.firstname} {player2.lastname}</div>}</StepLabel>
+                        <StepContent>
+                            <StepChoosePlayers players={currentPlayers} player1={player1} player2={player2} onSetPlayers={this.onSetPlayers} onGoBack={this.onGoBack} />
+                        </StepContent>
+                    </Step>
+                    <Step>
+                        <StepLabel>Kvittering på Epost
+                            {receiptEmail && <div>{receiptEmail}</div>}</StepLabel>
+                        <StepContent>
+                            <StepEmailReceipt receiptEmail={receiptEmail} onSetReceiptEmail={this.onSetReceiptEmail} onGoBack={this.onGoBack}  />
+                        </StepContent>
+                    </Step>
+                    <Step>
+                        <StepLabel>Betaling</StepLabel>
+                        <StepContent>
+                            <StepPayment onSignUp={this.onSignUp} priceToPay={priceToPay} clientToken={clientToken} onGoBack={this.onGoBack} />
+                        </StepContent>
+                    </Step>
+                </Stepper>
+            </Main>
+        )
+    }
 }
 
 function getClassInfoFromClass(klass, classes) {
-  const correctClass = classes.filter(klass1 => klass1["class"] === klass);
-  if (correctClass.length != 1) {
-    console.log("getClassInfoFromClass problem", correctClass, classes, klass);
-  }
-  return correctClass[0];
+    const correctClass = classes.filter(klass1 => klass1["class"] === klass);
+    if (correctClass.length != 1) {
+        console.log("getClassInfoFromClass problem", correctClass, classes, klass);
+    }
+    return correctClass[0];
 }
+
+export default withRoot(withStyles(styles)(SignupPage));
