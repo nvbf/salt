@@ -1,4 +1,6 @@
 require("dotenv").config();
+var Rollbar = require("rollbar");
+var rollbar = new Rollbar(process.env.ROLLBAR_API_KEY);
 
 const express = require("express");
 
@@ -66,16 +68,9 @@ const tournamentHandler = async (req, res, next) => {
   log("tournamentHandler");
   const tournament = await getTournament(req.params.id);
   if (tournament.noSuchTournament) {
-    log("noSuchTournament - going to next handler");
     return res.status(404).send("404");
   }
   return res.json(tournament);
-};
-
-const norwegianTournamentHandler = async (req, res) => {
-  log("norwegianTournamentHandler");
-  const norwegian = await getNorwegianTournaments();
-  return res.json(norwegian);
 };
 
 app.prepare().then(() => {
@@ -95,11 +90,6 @@ app.prepare().then(() => {
   });
 
   server.use("/api/ranking", errorHandlerJson.bind(null, getRankingHandler));
-
-  server.use(
-    "/api/tournaments/norwegian",
-    errorHandlerJson.bind(null, norwegianTournamentHandler)
-  );
 
   server.use(
     "/api/tournaments/future",
@@ -252,7 +242,8 @@ app.prepare().then(() => {
 
   server.listen(process.env.PORT || 3000, err => {
     if (err) throw err;
-    log("Server ready on http://localhost:3000");
+    log("Server ready on http://localhost:" + (process.env.PORT || 3000));
+    rollbar.info(`Server starts on port ${process.env.PORT || 3000}`);
   });
 });
 
@@ -260,6 +251,7 @@ async function errorHandlerJson(handler, req, res, next) {
   try {
     return await handler(req, res, next);
   } catch (err) {
+    rollbar.error(err);
     log(`Error in handler: ${err}, ${CircularJSON.stringify(err)}`);
     res.status(500).json({
       error: "Internal Server Error",
