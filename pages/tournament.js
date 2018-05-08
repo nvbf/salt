@@ -38,10 +38,16 @@ const styles = theme => ({
 });
 
 class TournamentPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { tournament: {}, loading: true };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            tournament: {},
+            loading: true,
+            clicks: 0
+        };
+
+        this.onClick = this.onClick.bind(this);
+    }
 
   async componentDidMount() {
     try {
@@ -59,8 +65,15 @@ class TournamentPage extends React.Component {
     }
   }
 
+  onClick() {
+      const { clicks } = this.state;
+      this.setState({
+          clicks: clicks + 1
+      })
+  }
+
   render() {
-    const { tournament, loading, error } = this.state;
+    const { tournament, loading, error, clicks } = this.state;
     log(tournament);
     if (error) {
       return (
@@ -73,16 +86,17 @@ class TournamentPage extends React.Component {
     if (loading) {
       return <Main>Loading...</Main>;
     }
-    return <Main>{renderTournament(tournament, this.props.classes)}</Main>;
+
+    return <Main>{renderTournament(tournament, this.props.classes, this.onClick, clicks > 5 ? true: false)}</Main>;
   }
 }
 
-function renderTournament(tournament, classes) {
+function renderTournament(tournament, classes, onClick, showCopyPaste) {
   log(`tournament: ${tournament}`);
   return (
     <main>
       <h1>{tournament.name}</h1>
-      <Paper className={classes.tournamentInfoContainer}>
+      <Paper  onClick={onClick} className={classes.tournamentInfoContainer}>
         <table>
           <tr>
             <td className={classes.tournamentInfo}>Start</td>
@@ -123,7 +137,8 @@ function renderTournament(tournament, classes) {
         return (
           <React.Fragment key={index}>
             <h3>{klass["class"]}</h3>
-            {renderSeeding(klass)}
+            {!showCopyPaste && renderSeeding(klass)}
+            {showCopyPaste && renderSeedingCopyPaste(klass)}
           </React.Fragment>
         );
       })}
@@ -155,6 +170,27 @@ function renderSignupLink(tournament) {
   } else {
     return "Påmelding stengt";
   }
+}
+
+function renderSeedingCopyPaste(klass) {
+    const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
+    console.log(teams)
+    return (
+        <Table>
+          <TableBody>
+              {teams.map((team, index) => {
+                  const players = team.teamName.split("/");
+                  return (
+                      <TableRow key={index}>
+                        <TableCell>
+                            {team.teamNameShort}
+                        </TableCell>
+                      </TableRow>
+                  );
+              })}
+          </TableBody>
+        </Table>
+    );
 }
 
 function renderSeeding(klass) {
