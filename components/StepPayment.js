@@ -24,8 +24,13 @@ class StepPayment extends React.Component
     constructor(props) {
         super(props);
 
+        this.state = {
+            paymentLoaded: false
+        }
+
         this.onSignUp = this.onSignUp.bind(this);
         this.onCreate = this.onCreate.bind(this);
+        this.onDestoryStart = this.onDestoryStart.bind(this);
         this.handlePaymentMethod = this.handlePaymentMethod.bind(this);
     }
 
@@ -35,17 +40,27 @@ class StepPayment extends React.Component
     }
 
     handlePaymentMethod(data) {
-        console.log(this);
+        console.log(data);
         this.props.onSignUp(data.nonce);
     }
 
-    onCreate() {
+    onDestoryStart() {
+        this.setState({
+            paymentLoaded: false
+        });
+    }
 
+    onCreate() {
+        this.setState({
+            paymentLoaded: true
+        });
     }
 
     render () {
 
-        console.log(this.props);
+        const {
+            paymentLoaded
+        } = this.state;
 
         const {
             priceToPay,
@@ -56,15 +71,16 @@ class StepPayment extends React.Component
             <div>
                 <div>Pris: {priceToPay || 'Gratis'}</div>
                 {priceToPay > 0 && <BraintreeDropin
-                    braintree={braintree}
-                    authorizationToken={clientToken}
-                    handlePaymentMethod={this.handlePaymentMethod}
-                    onCreate={this.onCreate}
-                    onDestroyStart={this.onDestroyStart}
-                    onDestroyEnd={this.onDestroyEnd}
-                    onError={this.onError}
-                    renderSubmitButton={renderSubmitButton}
-                />}
+                        braintree={braintree}
+                        authorizationToken={clientToken}
+                        handlePaymentMethod={this.handlePaymentMethod}
+                        onCreate={this.onCreate}
+                        onDestroyStart={this.onDestroyStart}
+                        onDestroyEnd={this.onDestroyEnd}
+                        onError={this.onError}
+                        renderSubmitButton={renderSubmitButton}
+                    />}
+                {priceToPay > 0 && !paymentLoaded && <div>Loading payment...</div>}
                 {priceToPay == 0 && <div>
                     <Button
                         variant="raised"

@@ -129,7 +129,7 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
           </tr>
         </table>
       </Paper>
-      <h2>Seeding</h2>
+      <h2>Påmeldte</h2>
       {tournament.classes.map((klass, index) => {
         if (klass.teams.length === 0) {
           return null;

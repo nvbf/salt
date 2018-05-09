@@ -79,6 +79,8 @@ async function getTournamentsInTheFuture() {
       .endOf("day")
       .diff(moment.now());
     return timeToEnd > 0;
+  }).sort( (a, b) => {
+    return moment(a.startDate, "DD.MM.YYYY") - moment(b.startDate, "DD.MM.YYYY");
   });
   return tournamentsInTheFuture;
 }

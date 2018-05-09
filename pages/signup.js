@@ -17,6 +17,7 @@ import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 import { resolve } from "upath";
 import withRoot from "../src/withRoot";
+import moment from "moment";
 
 const log = debug("players");
 
@@ -134,17 +135,6 @@ class SignupPage extends React.Component {
             .catch(this.handleErrorResponse);
     }
 
-    static async getInitialProps({ query, req }) {
-        if (req) {
-            const getClientToken = require("./../src/utils/getClientToken");
-            const token = await getClientToken();
-            return { clientToken: token };
-        } else {
-            const token = await fetch("/client_token");
-            return { clientToken: token };
-        }
-    }
-
     async handleValidResponse(res) {
         const { statusText, error, message = "" } = await res.json();
         console.log("statusText, error, message", statusText, error, message);
@@ -169,18 +159,21 @@ class SignupPage extends React.Component {
             let players = await getJson("/api/players");
 
             players.sort( (a, b) => {
-                if (`${a.firstname} {a.lastname}` < `${b.firstname} {b.lastname}`)
+                if (`${a.firstname} ${a.lastname}` < `${b.firstname} ${b.lastname}`)
                     return -1;
-                if (`${a.firstname} {a.lastname}` > `${b.firstname} {b.lastname}`)
+                if (`${a.firstname} ${a.lastname}` > `${b.firstname} ${b.lastname}`)
                     return 1;
                 return 0;
             });
+
+            const token = await fetch("/client_token");
 
             const tournament = await getJson(`/api/tournaments/${id}`);
             this.setState({
                 players: players,
                 tournament: tournament,
-                loading: false
+                loading: false,
+                clientToken: token
             });
         } catch (err) {
             //TODO: make this visibale for the end user
@@ -211,6 +204,20 @@ class SignupPage extends React.Component {
         );
     }
 
+    signupExpired(tournament) {
+        const { deadline, id } = tournament;
+            const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+                .endOf("day")
+                .diff(moment.now());
+                const signupAllowd = timeToDeadLine > 0;
+          if (signupAllowd) {
+          return false;
+          } else {
+            return true;
+          }
+
+    }
+
     render() {
         const {
             players,
@@ -222,16 +229,18 @@ class SignupPage extends React.Component {
             priceToPay,
             player1,
             player2,
-            receiptEmail
-        } = this.state;
-
-        const {
+            receiptEmail,
             clientToken
-        } = this.props;
+        } = this.state;
 
         if (loading) {
             return <Main>Loading...</Main>;
         }
+
+         if (this.signupExpired(tournament)) {
+            return <Main>Påmeldinga er stengt</Main>;
+        }
+
         if (paymentStatus === "OK") {
             return this.renderPaymentStatusOK();
         }
