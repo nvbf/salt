@@ -74,11 +74,11 @@ async function getTournamentsInTheFuture() {
     return getJson(`/api/tournaments/future`);
   }
   const tournaments = await getTournaments();
-  const tournamentsInTheFuture = tournaments.filter(({ deadline }) => {
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+  const tournamentsInTheFuture = tournaments.filter(({ endDate }) => {
+    const timeToEnd = moment(endDate, "DD.MM.YYYY")
       .endOf("day")
       .diff(moment.now());
-    return timeToDeadLine > 0;
+    return timeToEnd > 0;
   });
   return tournamentsInTheFuture;
 }
