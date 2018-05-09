@@ -153,6 +153,18 @@ class SignupPage extends React.Component {
         });
     }
 
+    static async getInitialProps({ query, req }) {
+        if (req) {
+            const getClientToken = require("./../src/utils/getClientToken");
+            const token = await getClientToken();
+            return { clientToken: token };
+        } else {
+            const token = await fetch("/client_token");
+            return { clientToken: token };
+        }
+    }
+
+
     async componentDidMount() {
         try {
             const id = getIdFromPath();
@@ -166,14 +178,11 @@ class SignupPage extends React.Component {
                 return 0;
             });
 
-            const token = await fetch("/client_token");
-
             const tournament = await getJson(`/api/tournaments/${id}`);
             this.setState({
                 players: players,
                 tournament: tournament,
-                loading: false,
-                clientToken: token
+                loading: false
             });
         } catch (err) {
             //TODO: make this visibale for the end user
@@ -229,9 +238,12 @@ class SignupPage extends React.Component {
             priceToPay,
             player1,
             player2,
-            receiptEmail,
-            clientToken
+            receiptEmail
         } = this.state;
+
+        const {
+            clientToken
+        } = this.props;
 
         if (loading) {
             return <Main>Loading...</Main>;
