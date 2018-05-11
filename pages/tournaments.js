@@ -8,6 +8,7 @@ import Paper from "material-ui/Paper";
 import Typography from "material-ui/Typography";
 import Button from "material-ui/Button";
 import Grid from "material-ui/Grid";
+import Divider from 'material-ui/Divider';
 import { withStyles } from "material-ui/styles";
 import withRoot from "../src/withRoot";
 import { getTournamentsInTheFuture } from "../src/api";
@@ -86,15 +87,16 @@ class Tournaments extends React.Component {
         <Typography variant="display1" className={classes.tournamentTitle}>
           Turneringer
         </Typography>
+        <Paper className={classes.tournamentPaper}>
         <ul className={classes.tournamentList}>
           {tournaments.map(
             (
-              { id, name, deadline, startDate, classesText, playerVenue, shortNameProfixio },
-              tournament
+                { id, name, deadline, startDate, classesText, playerVenue, shortNameProfixio },
+              index
             ) => {
               return (
-                <li key={tournament} className={classes.tournamentListItem}>
-                  <Paper className={classes.tournamentPaper}>
+                <li key={id} className={classes.tournamentListItem}>
+
                     <Grid container spacing={16}>
                       <Grid item xs={4} sm={2} md={1}>
                           {renderDate(startDate)}
@@ -123,12 +125,13 @@ class Tournaments extends React.Component {
                       </a>}
                       </Grid>
                     </Grid>
-                  </Paper>
+                    {index < tournaments.length - 1 && <Divider />}
                 </li>
               );
             }
           )}
         </ul>
+        </Paper>
       </React.Fragment>
     );
   }

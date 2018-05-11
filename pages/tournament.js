@@ -127,6 +127,12 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
             <td className={classes.tournamentInfo}>Påmelding</td>
             <td>{renderSignupLink(tournament)}</td>
           </tr>
+            {tournament.shortNameProfixio &&
+                <tr>
+                    <td className={classes.tournamentInfo}>Kampoppsett</td>
+                    <td><a href={`https://www.profixio.com/matches/${tournament.shortNameProfixio}`}>Profixio</a></td>
+                </tr>
+            }
         </table>
       </Paper>
       <h2>Påmeldte</h2>
