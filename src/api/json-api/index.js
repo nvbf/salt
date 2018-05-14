@@ -21,10 +21,14 @@ async function apiRegisterTeamForTournament(data) {
     }
     return response.data;
   } catch (error) {
-    const { method, url, data } = error
+    const { config: { method = "", url = "", data = {} } = {} } = error;
     log("Error in posting team - " + CircularJSON.stringify(error));
-    log(`Error in posting team - method: ${method}, url: ${url} data: ${CircularJSON.stringify(data)}`);
-   
+    log(
+      `Error in posting team - method: ${method}, url: ${url} data: ${CircularJSON.stringify(
+        data
+      )}`
+    );
+
     return {
       statusText: "error",
       status: "503",
@@ -113,10 +117,13 @@ function getData(result) {
     throw new Error(`Did not get a 200 response from API, details: ${result}`);
   }
 
-  if (typeof(result.data) == "string") {
-    console.log('Hacking');
-      const newData = result.data.replace(/select \* from Turnering[\t\s\r\n]+/g, "");
-      return JSON.parse(newData);
+  if (typeof result.data == "string") {
+    console.log("Hacking");
+    const newData = result.data.replace(
+      /select \* from Turnering[\t\s\r\n]+/g,
+      ""
+    );
+    return JSON.parse(newData);
   }
 
   return result.data;
