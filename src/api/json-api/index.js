@@ -21,7 +21,10 @@ async function apiRegisterTeamForTournament(data) {
     }
     return response.data;
   } catch (error) {
+    const { method, url, data } = error
     log("Error in posting team - " + CircularJSON.stringify(error));
+    log(`Error in posting team - method: ${method}, url: ${url} data: ${CircularJSON.stringify(data)}`);
+   
     return {
       statusText: "error",
       status: "503",

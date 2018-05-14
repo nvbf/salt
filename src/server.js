@@ -137,25 +137,24 @@ app.prepare().then(() => {
   server.use("/tournaments/checkout", checkoutRoute);
 
   checkoutRoute.post("/", async (req, res) => {
-    const { tournamentId, player1, player2, klasse } = req.body;
+    const { tournamentId, player1, player2, klasse, email } = req.body;
     if (!tournamentId || !player1 || !player2 || !klasse) {
+      log(`ERROR: POST data is incorrect?  ${tournamentId} ${player1} ${player2} ${klasse}`)
       return res.json({
         error: `Forventet at tournament, player1, player2 and klasse had a value: ${tournamentId}, ${player1}, ${player2}, ${klasse}`,
         statusText: "error"
       });
     }
+
+    log(`SIGNUP: tournamentId:${tournamentId} klasse: ${klasse} player1:${player1} player2:${player2} email:${email}`)
+
     const nonce = process.env.BT_SANDBOX
       ? "fake-valid-no-billing-address-nonce"
       : req.body.nonce;
     log(`Using nounce: ${nonce}`);
 
-    // 1. Checke om det er plass nok
-
-    // 2. Sjekke om prisen er riktig
     const tournament = await getTournament(tournamentId);
-    log("tournament!!!", tournament);
-    log(`find klasse ${klasse}`);
-    //TODO: can't get correct class
+
     const tournamentClasses = tournament.classes.filter(
       klass => klass["class"] == klasse
     );
@@ -179,7 +178,6 @@ app.prepare().then(() => {
       });
     }
 
-    console.log("Sending to braintree...");
     const salesData = {
       customer: {
         email: req.body.email
@@ -193,15 +191,14 @@ app.prepare().then(() => {
     };
     log(`salesData ${JSON.stringify(salesData)}`);
     gateway.transaction.sale(salesData, (err, result) => {
-      console.log("Response from braintree", err, result);
+      log("Response from braintree", err, result);
       if (err || !result.success) {
-        console.log("ERROR", err || result);
+        log("ERROR", err || result);
         return res.json({
           error: JSON.stringify(err || result, null, 2),
           statusText: "error"
         });
       }
-      console.log(result.transaction);
       registerTeamForTournament(
         tournamentId,
         klasse,
