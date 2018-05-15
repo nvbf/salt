@@ -38,16 +38,16 @@ const styles = theme => ({
 });
 
 class TournamentPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            tournament: {},
-            loading: true,
-            clicks: 0
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      tournament: {},
+      loading: true,
+      clicks: 0
+    };
 
-        this.onClick = this.onClick.bind(this);
-    }
+    this.onClick = this.onClick.bind(this);
+  }
 
   async componentDidMount() {
     try {
@@ -66,10 +66,10 @@ class TournamentPage extends React.Component {
   }
 
   onClick() {
-      const { clicks } = this.state;
-      this.setState({
-          clicks: clicks + 1
-      })
+    const { clicks } = this.state;
+    this.setState({
+      clicks: clicks + 1
+    });
   }
 
   render() {
@@ -87,7 +87,16 @@ class TournamentPage extends React.Component {
       return <Main>Loading...</Main>;
     }
 
-    return <Main>{renderTournament(tournament, this.props.classes, this.onClick, clicks > 5 ? true: false)}</Main>;
+    return (
+      <Main>
+        {renderTournament(
+          tournament,
+          this.props.classes,
+          this.onClick,
+          clicks > 5 ? true : false
+        )}
+      </Main>
+    );
   }
 }
 
@@ -96,12 +105,11 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
   return (
     <main>
       <h1>{tournament.name}</h1>
-      <Paper  onClick={onClick} className={classes.tournamentInfoContainer}>
+      <Paper onClick={onClick} className={classes.tournamentInfoContainer}>
         <table>
           <tr>
             <td className={classes.tournamentInfo}>Start</td>
             <td>
-              {" "}
               {tournament.startDate} - {tournament.startTime}
             </td>
           </tr>
@@ -109,6 +117,24 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
             <td className={classes.tournamentInfo}>Type</td>
             <td>{tournament.tournamentType}</td>
           </tr>
+          {tournament.tournamentDirector && (
+            <tr>
+              <td className={classes.tournamentInfo}>Turneringsleder</td>
+              <td>{tournament.tournamentDirector}</td>
+            </tr>
+          )}
+          {tournament.email && (
+            <tr>
+              <td className={classes.tournamentInfo}>epost</td>
+              <td>{tournament.email}</td>
+            </tr>
+          )}
+          {tournament.phone && (
+            <tr>
+              <td className={classes.tournamentInfo}>telefonnummer</td>
+              <td>{tournament.phone}</td>
+            </tr>
+          )}
           <tr>
             <td className={classes.tournamentInfo} valign="top">
               Klasse(r)
@@ -127,12 +153,20 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
             <td className={classes.tournamentInfo}>Påmelding</td>
             <td>{renderSignupLink(tournament)}</td>
           </tr>
-            {tournament.shortNameProfixio &&
-                <tr>
-                    <td className={classes.tournamentInfo}>Kampoppsett</td>
-                    <td><a href={`https://www.profixio.com/matches/${tournament.shortNameProfixio}`}>Profixio</a></td>
-                </tr>
-            }
+          {tournament.shortNameProfixio && (
+            <tr>
+              <td className={classes.tournamentInfo}>Kampoppsett</td>
+              <td>
+                <a
+                  href={`https://www.profixio.com/matches/${
+                    tournament.shortNameProfixio
+                  }`}
+                >
+                  Profixio
+                </a>
+              </td>
+            </tr>
+          )}
         </table>
       </Paper>
       <h2>Påmeldte</h2>
@@ -179,24 +213,22 @@ function renderSignupLink(tournament) {
 }
 
 function renderSeedingCopyPaste(klass) {
-    const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
-    console.log(teams)
-    return (
-        <Table>
-          <TableBody>
-              {teams.map((team, index) => {
-                  const players = team.teamName.split("/");
-                  return (
-                      <TableRow key={index}>
-                        <TableCell>
-                            {team.teamNameShort}
-                        </TableCell>
-                      </TableRow>
-                  );
-              })}
-          </TableBody>
-        </Table>
-    );
+  const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
+  console.log(teams);
+  return (
+    <Table>
+      <TableBody>
+        {teams.map((team, index) => {
+          const players = team.teamName.split("/");
+          return (
+            <TableRow key={index}>
+              <TableCell>{team.teamNameShort}</TableCell>
+            </TableRow>
+          );
+        })}
+      </TableBody>
+    </Table>
+  );
 }
 
 function renderSeeding(klass) {
