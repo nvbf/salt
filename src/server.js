@@ -30,8 +30,7 @@ const { parse } = require("url");
 const log = require("debug")("salt:server");
 const CircularJSON = require("circular-json");
 
-var routeCache = require('route-cache');
-
+var routeCache = require("route-cache");
 
 const getRankingHandler = async (req, res) => {
   const ranking = await getRanking();
@@ -91,28 +90,47 @@ app.prepare().then(() => {
     }
   });
 
-  server.get("/api/ranking", routeCache.cacheSeconds(600), errorHandlerJson.bind(null, getRankingHandler));
+  server.get(
+    "/api/ranking",
+    routeCache.cacheSeconds(600),
+    errorHandlerJson.bind(null, getRankingHandler)
+  );
 
   server.get(
-    "/api/tournaments/future", routeCache.cacheSeconds(300),
+    "/api/tournaments/future",
+    routeCache.cacheSeconds(300),
     errorHandlerJson.bind(null, tournamentsInTheFutureHandler)
   );
 
   server.get(
-    "/api/tournaments/:id", routeCache.cacheSeconds(30),
+    "/api/tournaments/:id",
+    routeCache.cacheSeconds(30),
     errorHandlerJson.bind(null, tournamentHandler)
   );
 
   server.get(
-    "/api/tournaments", routeCache.cacheSeconds(400),
+    "/api/tournaments",
+    routeCache.cacheSeconds(400),
     errorHandlerJson.bind(null, tournamentsHandler)
   );
 
-  server.get("/api/points/:id", routeCache.cacheSeconds(300),  errorHandlerJson.bind(null, pointsHandler));
+  server.get(
+    "/api/points/:id",
+    routeCache.cacheSeconds(300),
+    errorHandlerJson.bind(null, pointsHandler)
+  );
 
-  server.get("/api/players/:id", routeCache.cacheSeconds(400), errorHandlerJson.bind(null, playerHandler));
+  server.get(
+    "/api/players/:id",
+    routeCache.cacheSeconds(400),
+    errorHandlerJson.bind(null, playerHandler)
+  );
 
-  server.get("/api/players/", routeCache.cacheSeconds(450), errorHandlerJson.bind(null, playersHandler));
+  server.get(
+    "/api/players/",
+    routeCache.cacheSeconds(450),
+    errorHandlerJson.bind(null, playersHandler)
+  );
 
   server.get("/players/:id", (req, res) => {
     return app.render(req, res, "/player", { id: req.params.id });
@@ -139,14 +157,18 @@ app.prepare().then(() => {
   checkoutRoute.post("/", async (req, res) => {
     const { tournamentId, player1, player2, klasse, email } = req.body;
     if (!tournamentId || !player1 || !player2 || !klasse) {
-      log(`ERROR: POST data is incorrect?  ${tournamentId} ${player1} ${player2} ${klasse}`)
+      log(
+        `ERROR: POST data is incorrect?  ${tournamentId} ${player1} ${player2} ${klasse}`
+      );
       return res.json({
         error: `Forventet at tournament, player1, player2 and klasse had a value: ${tournamentId}, ${player1}, ${player2}, ${klasse}`,
         statusText: "error"
       });
     }
 
-    log(`SIGNUP: tournamentId:${tournamentId} klasse: ${klasse} player1:${player1} player2:${player2} email:${email}`)
+    log(
+      `SIGNUP: tournamentId:${tournamentId} klasse: ${klasse} player1:${player1} player2:${player2} email:${email}`
+    );
 
     const nonce = process.env.BT_SANDBOX
       ? "fake-valid-no-billing-address-nonce"
@@ -195,7 +217,8 @@ app.prepare().then(() => {
       if (err || !result.success) {
         log("ERROR", err || result);
         return res.json({
-          error: JSON.stringify(err || result, null, 2),
+          error:
+            "Kunne ikke ta betalt, dette kan skyldes så meget. F.eks du har tastet feil kortnummer eller man har ikke penger på kortet. Prøv igjen eller gi opp",
           statusText: "error"
         });
       }
@@ -215,9 +238,18 @@ app.prepare().then(() => {
           res.json(withPaymentStatus);
         })
         .catch(err => {
-          log("Was not able to registere the team, but payment is done!");
+          log(
+            `ERROR: Was not able to registere the team, but payment is done! ${CircularJSON.stringify(
+              err
+            )}`
+          );
 
-          res.status(503).json(CircularJSON.stringify(err));
+          res.status(503).json({
+            error:
+              "Betalingen er registert, men en feil oppstod når vi skulle legge det til i turneringen. Dette skal ikke skje, men er rapportert. " +
+              "Forhåpentligvis fikser vi dette manuelt i ettertid. Sjekk om du er registert om 2 timer, hvis ikke send mail til post@osvb.no",
+            statusText: "error"
+          });
         });
 
       sendMailTournament(
