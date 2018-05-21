@@ -18,7 +18,11 @@ const CircularJSON = require("circular-json");
 const log = require("debug")("salt:player");
 
 // Set some styles here later:
-const styles = theme => ({});
+const styles = theme => ({
+    topN: {
+        fontWeight: 'bold'
+    }
+});
 
 class PlayerPage extends React.Component {
   constructor(props) {
@@ -59,16 +63,19 @@ class PlayerPage extends React.Component {
 
   render() {
     const { loading, error, player, points } = this.state;
+    const { classes } = this.props;
+
     return (
       <Main error={error} loading={loading} retryHandler={this.retryGetPlayers}>
         {renderPlayer(player)}
-        {renderRanking(points)}
+        {renderRanking(points, classes)}
       </Main>
     );
   }
 }
 
-function renderRanking(points) {
+function renderRanking(points, classes) {
+  console.log(points);
   if (points.length === 0) {
     return (
       <React.Fragment>
@@ -77,7 +84,10 @@ function renderRanking(points) {
       </React.Fragment>
     );
   }
+
+
   return (
+
     <React.Fragment>
       <Typography variant="title">Resultater </Typography>
       {(!points || !points.map) && <p>Ingen poeng registert</p>}
@@ -96,17 +106,19 @@ function renderRanking(points) {
             </TableHead>
             <TableBody>
               {points.map(
-                ({ tournamentType, tournamentName, points, place }, index) => (
-                  <TableRow key={index}>
-                    <TableCell numeric>{place}</TableCell>
-                    <TableCell>{tournamentName}</TableCell>
-                    <Hidden smDown>
-                      <TableCell>{tournamentType}</TableCell>
-                    </Hidden>
-                    <TableCell numeric>{points}</TableCell>
-                  </TableRow>
-                )
-              )}
+                ({ tournamentType, tournamentName, points, place, topn }, index) => {
+                    const cls = topn ? classes.topN : null;
+                    return (
+                    <TableRow key={index}>
+                      <TableCell className={cls} numeric>{place}</TableCell>
+                      <TableCell className={cls}>{tournamentName}</TableCell>
+                      <Hidden smDown>
+                        <TableCell className={cls}>{tournamentType}</TableCell>
+                      </Hidden>
+                      <TableCell numeric className={cls}>{points}</TableCell>
+                    </TableRow>
+                  )
+              })}
             </TableBody>
           </Table>
         )}
@@ -135,6 +147,7 @@ async function getPlayerAsProps(pathname) {
     log(`id is: ${id} ${pathname}`);
     const player = await getPlayer(id);
     const points = await getPointsFromPlayer(id);
+
     return { player, points, loading: false };
   } catch (err) {
     log(err);

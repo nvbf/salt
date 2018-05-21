@@ -140,6 +140,7 @@ function renderPlayers(players) {
       <Table>
         <TableHead>
           <TableRow>
+            <TableCell>#</TableCell>
             <TableCell>Spiller</TableCell>
             <TableCell numeric>Poeng</TableCell>
           </TableRow>
@@ -152,20 +153,40 @@ function renderPlayers(players) {
 }
 
 function listTournaments(players) {
-  return players.map(({ id, name, sum }, key) => {
-    return (
+  console.log(players);
+  const rows = players.reduce( (row, player, key) => {
+
+    let displayPosition = "";
+    if (row.lastSum != player.sum) {
+      row.lastSum = player.sum;
+      displayPosition = row.lastIdx
+    }
+    row.lastIdx++;
+
+    row.players.push((
       <TableRow key={key}>
         <TableCell>
+            {displayPosition}
+        </TableCell>
+        <TableCell>
           <Link>
-            <a href={`/players/${id}`} color="primary">
-              {name}
+            <a href={`/players/${player.id}`} color="primary">
+              {player.name}
             </a>
           </Link>
         </TableCell>
-        <TableCell numeric>{sum}</TableCell>
+        <TableCell numeric>{player.sum}</TableCell>
       </TableRow>
-    );
-  });
+    ));
+    return row;
+  }, {
+      lastIdx: 1,
+      lastSum: -1,
+      players: []
+      }
+  );
+
+  return rows.players;
 }
 
 async function getRankingAsProps() {
@@ -173,6 +194,7 @@ async function getRankingAsProps() {
     const players = await getRanking();
     const male = players.filter(player => player.gender == "M");
     const female = players.filter(player => player.gender == "K");
+
     return { male, female, loading: false };
   } catch (err) {
     log(`error ${CircularJSON.stringify(err)}`);
