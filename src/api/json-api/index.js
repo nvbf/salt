@@ -61,6 +61,14 @@ async function apiGetRanking() {
         player => player.SpillerId === lastValue.currentSpillerId
       );
       lastValue[currentValue.SpillerId] = {};
+
+      if (playerArray.length === 0) {
+        console.log(
+          "TODO: Player Array is 0. seems ok, but I do not totaly understand this! Should be looked closer into."
+        );
+        return lastValue;
+      }
+
       lastValue[currentValue.SpillerId].name =
         playerArray[0].Fornavn + " " + playerArray[0].Etternavn;
       lastValue[currentValue.SpillerId].gender = playerArray[0].Kjonn;
