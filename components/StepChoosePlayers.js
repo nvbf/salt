@@ -156,8 +156,6 @@ function PlayerSelect({ players, placeHolder, defaultItem, onChange }) {
 function renderInput(inputProps) {
   const { InputProps, classes, ref, ...other } = inputProps;
 
-  console.log(InputProps);
-
   return (
     <TextField
       InputProps={{

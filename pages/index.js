@@ -58,13 +58,11 @@ class IndexPage extends React.Component {
     return (
       <Main>
         <Typography variant="display1" gutterBottom>
-          Sandvolleyballturneringer i Norge
+          Sandvolleyball i Norge
         </Typography>
         <p className="description">
           Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
-          sesongen 2018. Du vil også kunne foreløpig seeding, og hvilke
-          turneringer de er basert på. Vi jobber fortløpende med og forbedre
-          siden
+          sesongen 2018.
         </p>
 
         <Grid container spacing={16}>

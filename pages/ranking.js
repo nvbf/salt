@@ -22,13 +22,13 @@ const CircularJSON = require("circular-json");
 const log = debug("salt:ranking");
 
 const styles = theme => ({
-  title: {
-    marginBottom: theme.spacing.unit * 3
-  },
   showAllButton: {
     marginTop: theme.spacing.unit,
     marginLeft: "auto",
     marginRight: "auto"
+  },
+  genderHeading: {
+    marginTop: theme.spacing.unit * 3
   }
 });
 
@@ -92,12 +92,12 @@ class RankingPage extends React.Component {
         errorDetails={errorDetails}
         retryHandler={this.retryGetRanking}
       >
-        <Typography variant="display1" className={classes.title}>
-          Spillerranking 2018
-        </Typography>
-        <Grid container spacing={24} alignItems="top" alignContent="center">
+        <Typography variant="display1">Spillerranking 2018</Typography>
+        <Grid container spacing={12} alignItems="top" alignContent="center">
           <Grid item xs={12} md={6}>
-            <Typography variant="title">Damer</Typography>
+            <Typography className={classes.genderHeading} variant="title">
+              Damer
+            </Typography>
             {renderPlayers(female)}
             {!allFemales && (
               <Button
@@ -113,7 +113,9 @@ class RankingPage extends React.Component {
             )}
           </Grid>
           <Grid item xs={12} md={6}>
-            <Typography variant="title">Herrer</Typography>
+            <Typography className={classes.genderHeading} variant="title">
+              Herrer
+            </Typography>
             {renderPlayers(male)}
             {!allMales && (
               <Button
@@ -153,37 +155,35 @@ function renderPlayers(players) {
 }
 
 function listTournaments(players) {
-  console.log(players);
-  const rows = players.reduce( (row, player, key) => {
+  const rows = players.reduce(
+    (row, player, key) => {
+      let displayPosition = "";
+      if (row.lastSum != player.sum) {
+        row.lastSum = player.sum;
+        displayPosition = row.lastIdx;
+      }
+      row.lastIdx++;
 
-    let displayPosition = "";
-    if (row.lastSum != player.sum) {
-      row.lastSum = player.sum;
-      displayPosition = row.lastIdx
-    }
-    row.lastIdx++;
-
-    row.players.push((
-      <TableRow key={key}>
-        <TableCell>
-            {displayPosition}
-        </TableCell>
-        <TableCell>
-          <Link>
-            <a href={`/players/${player.id}`} color="primary">
-              {player.name}
-            </a>
-          </Link>
-        </TableCell>
-        <TableCell numeric>{player.sum}</TableCell>
-      </TableRow>
-    ));
-    return row;
-  }, {
+      row.players.push(
+        <TableRow key={key}>
+          <TableCell>{displayPosition}</TableCell>
+          <TableCell>
+            <Link href={`/players/${player.id}`}>
+              <a href={`/players/${player.id}`} color="primary">
+                {player.name}
+              </a>
+            </Link>
+          </TableCell>
+          <TableCell numeric>{player.sum}</TableCell>
+        </TableRow>
+      );
+      return row;
+    },
+    {
       lastIdx: 1,
       lastSum: -1,
       players: []
-      }
+    }
   );
 
   return rows.players;
