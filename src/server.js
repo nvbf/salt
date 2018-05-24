@@ -1,8 +1,7 @@
 require("dotenv").config();
-var Rollbar = require("rollbar");
-var rollbar = new Rollbar(process.env.ROLLBAR_API_KEY);
 
 const express = require("express");
+import { rollbar } from "./utils/rollbar";
 
 const api = require("./api");
 const {
@@ -76,19 +75,20 @@ const tournamentHandler = async (req, res, next) => {
 
 app.prepare().then(() => {
   const server = express();
+  server.use(rollbar.errorHandler());
   var checkoutRoute = express.Router();
   checkoutRoute.use(express.json());
 
-  // server.use((req, res, next) => {
-  //   if (
-  //     req.header("x-forwarded-proto") &&
-  //     req.header("x-forwarded-proto") !== "https"
-  //   ) {
-  //     res.redirect(`https://${req.header("host")}${req.url}`);
-  //   } else {
-  //     next();
-  //   }
-  // });
+  server.use((req, res, next) => {
+    if (
+      req.header("x-forwarded-proto") &&
+      req.header("x-forwarded-proto") !== "https"
+    ) {
+      res.redirect(`https://${req.header("host")}${req.url}`);
+    } else {
+      next();
+    }
+  });
 
   server.get(
     "/api/ranking",

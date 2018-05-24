@@ -3,7 +3,7 @@ const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
 const API_URL = process.env.API_URL;
 const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
-
+import { rollbar } from "../../utils/rollbar";
 const groupByGender = require("../../utils/groupByGender");
 
 async function apiRegisterTeamForTournament(data) {
@@ -63,8 +63,10 @@ async function apiGetRanking() {
       lastValue[currentValue.SpillerId] = {};
 
       if (playerArray.length === 0) {
-        console.log(
-          "TODO: Player Array is 0. seems ok, but I do not totaly understand this! Should be looked closer into."
+        rollbar.warn(
+          `Seems like a mismatch on id between /players and /points ${CircularJSON.stringify(
+            currentValue
+          )}`
         );
         return lastValue;
       }
