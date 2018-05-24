@@ -2,6 +2,10 @@ import React from "react";
 import fetch from "isomorphic-unfetch";
 
 import Typography from "material-ui/Typography";
+import TextField from "material-ui/TextField";
+import Button from "material-ui/Button";
+
+import List, { ListItem } from "material-ui/List";
 import { withStyles } from "material-ui/styles";
 import Hidden from "material-ui/Hidden";
 
@@ -15,26 +19,25 @@ const log = require("debug")("salt:player");
 
 // Set some styles here later:
 const styles = theme => ({
-  topN: {
-    fontWeight: "bold"
+  button: {
+    margin: "16px"
   }
 });
 
-class PlayerPage extends React.Component {
+class RegisterPlayerPage extends React.Component {
   constructor(props) {
     super(props);
     this.defaultState = {
       error: false,
-      loading: true
+      loading: false
     };
-
-    this.retryGetPlayers = this.retryGetPlayers.bind(this);
 
     const {
       loading = this.defaultState.loading,
       error = this.defaultState.error,
       errorDetails = ""
     } = this.props;
+
     this.state = Object.assign({}, this.defaultState, {
       loading,
       error,
@@ -42,53 +45,67 @@ class PlayerPage extends React.Component {
     });
   }
 
-  static async getInitialProps({ asPath }) {
-    return await getPlayerAsProps(asPath);
-  }
-
-  retryGetPlayers() {
-    this.setState(this.defaultState);
-    this.setState(getPlayerAsProps(location.pathname));
-  }
-
   render() {
-    const { loading, error, player } = this.state;
     const { classes } = this.props;
-
+    const { error, loading } = this.state;
     return (
-      <Main error={error} loading={loading} retryHandler={this.retryGetPlayers}>
-        {renderPlayer(player)}
+      <Main error={error} loading={loading} retryHandler={() => null}>
+        <h1>Register ny spiller</h1>
+        <p>
+          Hvis du ikke finner deg eller partneren i spillerlisten, kan du
+          registere ny spiller her{" "}
+        </p>
+        <List>
+          <ListItem>
+            <TextField
+              id="firstname"
+              type="text"
+              required
+              label="Fornavn"
+              inputProps={{
+                autoFocus: true,
+                autoComplete: "given-name",
+                name: "firstname",
+                id: "firstname"
+              }}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              id="lastname"
+              type="text"
+              required
+              label="Etternavn"
+              inputProps={{
+                required: true,
+                autoComplete: "family-name",
+                name: "firstname",
+                id: "firstname"
+              }}
+            />
+          </ListItem>
+          <ListItem>
+            <TextField
+              id="birthday"
+              type="date"
+              required
+              label="Fødselsdato"
+              InputLabelProps={{ shrink: true }}
+              inputProps={{
+                required: true,
+                autoComplete: "bday",
+                name: "birthday",
+                id: "birthday"
+              }}
+            />
+          </ListItem>
+        </List>
+        <Button className={classes.button} variant="raised" color="primary">
+          Lag spiller
+        </Button>
       </Main>
     );
   }
 }
 
-function renderPlayer(player) {
-  if (!player) {
-    return <div>Denne iden er ikke knyttet til en spiller</div>;
-  }
-  return (
-    <div>
-      <Typography variant="headline">{player}</Typography>
-    </div>
-  );
-}
-
-async function getPlayerAsProps(pathname) {
-  try {
-    const path = pathname.split("/");
-    const id = path[path.length - 1];
-    log(`id is: ${id} ${pathname}`);
-    const player = await getPlayer(id);
-    return { loading: false };
-  } catch (err) {
-    log(err);
-    return {
-      loading: false,
-      error: true,
-      errorDetails: CircularJSON.stringify(err)
-    };
-  }
-}
-
-export default withRoot(withStyles(styles)(PlayerPage));
+export default withRoot(withStyles(styles)(RegisterPlayerPage));
