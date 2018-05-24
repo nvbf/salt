@@ -8,11 +8,11 @@ import StepChoosePlayers from "../components/StepChoosePlayers";
 import StepEmailReceipt from "../components/StepEmailReceipt";
 import StepPayment from "../components/StepPayment";
 
-import Typography from "material-ui/Typography";
-import Button from "material-ui/Button";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
 
-import Stepper, { Step, StepLabel, StepContent } from "material-ui/Stepper";
-import { withStyles } from "material-ui/styles";
+import Stepper, { Step, StepLabel, StepContent } from "@material-ui/core/Stepper";
+import { withStyles } from "@material-ui/core/styles";
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
 import { resolve } from "upath";

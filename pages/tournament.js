@@ -7,18 +7,19 @@ import Link from "next/link";
 import { getJson } from "../src/utils/getJson";
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { PlayerLink } from "../components/utils/playerLinks";
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from "material-ui/Table";
-import Typography from "material-ui/Typography";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
-import Paper from "material-ui/Paper";
-import { withStyles } from "material-ui/styles";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableHead from "@material-ui/core/TableHead";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
+
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
+import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../src/withRoot";
+import { getTournamentResults } from "../src/api";
 
 const log = debug("tournament");
 
@@ -27,6 +28,10 @@ const styles = theme => ({
     padding: theme.spacing.unit
   },
   tournamentInfo: {
+    fontWeight: "bold"
+  },
+  tournamentInfoKlasse: {
+    verticalAlign: "top",
     fontWeight: "bold"
   },
   classBox: {
@@ -53,8 +58,17 @@ class TournamentPage extends React.Component {
     try {
       const id = getIdFromPath();
       const tournament = await getJson(`/api/tournaments/${id}`);
+      const tournamentResult = await getTournamentResults(id);
+      console.log(
+        "tournamentResulttournamentResulttournamentResulttournamentResulttournamentResult",
+        tournamentResult
+      );
       if (tournament) {
-        this.setState({ tournament: tournament, loading: false });
+        this.setState({
+          tournament: tournament,
+          tournamentResult: tournamentResult,
+          loading: false
+        });
       } else {
         log(`No such tournament?`);
         this.setState({ error: "No such tournament " });
@@ -73,8 +87,8 @@ class TournamentPage extends React.Component {
   }
 
   render() {
-    const { tournament, loading, error, clicks } = this.state;
-    log(tournament);
+    const { tournament, tournamentResult, loading, error, clicks } = this.state;
+    log(tournamentResult);
     if (error) {
       return (
         <Main>
@@ -95,6 +109,7 @@ class TournamentPage extends React.Component {
           this.onClick,
           clicks > 5 ? true : false
         )}
+        {renderResultList(tournamentResult)}
       </Main>
     );
   }
@@ -136,9 +151,7 @@ function renderTournament(tournament, classes, onClick, showCopyPaste) {
             </tr>
           )}
           <tr>
-            <td className={classes.tournamentInfo} valign="top">
-              Klasse(r)
-            </td>
+            <td className={classes.tournamentInfoKlasse}>Klasse(r)</td>
             <td>{renderClasses(tournament, classes)}</td>
           </tr>
           <tr>
@@ -199,7 +212,6 @@ function renderClasses(tournament, classes) {
 }
 
 function renderSignupLink(tournament) {
-  console.log("renderSignupLink", tournament);
   const { deadline, id } = tournament;
   const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
     .endOf("day")
@@ -214,7 +226,6 @@ function renderSignupLink(tournament) {
 
 function renderSeedingCopyPaste(klass) {
   const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
-  console.log(teams);
   return (
     <Table>
       <TableBody>
@@ -266,6 +277,32 @@ function renderSeeding(klass) {
       </TableBody>
     </Table>
   );
+}
+
+function renderResultList(result) {
+  return (
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>#</TableCell>
+          <TableCell>Lag</TableCell>
+          <TableCell numeric>Poeng</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>{renderResultListBody(result)}</TableBody>
+    </Table>
+  );
+}
+
+function renderResultListBody(results) {
+  console.log("resultsresultsresultsresults:", results.length);
+  return results.map((result, key) => (
+    <TableRow key={key}>
+      <TableCell>{result.place}</TableCell>
+      <TableCell>Navnet kommer snart her atså! lover!</TableCell>
+      <TableCell numeric>{result.points}</TableCell>
+    </TableRow>
+  ));
 }
 
 export default withRoot(withStyles(styles)(TournamentPage));

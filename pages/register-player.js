@@ -1,13 +1,14 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
 
-import Typography from "material-ui/Typography";
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
-import List, { ListItem } from "material-ui/List";
-import { withStyles } from "material-ui/styles";
-import Hidden from "material-ui/Hidden";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import { withStyles } from "@material-ui/core/styles";
+import Hidden from "@material-ui/core/Hidden";
 
 import { getPlayer } from "../src/api/";
 import withRoot from "../src/withRoot";

@@ -1,11 +1,11 @@
 import React from "react";
 
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
-import { MenuItem } from "material-ui/Menu";
-import Typography from "material-ui/Typography";
-import Button from "material-ui/Button";
-import { withStyles } from "material-ui/styles";
+import TextField from "@material-ui/core/TextField";
+import Paper from "@material-ui/core/Paper";
+import MenuItem from "@material-ui/core/MenuItem";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 import Downshift from "downshift";
 
 const styles = {};
@@ -150,7 +150,6 @@ function PlayerSelect({ players, placeHolder, defaultItem, onChange }) {
       )}
     </Downshift>
   );
-  return <div>Ingen spillere er registert</div>;
 }
 
 function renderInput(inputProps) {

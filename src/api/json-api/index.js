@@ -43,7 +43,6 @@ async function apiGetPointsFromPlayer(id) {
 }
 
 async function apiGetRanking() {
-  console.log(`${API_URL}/points`);
   const result = await axios.get(`${API_URL}/points`);
   const playersRes = await axios.get(`${API_URL}/players`);
   const playerData = getData(playersRes);
@@ -121,6 +120,13 @@ async function apiGetTournaments(extraQueryString = "") {
   return data;
 }
 
+async function apiGetPoints() {
+  log(`request URL: ${API_URL}/points`);
+  const result = await axios.get(`${API_URL}/points`);
+  const data = getData(result);
+  return data;
+}
+
 function getData(result) {
   if (result.status !== 200) {
     log(`Did not get a 200 response from API, details: ${result}`);
@@ -146,5 +152,6 @@ module.exports = {
   apiGetTournament,
   apiGetTournaments,
   apiRegisterTeamForTournament,
-  apiGetPointsFromPlayer
+  apiGetPointsFromPlayer,
+  apiGetPoints
 };

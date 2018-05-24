@@ -1,27 +1,25 @@
-import { withStyles } from 'material-ui/styles';
+import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
-    contentContainer: {
-        marginRight: 'auto',
-        marginLeft: 'auto',
-        padding: theme.spacing.unit,
-        [theme.breakpoints.up('md')]: {
-            maxWidth: '960px',
-        },
+  contentContainer: {
+    marginRight: "auto",
+    marginLeft: "auto",
+    padding: theme.spacing.unit,
+    [theme.breakpoints.up("md")]: {
+      maxWidth: "960px"
     }
+  }
 });
 
 class Content extends React.Component {
+  render() {
+    const { classes } = this.props;
 
-    render() {
-        const { classes } = this.props;
-
-        return (
-            <div className={classes.contentContainer}>
-                {this.props.children}
-            </div>
-        )
-    }
+    return (
+      <div className={classes.contentContainer}>{this.props.children}</div>
+    );
+  }
 }
 
 export default withStyles(styles)(Content);

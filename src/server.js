@@ -13,7 +13,9 @@ const {
   getNorwegianTournaments,
   registerTeamForTournament,
   getPointsFromPlayer,
-  getTournamentsInTheFuture
+  getTournamentsInTheFuture,
+  getPoints,
+  getTournamentResults
 } = api;
 
 const getClientToken = require("./utils/getClientToken");
@@ -36,8 +38,18 @@ const getRankingHandler = async (req, res) => {
   return res.json(ranking);
 };
 
+const getPointsHandler = async (req, res) => {
+  const ranking = await getPoints();
+  return res.json(ranking);
+};
+
 const tournamentsHandler = async (req, res) => {
   const ranking = await getTournaments();
+  return res.json(ranking);
+};
+
+const tournamentResultHandler = async (req, res) => {
+  const ranking = await getTournamentResults(req.params.id);
   return res.json(ranking);
 };
 
@@ -61,6 +73,10 @@ const playerHandler = async (req, res) => {
 };
 
 const tournamentsInTheFutureHandler = async (req, res) => {
+  return res.json(await getTournamentsInTheFuture());
+};
+
+const tournamentsThatHasEndedHandler = async (req, res) => {
   return res.json(await getTournamentsInTheFuture());
 };
 
@@ -103,9 +119,27 @@ app.prepare().then(() => {
   );
 
   server.get(
+    "/api/tournaments/ended",
+    routeCache.cacheSeconds(300),
+    errorHandlerJson.bind(null, tournamentsThatHasEndedHandler)
+  );
+
+  server.get(
+    "/api/points/",
+    routeCache.cacheSeconds(300),
+    errorHandlerJson.bind(null, getPointsHandler)
+  );
+
+  server.get(
     "/api/tournaments/:id",
-    routeCache.cacheSeconds(30),
+    routeCache.cacheSeconds(330),
     errorHandlerJson.bind(null, tournamentHandler)
+  );
+
+  server.get(
+    "/api/tournaments/:id/results",
+    routeCache.cacheSeconds(410),
+    errorHandlerJson.bind(null, tournamentResultHandler)
   );
 
   server.get(

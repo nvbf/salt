@@ -3,11 +3,11 @@ import Main from "../components/Main";
 import Link from "next/link";
 import withRoot from "../src/withRoot";
 
-import Typography from "material-ui/Typography";
-import { withStyles } from "material-ui/styles";
-import Grid from "material-ui/Grid";
-import Paper from "material-ui/Paper";
-import Button from "material-ui/Button";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
   paperContainer: {

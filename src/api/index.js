@@ -7,7 +7,8 @@ const {
   apiGetTournament,
   apiGetTournaments,
   apiRegisterTeamForTournament,
-  apiGetPointsFromPlayer
+  apiGetPointsFromPlayer,
+  apiGetPoints
 } = require("./json-api");
 
 const { getJson } = require("../utils/getJson");
@@ -27,6 +28,25 @@ async function getPointsFromPlayer(id) {
     return getJson(`/api/points/${id}`);
   }
   const points = await apiGetPointsFromPlayer(id);
+  return mapToObject(points);
+}
+
+async function getTournamentResults(tournamentId) {
+  if (!isServer) {
+    return getJson(`/api/tournaments/${tournamentId}/results`);
+  }
+  const points = await getPoints(tournamentId);
+  const tournamentResult = points
+    .filter(({ id }) => id == tournamentId)
+    .sort((a, b) => a.place - b.place);
+  return tournamentResult;
+}
+
+async function getPoints(id) {
+  if (!isServer) {
+    return getJson(`/api/points`);
+  }
+  const points = await apiGetPoints();
   return mapToObject(points);
 }
 
@@ -69,19 +89,43 @@ async function getTournaments() {
   return mapToObject(tournaments);
 }
 
+async function getTournamentsThatIsEnded() {
+  if (!isServer) {
+    return getJson(`/api/tournaments/ended`);
+  }
+  const tournaments = await getTournaments();
+  const tournamentsThatIsEnded = tournaments
+    .filter(({ endDate }) => {
+      const timeToEnd = moment(endDate, "DD.MM.YYYY")
+        .endOf("day")
+        .diff(moment.now());
+      return timeToEnd < 0;
+    })
+    .sort((a, b) => {
+      return (
+        moment(b.startDate, "DD.MM.YYYY") - moment(a.startDate, "DD.MM.YYYY")
+      );
+    });
+  return tournamentsThatIsEnded;
+}
+
 async function getTournamentsInTheFuture() {
   if (!isServer) {
     return getJson(`/api/tournaments/future`);
   }
   const tournaments = await getTournaments();
-  const tournamentsInTheFuture = tournaments.filter(({ endDate }) => {
-    const timeToEnd = moment(endDate, "DD.MM.YYYY")
-      .endOf("day")
-      .diff(moment.now());
-    return timeToEnd > 0;
-  }).sort( (a, b) => {
-    return moment(a.startDate, "DD.MM.YYYY") - moment(b.startDate, "DD.MM.YYYY");
-  });
+  const tournamentsInTheFuture = tournaments
+    .filter(({ endDate }) => {
+      const timeToEnd = moment(endDate, "DD.MM.YYYY")
+        .endOf("day")
+        .diff(moment.now());
+      return timeToEnd > 0;
+    })
+    .sort((a, b) => {
+      return (
+        moment(a.startDate, "DD.MM.YYYY") - moment(b.startDate, "DD.MM.YYYY")
+      );
+    });
   return tournamentsInTheFuture;
 }
 
@@ -196,5 +240,8 @@ module.exports = {
   getTournaments,
   registerTeamForTournament,
   getPointsFromPlayer,
-  getTournamentsInTheFuture
+  getTournamentsInTheFuture,
+  getTournamentsThatIsEnded,
+  getPoints,
+  getTournamentResults
 };

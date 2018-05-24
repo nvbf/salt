@@ -1,6 +1,6 @@
 import React from "react";
-import Button from "material-ui/Button";
-import { withStyles } from "material-ui/styles";
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 import braintree from "braintree-web-drop-in";
 import BraintreeDropin from "braintree-dropin-react";
 
@@ -46,7 +46,6 @@ class StepPayment extends React.Component {
   }
 
   handlePaymentMethod(data) {
-    console.log(data);
     this.setState({ clickedOnPayment: true }, this.props.onSignUp(data.nonce));
   }
 
@@ -76,9 +75,11 @@ class StepPayment extends React.Component {
             authorizationToken={clientToken}
             handlePaymentMethod={this.handlePaymentMethod}
             onCreate={this.onCreate}
-            onDestroyStart={this.onDestroyStart}
-            onDestroyEnd={this.onDestroyEnd}
-            onError={this.onError}
+            // onDestroyStart={this.onDestroyStart}
+            // onDestroyEnd={this.onDestroyEnd}
+            onError={err =>
+              console.log("Error when getting Braintree dropin" + err)
+            }
             renderSubmitButton={renderSubmitButton.bind(this, clickedOnPayment)}
           />
         )}

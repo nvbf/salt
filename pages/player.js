@@ -1,16 +1,16 @@
 import React from "react";
 import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from "material-ui/Table";
-import Typography from "material-ui/Typography";
-import Hidden from "material-ui/Hidden";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
 
-import { withStyles } from "material-ui/styles";
+import Typography from "@material-ui/core/Typography";
+import Hidden from "@material-ui/core/Hidden";
+
+import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../src/withRoot";
 
 import { getPlayer, getPointsFromPlayer } from "../src/api/";
@@ -19,9 +19,9 @@ const log = require("debug")("salt:player");
 
 // Set some styles here later:
 const styles = theme => ({
-    topN: {
-        fontWeight: 'bold'
-    }
+  topN: {
+    fontWeight: "bold"
+  }
 });
 
 class PlayerPage extends React.Component {
@@ -63,7 +63,7 @@ class PlayerPage extends React.Component {
 
   render() {
     const { loading, error, player, points } = this.state;
-    const { classes } = this.props;
+    const { classes } = this.props;
 
     return (
       <Main error={error} loading={loading} retryHandler={this.retryGetPlayers}>
@@ -75,7 +75,6 @@ class PlayerPage extends React.Component {
 }
 
 function renderRanking(points, classes) {
-  console.log(points);
   if (points.length === 0) {
     return (
       <React.Fragment>
@@ -85,9 +84,7 @@ function renderRanking(points, classes) {
     );
   }
 
-
   return (
-
     <React.Fragment>
       <Typography variant="title">Resultater </Typography>
       {(!points || !points.map) && <p>Ingen poeng registert</p>}
@@ -106,19 +103,27 @@ function renderRanking(points, classes) {
             </TableHead>
             <TableBody>
               {points.map(
-                ({ tournamentType, tournamentName, points, place, topn }, index) => {
-                    const cls = topn ? classes.topN : null;
-                    return (
+                (
+                  { tournamentType, tournamentName, points, place, topn },
+                  index
+                ) => {
+                  const cls = topn ? classes.topN : null;
+                  return (
                     <TableRow key={index}>
-                      <TableCell className={cls} numeric>{place}</TableCell>
+                      <TableCell className={cls} numeric>
+                        {place}
+                      </TableCell>
                       <TableCell className={cls}>{tournamentName}</TableCell>
                       <Hidden smDown>
                         <TableCell className={cls}>{tournamentType}</TableCell>
                       </Hidden>
-                      <TableCell numeric className={cls}>{points}</TableCell>
+                      <TableCell numeric className={cls}>
+                        {points}
+                      </TableCell>
                     </TableRow>
-                  )
-              })}
+                  );
+                }
+              )}
             </TableBody>
           </Table>
         )}

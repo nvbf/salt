@@ -2,8 +2,8 @@ import React from "react";
 const debug = require("debug");
 const log = debug("salt:error");
 
-import { withStyles } from "material-ui/styles";
-import Button from "material-ui/Button";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
 
 const styles = theme => ({});
 

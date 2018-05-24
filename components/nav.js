@@ -1,7 +1,6 @@
-
 import Link from "next/link";
-import AppBar from 'material-ui/AppBar';
-import Typography from 'material-ui/Typography';
+import AppBar from "@material-ui/core/AppBar";
+import Typography from "@material-ui/core/Typography";
 
 const links = [
   { href: "http://norgestour.no/", label: "norgestour.no" },
@@ -17,26 +16,24 @@ const links = [
 const Nav = () => (
   <nav>
     <AppBar position="static">
-    <ul>
-      <li>
-        <Link prefetch href="/">
-            <a>
-            <Typography variant="title">
-                Hjem
-            </Typography>
-            </a>
-        </Link>
-      </li>
       <ul>
-        {links.map(({ key, href, label }) => (
-          <li key={key}>
-            <Link href={href}>
-              <a>{label}</a>
-            </Link>
-          </li>
-        ))}
+        <li>
+          <Link prefetch href="/">
+            <a>
+              <Typography variant="title">Hjem</Typography>
+            </a>
+          </Link>
+        </li>
+        <ul>
+          {links.map(({ key, href, label }) => (
+            <li key={key}>
+              <Link href={href}>
+                <a>{label}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </ul>
-    </ul>
     </AppBar>
 
     <style jsx>{`

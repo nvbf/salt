@@ -4,18 +4,17 @@ import Link from "next/link";
 import Main from "../components/Main";
 
 import { Loading } from "../components/loading";
-import { withStyles } from "material-ui/styles";
+import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../src/withRoot";
 
-import Table, {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow
-} from "material-ui/Table";
-import Typography from "material-ui/Typography";
-import Grid from "material-ui/Grid";
-import Button from "material-ui/Button";
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
 
 const { getRanking } = require("../src/api/index");
 const CircularJSON = require("circular-json");
@@ -93,7 +92,7 @@ class RankingPage extends React.Component {
         retryHandler={this.retryGetRanking}
       >
         <Typography variant="display1">Spillerranking 2018</Typography>
-        <Grid container spacing={12} alignItems="top" alignContent="center">
+        <Grid container spacing={8} alignContent="center">
           <Grid item xs={12} md={6}>
             <Typography className={classes.genderHeading} variant="title">
               Damer

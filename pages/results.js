@@ -4,9 +4,10 @@ import Link from "next/link";
 import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 
-import { withStyles } from "material-ui/styles";
+import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../src/withRoot";
-import { getTournaments } from "../src/api";
+import { getTournamentsThatIsEnded } from "../src/api";
+import { TournamentList } from "../components/TournamentList";
 const CircularJSON = require("circular-json");
 
 const log = debug("results");
@@ -31,8 +32,10 @@ class ResultsPage extends React.Component {
   }
 
   async retryGetRanking() {
-    this.setState(Object.assign({}, this.defaultState));
-    //this.setState(await getResultsAsProps());
+    const retry = async () => {
+      this.setState(await getResultsAsProps());
+    };
+    this.setState(Object.assign({}, this.defaultState), retry);
   }
 
   static async getInitialProps() {
@@ -57,58 +60,14 @@ class ResultsPage extends React.Component {
 
 function renderTournaments(tournaments) {
   if (tournaments.length > 0) {
-    return listTournaments(tournaments);
+    return <TournamentList tournaments={tournaments} />;
   }
   return <div>Ingen turneringer er på plass enda, prøve igjen senere</div>;
 }
 
-function listTournaments(tournaments) {
-  return (
-    <table>
-      {renderTableHead(tournaments[0])}
-      <tbody>{listRow(tournaments)}</tbody>
-    </table>
-  );
-}
-
-function listRow(tournaments) {
-  return tournaments.map(({ id, name, ...rest }, key) => {
-    return (
-      <tr key={key}>
-        <td>
-          <Link href={"/tournament"} as={`/tournaments/${id}`}>
-            <a>{name}</a>
-          </Link>
-        </td>
-        {renderTableData(rest)}
-      </tr>
-    );
-  });
-}
-
-function renderTableHead({ id, timestamp, ...rest }) {
-  const keys = ["Navn", "Startdato", "Pameldingsfrist", "Klasser"];
-  return (
-    <thead>
-      <tr>
-        {keys.map(key => (
-          <td key={key}>
-            <strong>{key}</strong>
-          </td>
-        ))}
-      </tr>
-    </thead>
-  );
-}
-
-function renderTableData(props) {
-  const keys = ["startDate", "deadline", "classesText"];
-  return keys.map(key => <td key={key}>{props[key]}</td>);
-}
-
 async function getResultsAsProps() {
   try {
-    const json = await getTournaments();
+    const json = await getTournamentsThatIsEnded();
     return { tournaments: json, loading: false };
   } catch (err) {
     log(err);
