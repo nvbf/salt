@@ -64,10 +64,10 @@ class SignupPage extends React.Component {
   }
 
   onSetClass(className) {
+    console.log("onSetClass", className);
     const { activeStep, tournament, players } = this.state;
 
     const correctClass = getClassInfoFromClass(className, tournament.classes);
-
     const playersAlreadySignup = getPlayerIdsFromTournamentClass(
       tournament,
       correctClass
@@ -172,7 +172,9 @@ class SignupPage extends React.Component {
       let players = await getJson("/api/players");
 
       players.sort((a, b) => {
-        return `${a.firstname} ${a.lastname}`.localeCompare(`${b.firstname} ${b.lastname}`);
+        return `${a.firstname} ${a.lastname}`.localeCompare(
+          `${b.firstname} ${b.lastname}`
+        );
       });
 
       const tournament = await getJson(`/api/tournaments/${id}`);
@@ -236,8 +238,6 @@ class SignupPage extends React.Component {
       player2,
       receiptEmail
     } = this.state;
-
-
 
     const { clientToken } = this.props;
 

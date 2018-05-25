@@ -39,16 +39,24 @@ class StepChooseClass extends React.Component {
     this.props.onSetClass(this.state.currentClass);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    prevState.currentClass = nextProps.currentClass;
-    return prevState;
-  }
+  // TODO: bug or dressed up feature?
+  //
+  // after upgrade to @material-ui/core (v1.0)
+  // we can not do this anymore, since (it looks like) the getDerivedStateFromProps
+  // are called after setState on this component but before the
+  // this.props.onSetClass is called, and therefor the props we recive
+  // is not update and the state get reset back to our inital state
+
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   prevState.currentClass = nextProps.currentClass;
+  //   return prevState;
+  // }
 
   render() {
     const { classes, tournamentClasses } = this.props;
 
     const { currentClass } = this.state;
-
+    console.log("currentClas", currentClass);
     return (
       <div>
         <Typography>

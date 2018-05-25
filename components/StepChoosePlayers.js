@@ -42,11 +42,11 @@ class StepChoosePlayers extends React.Component {
     this.props.onSetPlayers([player1, player2]);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    prevState.player1 = nextProps.player1;
-    prevState.player2 = nextProps.player2;
-    return prevState;
-  }
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   prevState.player1 = nextProps.player1;
+  //   prevState.player2 = nextProps.player2;
+  //   return prevState;
+  // }
 
   render() {
     const { onGoBack, players, classes } = this.props;

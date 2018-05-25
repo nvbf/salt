@@ -34,10 +34,10 @@ class StepEmailReceipt extends React.Component {
     this.props.onSetReceiptEmail(this.state.emailAddress);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    prevState.emailAddress = nextProps.receiptEmail;
-    return prevState;
-  }
+  // static getDerivedStateFromProps(nextProps, prevState) {
+  //   prevState.emailAddress = nextProps.receiptEmail;
+  //   return prevState;
+  // }
 
   render() {
     const { classes, onGoBack } = this.props;
