@@ -9,9 +9,12 @@ import StepEmailReceipt from "../components/StepEmailReceipt";
 import StepPayment from "../components/StepPayment";
 
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
 
-import Stepper, { Step, StepLabel, StepContent } from "@material-ui/core/Stepper";
+import Stepper from "@material-ui/core/Stepper";
+import Step from "@material-ui/core/Step";
+import StepContent from "@material-ui/core/StepContent";
+import StepLabel from "@material-ui/core/StepLabel";
+
 import { withStyles } from "@material-ui/core/styles";
 import { getIdFromPath } from "../src/utils/getIdFromPath";
 import { getJson } from "../src/utils/getJson";
@@ -169,11 +172,7 @@ class SignupPage extends React.Component {
       let players = await getJson("/api/players");
 
       players.sort((a, b) => {
-        if (`${a.firstname} ${a.lastname}` < `${b.firstname} ${b.lastname}`)
-          return -1;
-        if (`${a.firstname} ${a.lastname}` > `${b.firstname} ${b.lastname}`)
-          return 1;
-        return 0;
+        return `${a.firstname} ${a.lastname}`.localeCompare(`${b.firstname} ${b.lastname}`);
       });
 
       const tournament = await getJson(`/api/tournaments/${id}`);
@@ -212,7 +211,7 @@ class SignupPage extends React.Component {
   }
 
   signupExpired(tournament) {
-    const { deadline, id } = tournament;
+    const { deadline } = tournament;
     const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
       .endOf("day")
       .diff(moment.now());
@@ -237,6 +236,8 @@ class SignupPage extends React.Component {
       player2,
       receiptEmail
     } = this.state;
+
+
 
     const { clientToken } = this.props;
 
