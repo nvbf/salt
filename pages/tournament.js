@@ -18,6 +18,8 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import { withStyles } from "@material-ui/core/styles";
+import CircularJSON from "circular-json";
+
 import withRoot from "../src/withRoot";
 import { getTournamentResults } from "../src/api";
 
@@ -59,10 +61,6 @@ class TournamentPage extends React.Component {
       const id = getIdFromPath();
       const tournament = await getJson(`/api/tournaments/${id}`);
       const tournamentResult = await getTournamentResults(id);
-      console.log(
-        "tournamentResulttournamentResulttournamentResulttournamentResulttournamentResult",
-        tournamentResult
-      );
       if (tournament) {
         this.setState({
           tournament: tournament,
@@ -88,11 +86,12 @@ class TournamentPage extends React.Component {
 
   render() {
     const { tournament, tournamentResult, loading, error, clicks } = this.state;
-    log(tournamentResult);
     if (error) {
       return (
         <Main>
-          <p>Error:{error}</p>
+          <p>
+            Error:{CircularJSON.stringify(error)} {error.message || ""}
+          </p>
         </Main>
       );
     }
@@ -103,98 +102,102 @@ class TournamentPage extends React.Component {
 
     return (
       <Main>
-        {renderTournament(
-          tournament,
-          this.props.classes,
-          this.onClick,
-          clicks > 5 ? true : false
+        {renderTournament(tournament, this.props.classes, this.onClick)}
+        {!Boolean(tournamentResult.length > 0) && (
+          <Typography variant="display2">Seeding</Typography>
         )}
-        {renderResultList(tournamentResult)}
+        {!Boolean(tournamentResult.length > 0) &&
+          tournament.classes.map((klass, index) => {
+            if (klass.teams.length === 0) {
+              return null;
+            }
+            return (
+              <React.Fragment key={index}>
+                <Typography variant="display1">{klass["class"]}</Typography>
+                {!(clicks > 5) && renderSeeding(klass)}
+                {clicks > 5 && renderSeedingCopyPaste(klass)}
+              </React.Fragment>
+            );
+          })}
+        {Boolean(tournamentResult.length > 0) && (
+          <>
+            <Typography variant="display2">Resultat</Typography>
+            {tournamentResult.map(klasse => renderResultList(klasse))}
+          </>
+        )}
       </Main>
     );
   }
 }
 
-function renderTournament(tournament, classes, onClick, showCopyPaste) {
-  log(`tournament: ${tournament}`);
+function renderTournament(tournament, classes, onClick) {
   return (
     <main>
       <h1>{tournament.name}</h1>
       <Paper onClick={onClick} className={classes.tournamentInfoContainer}>
         <table>
-          <tr>
-            <td className={classes.tournamentInfo}>Start</td>
-            <td>
-              {tournament.startDate} - {tournament.startTime}
-            </td>
-          </tr>
-          <tr>
-            <td className={classes.tournamentInfo}>Type</td>
-            <td>{tournament.tournamentType}</td>
-          </tr>
-          {tournament.tournamentDirector && (
+          <tbody>
             <tr>
-              <td className={classes.tournamentInfo}>Turneringsleder</td>
-              <td>{tournament.tournamentDirector}</td>
-            </tr>
-          )}
-          {tournament.email && (
-            <tr>
-              <td className={classes.tournamentInfo}>epost</td>
-              <td>{tournament.email}</td>
-            </tr>
-          )}
-          {tournament.phone && (
-            <tr>
-              <td className={classes.tournamentInfo}>telefonnummer</td>
-              <td>{tournament.phone}</td>
-            </tr>
-          )}
-          <tr>
-            <td className={classes.tournamentInfoKlasse}>Klasse(r)</td>
-            <td>{renderClasses(tournament, classes)}</td>
-          </tr>
-          <tr>
-            <td className={classes.tournamentInfo}>Påmeldingsfrist</td>
-            <td>{tournament.deadline}</td>
-          </tr>
-          <tr>
-            <td className={classes.tournamentInfo}>Sted</td>
-            <td>{tournament.playerVenue || "Ikke oppgitt"}</td>
-          </tr>
-          <tr>
-            <td className={classes.tournamentInfo}>Påmelding</td>
-            <td>{renderSignupLink(tournament)}</td>
-          </tr>
-          {tournament.shortNameProfixio && (
-            <tr>
-              <td className={classes.tournamentInfo}>Kampoppsett</td>
+              <td className={classes.tournamentInfo}>Start</td>
               <td>
-                <a
-                  href={`https://www.profixio.com/matches/${
-                    tournament.shortNameProfixio
-                  }`}
-                >
-                  Profixio
-                </a>
+                {tournament.startDate} - {tournament.startTime}
               </td>
             </tr>
-          )}
+            <tr>
+              <td className={classes.tournamentInfo}>Type</td>
+              <td>{tournament.tournamentType}</td>
+            </tr>
+            {tournament.tournamentDirector && (
+              <tr>
+                <td className={classes.tournamentInfo}>Turneringsleder</td>
+                <td>{tournament.tournamentDirector}</td>
+              </tr>
+            )}
+            {tournament.email && (
+              <tr>
+                <td className={classes.tournamentInfo}>epost</td>
+                <td>{tournament.email}</td>
+              </tr>
+            )}
+            {tournament.phone && (
+              <tr>
+                <td className={classes.tournamentInfo}>telefonnummer</td>
+                <td>{tournament.phone}</td>
+              </tr>
+            )}
+            <tr>
+              <td className={classes.tournamentInfoKlasse}>Klasse(r)</td>
+              <td>{renderClasses(tournament, classes)}</td>
+            </tr>
+            <tr>
+              <td className={classes.tournamentInfo}>Påmeldingsfrist</td>
+              <td>{tournament.deadline}</td>
+            </tr>
+            <tr>
+              <td className={classes.tournamentInfo}>Sted</td>
+              <td>{tournament.playerVenue || "Ikke oppgitt"}</td>
+            </tr>
+            <tr>
+              <td className={classes.tournamentInfo}>Påmelding</td>
+              <td>{renderSignupLink(tournament)}</td>
+            </tr>
+            {tournament.shortNameProfixio && (
+              <tr>
+                <td className={classes.tournamentInfo}>Kampoppsett</td>
+                <td>
+                  <a
+                    href={`https://www.profixio.com/matches/${
+                      tournament.shortNameProfixio
+                    }`}
+                  >
+                    Profixio
+                  </a>
+                </td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </Paper>
-      <h2>Påmeldte</h2>
-      {tournament.classes.map((klass, index) => {
-        if (klass.teams.length === 0) {
-          return null;
-        }
-        return (
-          <React.Fragment key={index}>
-            <h3>{klass["class"]}</h3>
-            {!showCopyPaste && renderSeeding(klass)}
-            {showCopyPaste && renderSeedingCopyPaste(klass)}
-          </React.Fragment>
-        );
-      })}
     </main>
   );
 }
@@ -281,25 +284,27 @@ function renderSeeding(klass) {
 
 function renderResultList(result) {
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>#</TableCell>
-          <TableCell>Lag</TableCell>
-          <TableCell numeric>Poeng</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>{renderResultListBody(result)}</TableBody>
-    </Table>
+    <section>
+      <Typography variant="display1">{result["class"]}</Typography>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>#</TableCell>
+            <TableCell>Lag</TableCell>
+            <TableCell numeric>Poeng</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{renderResultListBody(result.teams)}</TableBody>
+      </Table>
+    </section>
   );
 }
 
 function renderResultListBody(results) {
-  console.log("resultsresultsresultsresults:", results.length);
   return results.map((result, key) => (
     <TableRow key={key}>
       <TableCell>{result.place}</TableCell>
-      <TableCell>Navnet kommer snart her atså! lover!</TableCell>
+      <TableCell>{result.teamNameShort}</TableCell>
       <TableCell numeric>{result.points}</TableCell>
     </TableRow>
   ));

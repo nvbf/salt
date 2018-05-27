@@ -36,10 +36,45 @@ async function getTournamentResults(tournamentId) {
     return getJson(`/api/tournaments/${tournamentId}/results`);
   }
   const points = await getPoints(tournamentId);
-  const tournamentResult = points
-    .filter(({ id }) => id == tournamentId)
-    .sort((a, b) => a.place - b.place);
-  return tournamentResult;
+  const players = await getPlayers();
+  const { classes } = await getTournament(tournamentId);
+
+  const playersById = players.reduce((playersById, player) => {
+    playersById[player.playerId] = player;
+    return playersById;
+  }, {});
+
+  const tournamentResult = points.filter(({ id }) => id == tournamentId);
+  if (tournamentResult.length === 0) {
+    return [];
+  }
+  const classesResult = classes.map(klasse => {
+    const teams = klasse.teams
+      .map(team => {
+        const res = tournamentResult.filter(
+          res => res.playerId === team.player1Id
+        );
+        if (res.length === 0) {
+          return {};
+        }
+        return Object.assign(
+          {},
+          {
+            teamNameShort: team.teamNameShort,
+            place: res[0].place,
+            points: res[0].points
+          }
+        );
+      })
+      .sort((a, b) => a.place - b.place);
+
+    return {
+      class: klasse.teams[0]["class"],
+      teams
+    };
+  });
+
+  return classesResult;
 }
 
 async function getPoints(id) {
@@ -64,13 +99,15 @@ async function getPlayers() {
   }
   const apiPlayers = await apiGetPlayers();
   const players = mapToObject(apiPlayers);
-  const simplePlayers = players.map(({ id, firstname, lastname, gender }) => ({
-    id,
-    firstname,
-    lastname,
-    gender
-  }));
-  return simplePlayers.filter(({ id }) => id != 0);
+  const simplePlayers = players.map(
+    ({ playerId, firstname, lastname, gender }) => ({
+      playerId,
+      firstname,
+      lastname,
+      gender
+    })
+  );
+  return simplePlayers.filter(({ playerId }) => playerId != 0);
 }
 
 async function getTournament(id) {
@@ -223,7 +260,7 @@ const mapping = {
   PoengLag: "teamPoints",
   ProfixioId: "profixioId",
   Idrettsnr: "idrettsnr",
-  SpillerId: "id",
+  SpillerId: "playerId",
   Kjonn: "gender",
   Turneringsnavn: "tournamentName",
   Plassering: "place",

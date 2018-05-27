@@ -59,7 +59,7 @@ class StepChoosePlayers extends React.Component {
           <h4>Spiller 1</h4>
           <PlayerSelect
             players={players.filter(
-              ({ id }) => id != (player2 ? player2.id : -1)
+              ({ playerId }) => playerId != (player2 ? player2.playerId : -1)
             )}
             defaultItem={player1}
             placeHolder={"Finn Spiller 1"}
@@ -70,7 +70,7 @@ class StepChoosePlayers extends React.Component {
           <h4>Spiller 2</h4>
           <PlayerSelect
             players={players.filter(
-              ({ id }) => id != (player1 ? player1.id : -1)
+              ({ playerId }) => playerId != (player1 ? player1.playerId : -1)
             )}
             defaultItem={player2}
             placeHolder={"Finn Spiller 2"}

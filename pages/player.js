@@ -131,8 +131,8 @@ function renderRanking(points, classes) {
   );
 }
 
-function renderPlayer({ id, firstname, lastname, dateOfBith }) {
-  if (!id) {
+function renderPlayer({ playerId, firstname, lastname, dateOfBith }) {
+  if (!playerId) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
   }
   return (
