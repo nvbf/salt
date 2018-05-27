@@ -6,7 +6,7 @@ import Main from "../components/Main";
 
 import { withStyles } from "@material-ui/core/styles";
 import withRoot from "../src/withRoot";
-import { getTournamentsThatIsEnded } from "../src/api";
+import { getTournamentsThatHasEnded } from "../src/api";
 import { TournamentList } from "../components/TournamentList";
 const CircularJSON = require("circular-json");
 
@@ -67,7 +67,7 @@ function renderTournaments(tournaments) {
 
 async function getResultsAsProps() {
   try {
-    const json = await getTournamentsThatIsEnded();
+    const json = await getTournamentsThatHasEnded();
     return { tournaments: json, loading: false };
   } catch (err) {
     log(err);

@@ -89,16 +89,17 @@ async function getTournaments() {
   return mapToObject(tournaments);
 }
 
-async function getTournamentsThatIsEnded() {
+async function getTournamentsThatHasEnded() {
   if (!isServer) {
     return getJson(`/api/tournaments/ended`);
   }
   const tournaments = await getTournaments();
   const tournamentsThatIsEnded = tournaments
-    .filter(({ endDate }) => {
+    .filter(({ name, endDate }) => {
       const timeToEnd = moment(endDate, "DD.MM.YYYY")
         .endOf("day")
         .diff(moment.now());
+      console.log(name, timeToEnd);
       return timeToEnd < 0;
     })
     .sort((a, b) => {
@@ -241,7 +242,7 @@ module.exports = {
   registerTeamForTournament,
   getPointsFromPlayer,
   getTournamentsInTheFuture,
-  getTournamentsThatIsEnded,
+  getTournamentsThatHasEnded,
   getPoints,
   getTournamentResults
 };

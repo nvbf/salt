@@ -11,7 +11,6 @@ import Divider from "@material-ui/core/Divider";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 import Main from "../components/Main";
 import { withStyles } from "@material-ui/core/styles";
@@ -54,9 +53,7 @@ class TournamentListItem extends React.Component {
                 padding: classes.padding
               }}
             >
-              <ListItem dense>
-                <ListItemText>{renderDate(startDate)}</ListItemText>
-              </ListItem>
+              <ListItem dense>{renderDate(startDate)}</ListItem>
             </List>
           </Grid>
           <Grid item>
@@ -66,28 +63,22 @@ class TournamentListItem extends React.Component {
               }}
             >
               <ListItem dense>
-                <ListItemText>
-                  <Typography>
-                    {name} - {playerVenue || ""}
-                  </Typography>
-                </ListItemText>
+                <Typography noWrap variant="title">
+                  {name}
+                </Typography>
               </ListItem>
               {isTournamentDateOver(endDate) && (
                 <ListItem dense>
-                  <ListItemText>
-                    <Typography variant="body2">
-                      Påmeldingsfrist: {deadline}
-                    </Typography>
-                  </ListItemText>
+                  <Typography variant="body2">
+                    Påmeldingsfrist: {deadline}
+                  </Typography>
                 </ListItem>
               )}
               {isTournamentDateOver(endDate) && (
                 <ListItem dense>
-                  <ListItemText>
-                    <Typography variant="body1">
-                      Klasser: {classesText}
-                    </Typography>
-                  </ListItemText>
+                  <Typography variant="body1">
+                    Klasser: {classesText}
+                  </Typography>
                 </ListItem>
               )}
             </List>
@@ -149,7 +140,7 @@ function renderTournamentDetailLink(id, endDate) {
   if (isTournamentDateOver(endDate)) {
     return (
       <Link href={"/tournament"} as={`/tournaments/${id}`}>
-        <Button color="primary">Påmeldte</Button>
+        <Button color="primary">Detaljer</Button>
       </Link>
     );
   } else {

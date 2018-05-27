@@ -15,7 +15,8 @@ const {
   getPointsFromPlayer,
   getTournamentsInTheFuture,
   getPoints,
-  getTournamentResults
+  getTournamentResults,
+  getTournamentsThatHasEnded
 } = api;
 
 import { getTournamentClass } from "./utils/getTournamentClass";
@@ -78,7 +79,7 @@ const tournamentsInTheFutureHandler = async (req, res) => {
 };
 
 const tournamentsThatHasEndedHandler = async (req, res) => {
-  return res.json(await getTournamentsInTheFuture());
+  return res.json(await getTournamentsThatHasEnded());
 };
 
 const tournamentHandler = async (req, res, next) => {
