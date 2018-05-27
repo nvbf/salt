@@ -55,34 +55,32 @@ class StepChoosePlayers extends React.Component {
 
     return (
       <div>
-        <Typography>
-          <section>
-            <h4>Spiller 1</h4>
-            <PlayerSelect
-              players={players.filter(
-                ({ id }) => id != (player2 ? player2.id : -1)
-              )}
-              defaultItem={player1}
-              placeHolder={"Finn Spiller 1"}
-              onChange={this.onSetPlayer1}
-            />
-          </section>
-          <section>
-            <h4>Spiller 2</h4>
-            <PlayerSelect
-              players={players.filter(
-                ({ id }) => id != (player1 ? player1.id : -1)
-              )}
-              defaultItem={player2}
-              placeHolder={"Finn Spiller 2"}
-              onChange={this.onSetPlayer2}
-            />
-          </section>
-          <p>
-            Mangler det et navn? Send mail til{" "}
-            <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
-          </p>
-        </Typography>
+        <section>
+          <h4>Spiller 1</h4>
+          <PlayerSelect
+            players={players.filter(
+              ({ id }) => id != (player2 ? player2.id : -1)
+            )}
+            defaultItem={player1}
+            placeHolder={"Finn Spiller 1"}
+            onChange={this.onSetPlayer1}
+          />
+        </section>
+        <section>
+          <h4>Spiller 2</h4>
+          <PlayerSelect
+            players={players.filter(
+              ({ id }) => id != (player1 ? player1.id : -1)
+            )}
+            defaultItem={player2}
+            placeHolder={"Finn Spiller 2"}
+            onChange={this.onSetPlayer2}
+          />
+        </section>
+        <p>
+          Mangler det et navn? Send mail til{" "}
+          <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
+        </p>
         <div className={classes.actionsContainer}>
           <div>
             <Button
@@ -205,7 +203,7 @@ function renderSuggestion({
   return (
     <MenuItem
       {...itemProps}
-      key={suggestion.label}
+      key={"" + suggestion.label + index}
       selected={isHighlighted}
       component="div"
       style={{

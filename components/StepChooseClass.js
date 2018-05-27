@@ -2,25 +2,28 @@ import React from "react";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
 
 import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Select from "@material-ui/core/Select";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 
-const styles = {};
+import { getTournamentClass } from "../src/utils/getTournamentClass";
+
+const styles = theme => ({
+  errormessage: {
+    padding: theme.spacing.unit
+  }
+});
 
 class StepChooseClass extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      currentClass: ""
+      currentClass: "",
+      full: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -28,11 +31,25 @@ class StepChooseClass extends React.Component {
   }
 
   handleChange(event) {
+    const { tournamentClasses } = this.props;
+    const fakeTournament = { classes: tournamentClasses };
+    const klasse = event.target.value;
+    const {
+      teams: { lenght, maxNrOfTeams }
+    } = getTournamentClass(fakeTournament, klasse);
+    const full = length >= maxNrOfTeams;
     // de not set state on defaultValue
-    if (event.target.value == " ") {
+    if (klasse == " ") {
       return;
     }
-    this.setState({ currentClass: event.target.value });
+
+    if (full) {
+      this.setState({ currentClass: klasse, full: true });
+      return;
+    }
+    if (klasse) {
+      this.setState({ currentClass: klasse, full: false });
+    }
   }
 
   onSetClass() {
@@ -55,40 +72,42 @@ class StepChooseClass extends React.Component {
   render() {
     const { classes, tournamentClasses } = this.props;
 
-    const { currentClass } = this.state;
+    const { currentClass, full } = this.state;
     console.log("currentClas", currentClass);
     return (
-      <div>
-        <Typography>
-          <InputLabel htmlFor="klasse">Klasse</InputLabel>
-          <Select
-            value={currentClass}
-            onChange={this.handleChange}
-            inputProps={{
-              name: "klasse",
-              id: "klasse"
-            }}
+      <>
+        <TextField
+          select
+          label="Klasse"
+          onChange={this.handleChange}
+          value={currentClass}
+        >
+          {listOptions(tournamentClasses)}
+        </TextField>
+        {full && (
+          <Typography
+            className={classes.errormessage}
+            variant="body2"
+            gutterBottom
           >
-            {listOptions(tournamentClasses)}
-          </Select>
-        </Typography>
+            Beklager, men denne klassen er full.
+          </Typography>
+        )}
         <div className={classes.actionsContainer}>
-          <div>
-            <Button disabled={true} className={classes.button}>
-              Tilbake
-            </Button>
-            <Button
-              disabled={!currentClass}
-              variant="raised"
-              color="primary"
-              onClick={this.onSetClass}
-              className={classes.button}
-            >
-              Neste
-            </Button>
-          </div>
+          <Button disabled={true} className={classes.button}>
+            Tilbake
+          </Button>
+          <Button
+            disabled={!currentClass || full}
+            variant="raised"
+            color="primary"
+            onClick={this.onSetClass}
+            className={classes.button}
+          >
+            Neste
+          </Button>
         </div>
-      </div>
+      </>
     );
   }
 }

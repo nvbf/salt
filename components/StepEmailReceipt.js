@@ -47,16 +47,14 @@ class StepEmailReceipt extends React.Component {
 
     return (
       <div>
-        <Typography>
-          <TextField
-            id="name"
-            label="Mottaker Epost"
-            value={this.state.emailAddress}
-            onChange={this.handleChange}
-            margin="normal"
-            type="email"
-          />
-        </Typography>
+        <TextField
+          id="name"
+          label="Mottaker Epost"
+          value={this.state.emailAddress}
+          onChange={this.handleChange}
+          margin="normal"
+          type="email"
+        />
         <div className={classes.actionsContainer}>
           <div>
             <Button

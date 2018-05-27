@@ -9,12 +9,23 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
 
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+
 import Main from "../components/Main";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
   tournamentListItem: {
     marginBottom: theme.spacing.unit
+  },
+  deadLineItem: {
+    marginTop: "16px"
+  },
+
+  padding: {
+    padding: "100px"
   }
 });
 
@@ -38,25 +49,48 @@ class TournamentListItem extends React.Component {
       <li className={classes.tournamentListItem}>
         <Grid container spacing={16}>
           <Grid item xs={4} sm={2} md={1}>
-            {renderDate(startDate)}
+            <List
+              classes={{
+                padding: classes.padding
+              }}
+            >
+              <ListItem dense>
+                <ListItemText>{renderDate(startDate)}</ListItemText>
+              </ListItem>
+            </List>
           </Grid>
           <Grid item>
-            <Typography variant="title">
-              {name} - {playerVenue || ""}
-            </Typography>
-            {isTournamentDateOver(endDate) && (
-              <p>
-                <Typography variant="body2">
-                  Påmeldingsfrist: {deadline}
-                </Typography>
-              </p>
-            )}
-            {isTournamentDateOver(endDate) && (
-              <p>
-                <Typography variant="body1">Klasser: {classesText}</Typography>
-              </p>
-            )}
-
+            <List
+              classes={{
+                padding: classes.padding
+              }}
+            >
+              <ListItem dense>
+                <ListItemText>
+                  <Typography>
+                    {name} - {playerVenue || ""}
+                  </Typography>
+                </ListItemText>
+              </ListItem>
+              {isTournamentDateOver(endDate) && (
+                <ListItem dense>
+                  <ListItemText>
+                    <Typography variant="body2">
+                      Påmeldingsfrist: {deadline}
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+              )}
+              {isTournamentDateOver(endDate) && (
+                <ListItem dense>
+                  <ListItemText>
+                    <Typography variant="body1">
+                      Klasser: {classesText}
+                    </Typography>
+                  </ListItemText>
+                </ListItem>
+              )}
+            </List>
             {renderTournamentDetailLink(id, endDate)}
             {renderSignupLink(id, deadline)}
             {renderTournamentScheduleLink(shortNameProfixio, endDate)}

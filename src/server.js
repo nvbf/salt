@@ -18,6 +18,7 @@ const {
   getTournamentResults
 } = api;
 
+import { getTournamentClass } from "./utils/getTournamentClass";
 const getClientToken = require("./utils/getClientToken");
 const gateway = require("./utils/gateway");
 const sendMailTournament = require("./utils/sendMail");
@@ -211,10 +212,7 @@ app.prepare().then(() => {
 
     const tournament = await getTournament(tournamentId);
 
-    const tournamentClasses = tournament.classes.filter(
-      klass => klass["class"] == klasse
-    );
-    const tournamentClass = tournamentClasses[0];
+    const tournamentClass = getTournamentClass(tournament, klasse);
     log("tournament class", tournamentClass);
     const price = tournamentClass.price;
 
