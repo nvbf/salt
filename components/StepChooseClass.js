@@ -78,6 +78,7 @@ class StepChooseClass extends React.Component {
       <>
         <TextField
           select
+          InputLabelProps={{ shrink: true }}
           label="Klasse"
           onChange={this.handleChange}
           value={currentClass}
