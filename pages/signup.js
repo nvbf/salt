@@ -117,8 +117,8 @@ class SignupPage extends React.Component {
     const data = JSON.stringify({
       nonce: nonce,
       tournamentId: getIdFromPath(),
-      player1: player1.id,
-      player2: player2.id,
+      player1: player1.playerId,
+      player2: player2.playerId,
       klasse: signupClass,
       email: receiptEmail
     });
