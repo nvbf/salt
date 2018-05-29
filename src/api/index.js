@@ -48,8 +48,11 @@ async function getTournamentResults(tournamentId) {
   if (tournamentResult.length === 0) {
     return [];
   }
-  const classesResult = classes.map(klasse => {
+  const classesResult = classes
+    .filter(klasse => klasse.teams.length > 0 )  
+    .map(klasse => {
     const teams = klasse.teams
+    
       .map(team => {
         const res = tournamentResult.filter(
           res => res.playerId === team.player1Id
