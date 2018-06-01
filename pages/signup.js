@@ -258,9 +258,10 @@ class SignupPage extends React.Component {
 
     let currentPlayers = players;
 
-    if (signupClass) {
-      currentPlayers = players.filter(player => player.gender === signupClass);
-    }
+    //TODO: Map class to gender or use birthDate also
+    // if (signupClass) {
+    //   currentPlayers = players.filter(player => player.gender === signupClass);
+    // }
 
     return (
       <Main>
