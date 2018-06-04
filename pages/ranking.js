@@ -190,11 +190,34 @@ function listTournaments(players) {
 
 async function getRankingAsProps() {
   try {
-    const players = await getRanking();
-    const male = players.filter(player => player.gender == "M");
-    const female = players.filter(player => player.gender == "K");
+    const male = await getRanking("M");
+    const female = await getRanking("K");
 
-    return { male, female, loading: false };
+    const maleU21 = await getRanking("GU21");
+    const femaleU21 = await getRanking("JU21");
+
+    const maleU19 = await getRanking("GU19");
+    const femaleU19 = await getRanking("JU19");
+
+    const maleU17 = await getRanking("GU17");
+    const femaleU17 = await getRanking("JU17");
+
+    const maleU15 = await getRanking("GU15");
+    const femaleU15 = await getRanking("JU15");
+
+    return {
+      male,
+      female,
+      maleU21,
+      maleU19,
+      maleU17,
+      maleU15,
+      femaleU21,
+      femaleU19,
+      femaleU17,
+      femaleU15,
+      loading: false
+    };
   } catch (err) {
     log(`error ${CircularJSON.stringify(err)}`);
     return {

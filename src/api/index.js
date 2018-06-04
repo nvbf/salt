@@ -16,11 +16,11 @@ const { getJson } = require("../utils/getJson");
 const log = require("debug")("salt:src:api");
 const isServer = typeof window === "undefined";
 
-async function getRanking() {
+async function getRanking(klasse) {
   if (!isServer) {
-    return getJson("/api/ranking");
+    return getJson(`/api/ranking/${klasse}`);
   }
-  return await apiGetRanking();
+  return await apiGetRanking(klasse);
 }
 
 async function getPointsFromPlayer(id) {
@@ -96,11 +96,11 @@ async function getPlayer(id) {
   return mapToObject(player);
 }
 
-async function getPlayers() {
+async function getPlayers(klasse) {
   if (!isServer) {
-    return getJson(`/api/players`);
+    return getJson(`/api/players/class/:${klasse}`);
   }
-  const apiPlayers = await apiGetPlayers();
+  const apiPlayers = await apiGetPlayers(klasse);
   const players = mapToObject(apiPlayers);
   const simplePlayers = players.map(
     ({ playerId, firstname, lastname, gender }) => ({

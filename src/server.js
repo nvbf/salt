@@ -36,7 +36,7 @@ const CircularJSON = require("circular-json");
 var routeCache = require("route-cache");
 
 const getRankingHandler = async (req, res) => {
-  const ranking = await getRanking();
+  const ranking = await getRanking(req.params.klasse);
   return res.json(ranking);
 };
 
@@ -56,7 +56,7 @@ const tournamentResultHandler = async (req, res) => {
 };
 
 const playersHandler = async (req, res) => {
-  const players = await getPlayers();
+  const players = await getPlayers(req.params.id);
   return res.json(players);
 };
 
@@ -109,7 +109,7 @@ app.prepare().then(() => {
   });
 
   server.get(
-    "/api/ranking",
+    "/api/ranking/:klasse",
     routeCache.cacheSeconds(600),
     errorHandlerJson.bind(null, getRankingHandler)
   );
@@ -163,8 +163,8 @@ app.prepare().then(() => {
   );
 
   server.get(
-    "/api/players/",
-    routeCache.cacheSeconds(450),
+    "/api/players/class/:id",
+    routeCache.cacheSeconds(400),
     errorHandlerJson.bind(null, playersHandler)
   );
 
