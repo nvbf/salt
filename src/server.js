@@ -134,7 +134,7 @@ app.prepare().then(() => {
 
   server.get(
     "/api/tournaments/:id",
-    routeCache.cacheSeconds(330),
+    routeCache.cacheSeconds(30),
     errorHandlerJson.bind(null, tournamentHandler)
   );
 
