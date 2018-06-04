@@ -49,33 +49,33 @@ async function getTournamentResults(tournamentId) {
     return [];
   }
   const classesResult = classes
-    .filter(klasse => klasse.teams.length > 0 )  
+    .filter(klasse => klasse.teams.length > 0)
     .map(klasse => {
-    const teams = klasse.teams
-    
-      .map(team => {
-        const res = tournamentResult.filter(
-          res => res.playerId === team.player1Id
-        );
-        if (res.length === 0) {
-          return {};
-        }
-        return Object.assign(
-          {},
-          {
-            teamNameShort: team.teamNameShort,
-            place: res[0].place,
-            points: res[0].points
-          }
-        );
-      })
-      .sort((a, b) => a.place - b.place);
+      const teams = klasse.teams
 
-    return {
-      class: klasse.teams[0]["class"],
-      teams
-    };
-  });
+        .map(team => {
+          const res = tournamentResult.filter(
+            res => res.playerId === team.player1Id
+          );
+          if (res.length === 0) {
+            return {};
+          }
+          return Object.assign(
+            {},
+            {
+              teamNameShort: team.teamNameShort,
+              place: res[0].place,
+              points: res[0].points
+            }
+          );
+        })
+        .sort((a, b) => a.place - b.place);
+
+      return {
+        class: klasse.teams[0]["class"],
+        teams
+      };
+    });
 
   return classesResult;
 }
@@ -201,7 +201,7 @@ function mapToObject(apiRes) {
   if (Array.isArray(apiRes)) {
     return apiRes.map(obj => mapToObject(obj));
   }
-
+  console.log("apiRes", apiRes);
   const keys = Object.keys(apiRes);
   let tournament = {};
   keys.forEach(key => {
@@ -228,6 +228,7 @@ const mapping = {
   TurneringsIdProfixio: "tournamentIdProfixio",
   KortnavnProfixio: "shortNameProfixio",
   Startdato: "startDate",
+  StartDato: "startDate",
   Starttid: "startTime",
   Sluttid: "endTime",
   Pameldingsfrist: "deadline",

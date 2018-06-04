@@ -245,22 +245,63 @@ app.prepare().then(() => {
       }
     };
     log(`salesData ${JSON.stringify(salesData)}`);
-    gateway.transaction.sale(salesData, (err, result) => {
-      log("Response from braintree", err, result);
-      if (err || !result.success) {
-        log("ERROR", err || result);
-        return res.json({
-          error:
-            "Kunne ikke ta betalt, dette kan skyldes så meget. F.eks du har tastet feil kortnummer eller man har ikke penger på kortet. Prøv igjen eller gi opp",
-          statusText: "error"
-        });
-      }
+
+    if (price !== 0) {
+      gateway.transaction.sale(salesData, (err, result) => {
+        log("Response from braintree", err, result);
+        if (err || !result.success) {
+          log("ERROR", err || result);
+          return res.json({
+            error:
+              "Kunne ikke ta betalt, dette kan skyldes så meget. F.eks du har tastet feil kortnummer eller man har ikke penger på kortet. Prøv igjen eller gi opp",
+            statusText: "error"
+          });
+        }
+        registerTeamForTournament(
+          tournamentId,
+          klasse,
+          player1,
+          player2,
+          result.transaction.id
+        )
+          .then(apiRes => {
+            const withPaymentStatus = Object.assign(
+              {},
+              { statusText: "OK" },
+              apiRes
+            );
+            res.json(withPaymentStatus);
+          })
+          .catch(err => {
+            log(
+              `ERROR: Was not able to registere the team, but payment is done! ${CircularJSON.stringify(
+                err
+              )}`
+            );
+
+            res.status(503).json({
+              error:
+                "Betalingen er registert, men en feil oppstod når vi skulle legge det til i turneringen. Dette skal ikke skje, men er rapportert. " +
+                "Forhåpentligvis fikser vi dette manuelt i ettertid. Sjekk om du er registert om 2 timer, hvis ikke send mail til post@osvb.no",
+              statusText: "error"
+            });
+          });
+
+        sendMailTournament(
+          req.body.email,
+          tournament,
+          klasse,
+          price,
+          result.transaction.id
+        );
+      });
+    } else {
       registerTeamForTournament(
         tournamentId,
         klasse,
         player1,
         player2,
-        result.transaction.id
+        "påmeldt til en turnering med pris 0"
       )
         .then(apiRes => {
           const withPaymentStatus = Object.assign(
@@ -272,27 +313,21 @@ app.prepare().then(() => {
         })
         .catch(err => {
           log(
-            `ERROR: Was not able to registere the team, but payment is done! ${CircularJSON.stringify(
+            `ERROR: Was not able to registere the team, Påmeldingen var gratis ${CircularJSON.stringify(
               err
             )}`
           );
 
           res.status(503).json({
             error:
-              "Betalingen er registert, men en feil oppstod når vi skulle legge det til i turneringen. Dette skal ikke skje, men er rapportert. " +
-              "Forhåpentligvis fikser vi dette manuelt i ettertid. Sjekk om du er registert om 2 timer, hvis ikke send mail til post@osvb.no",
+              "En feil oppstod når vi skulle legge det til i turneringen. Dette skal ikke skje, men feilen er rapportert. " +
+              "Prøv igjen om 5 min.",
             statusText: "error"
           });
         });
 
-      sendMailTournament(
-        req.body.email,
-        tournament,
-        klasse,
-        price,
-        result.transaction.id
-      );
-    });
+      sendMailTournament(req.body.email, tournament, klasse, false, false);
+    }
   });
 
   server.get("*", (req, res) => {

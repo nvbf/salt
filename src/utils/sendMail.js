@@ -13,20 +13,19 @@ function sendMailTournament(
     {
       to: receiver,
       from: "post@osvb.no",
-      subject: `Påmelding registert -${tournament.name}`,
+      subject: `Påmelding registert - ${tournament.name}`,
       text: `Din betaling er registrert. \n\n 
       Du er påmeldt til ${tournament.name} i klassen ${klasse} \n\n
       Start Dato: ${tournament.startDate} \n\n 
-      Pris: ${price}
-      din referanse: ${transactionId}
-      
+      ${price ? `Pris: ${price}\n\n ` : ""}
+      ${transactionId ? `Din referanse: ${transactionId}` : ""}
       `
     },
     function(err, json) {
       if (err) {
         log("ERROR: Klarte ikke sende mail til ", receiver);
       }
-      log("mail sucssfully sendt");
+      log(`mail successfully sendt ${receiver}`);
     }
   );
 }
