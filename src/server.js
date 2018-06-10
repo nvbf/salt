@@ -83,7 +83,6 @@ const tournamentsThatHasEndedHandler = async (req, res) => {
 };
 
 const tournamentHandler = async (req, res, next) => {
-  log("tournamentHandler");
   const tournament = await getTournament(req.params.id);
   if (tournament.noSuchTournament) {
     return res.status(404).send("404");
@@ -209,12 +208,10 @@ app.prepare().then(() => {
     const nonce = process.env.BT_SANDBOX
       ? "fake-valid-no-billing-address-nonce"
       : req.body.nonce;
-    log(`Using nounce: ${nonce}`);
 
     const tournament = await getTournament(tournamentId);
 
     const tournamentClass = getTournamentClass(tournament, klasse);
-    log("tournament class", tournamentClass);
     const price = tournamentClass.price;
 
     if (tournamentClass.length === 0) {
