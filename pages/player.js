@@ -149,7 +149,6 @@ async function getPlayerAsProps(pathname) {
   try {
     const path = pathname.split("/");
     const id = path[path.length - 1];
-    log(`id is: ${id} ${pathname}`);
     const player = await getPlayer(id);
     const points = await getPointsFromPlayer(id);
 

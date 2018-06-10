@@ -64,7 +64,6 @@ class SignupPage extends React.Component {
   }
 
   onSetClass(className) {
-    console.log("onSetClass", className);
     const { activeStep, tournament, players } = this.state;
 
     const correctClass = getClassInfoFromClass(className, tournament.classes);

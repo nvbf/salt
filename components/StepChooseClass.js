@@ -73,7 +73,6 @@ class StepChooseClass extends React.Component {
     const { classes, tournamentClasses } = this.props;
 
     const { currentClass, full } = this.state;
-    console.log("currentClas", currentClass);
     return (
       <>
         <TextField

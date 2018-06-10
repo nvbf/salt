@@ -49,13 +49,10 @@ async function apiGetRanking() {
   const data = getData(result);
 
   const playerSum = data.reduce((lastValue = {}, currentValue, index, {}) => {
-    //console.log('lastValue.currentSpillerId', lastValue.currentSpillerId)
-    //console.log('currentValue', currentValue)
     if (lastValue.currentSpillerId == currentValue.SpillerId) {
       lastValue[currentValue.SpillerId].sum += currentValue.Poeng;
     } else {
       lastValue.currentSpillerId = currentValue.SpillerId;
-      // log(`playerData ${CircularJSON.stringify(playerData)}`);
       const playerArray = playerData.filter(
         player => player.SpillerId === lastValue.currentSpillerId
       );

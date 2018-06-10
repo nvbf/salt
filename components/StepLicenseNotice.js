@@ -59,7 +59,6 @@ class StepLicenseNotice extends React.Component {
     const { classes } = this.props;
 
     const { currentClass, full } = this.state;
-    console.log("currentClas", currentClass);
     return (
       <>
         <Typography className={classes.message} variant="body" gutterBottom>

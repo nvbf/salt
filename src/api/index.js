@@ -139,7 +139,6 @@ async function getTournamentsThatHasEnded() {
       const timeToEnd = moment(endDate, "DD.MM.YYYY")
         .endOf("day")
         .diff(moment.now());
-      console.log(name, timeToEnd);
       return timeToEnd < 0;
     })
     .sort((a, b) => {
@@ -201,7 +200,6 @@ function mapToObject(apiRes) {
   if (Array.isArray(apiRes)) {
     return apiRes.map(obj => mapToObject(obj));
   }
-  console.log("apiRes", apiRes);
   const keys = Object.keys(apiRes);
   let tournament = {};
   keys.forEach(key => {
