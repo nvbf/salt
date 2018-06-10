@@ -51,10 +51,6 @@ class StepLicenseNotice extends React.Component {
     }
   }
 
-  onAccept() {
-    this.props.onAccept(this.state.currentClass);
-  }
-
   render() {
     const { classes } = this.props;
 
@@ -91,7 +87,7 @@ class StepLicenseNotice extends React.Component {
           <Button
             variant="raised"
             color="primary"
-            onClick={this.onAccept}
+            onClick={this.props.onAccept}
             className={classes.button}
           >
             Forstått
