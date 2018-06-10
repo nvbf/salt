@@ -7,7 +7,7 @@ import StepChooseClass from "../components/StepChooseClass";
 import StepChoosePlayers from "../components/StepChoosePlayers";
 import StepEmailReceipt from "../components/StepEmailReceipt";
 import StepPayment from "../components/StepPayment";
-
+import StepLicenseNotice from "../components/StepLicenseNotice";
 import Typography from "@material-ui/core/Typography";
 
 import Stepper from "@material-ui/core/Stepper";
@@ -42,7 +42,7 @@ class SignupPage extends React.Component {
     this.onSetReceiptEmail = this.onSetReceiptEmail.bind(this);
 
     this.onSignUp = this.onSignUp.bind(this);
-
+    this.onAccept = this.onAccept.bind(this);
     this.onGoBack = this.onGoBack.bind(this);
 
     this.handleErrorResponse = this.handleErrorResponse.bind(this);
@@ -82,6 +82,13 @@ class SignupPage extends React.Component {
       priceToPay: correctClass.price,
       activeStep: activeStep + 1,
       players: filteredPlayers
+    });
+  }
+
+  onAccept() {
+    const { activeStep } = this.state;
+    this.setState({
+      activeStep: activeStep + 1
     });
   }
 
@@ -297,6 +304,15 @@ class SignupPage extends React.Component {
                 player2={player2}
                 onSetPlayers={this.onSetPlayers}
                 onGoBack={this.onGoBack}
+              />
+            </StepContent>
+          </Step>
+          <Step>
+            <StepLabel>Lisensbekreftelse</StepLabel>
+            <StepContent>
+              <StepLicenseNotice
+                onGoBack={this.onGoBack}
+                onAccept={this.onAccept}
               />
             </StepContent>
           </Step>
