@@ -110,7 +110,10 @@ async function getTournamentsAsProps() {
     const json = await getTournamentsInTheFuture();
     return { tournaments: json, loading: false };
   } catch (err) {
-    log(err);
+    log("Error in getting getTournamentsAsProps");
+    log(err.name);
+    log(err.message);
+    log(err.stack);
     return {
       loading: false,
       error: true,

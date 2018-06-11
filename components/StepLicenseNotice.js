@@ -57,7 +57,7 @@ class StepLicenseNotice extends React.Component {
     const { currentClass, full } = this.state;
     return (
       <>
-        <Typography className={classes.message} variant="body" gutterBottom>
+        <Typography className={classes.message} gutterBottom variant="body1">
           Spillere som skal delta på turneringer i regi av NVBF er ansvarlige
           for å løse riktig lisens. Dersom gyldig lisens ikke kan fremvises ved
           turneringsstart kan man bli nektet å spille turneringen. For
