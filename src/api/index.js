@@ -6,6 +6,7 @@ const {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
+  apiGetTournamentsInTheFuture,
   apiRegisterTeamForTournament,
   apiGetPointsFromPlayer,
   apiGetPoints
@@ -153,19 +154,8 @@ async function getTournamentsInTheFuture() {
   if (!isServer) {
     return getJson(`/api/tournaments/future`);
   }
-  const tournaments = await getTournaments();
-  const tournamentsInTheFuture = tournaments
-    .filter(({ endDate }) => {
-      const timeToEnd = moment(endDate, "DD.MM.YYYY")
-        .endOf("day")
-        .diff(moment.now());
-      return timeToEnd > 0;
-    })
-    .sort((a, b) => {
-      return (
-        moment(a.startDate, "DD.MM.YYYY") - moment(b.startDate, "DD.MM.YYYY")
-      );
-    });
+  const tournamentsInTheFuture = await apiGetTournamentsInTheFuture();
+
   return tournamentsInTheFuture;
 }
 
@@ -199,6 +189,9 @@ async function registerTeamForTournament(
 function mapToObjectv2(apiRes) {
   if (Array.isArray(apiRes)) {
     return apiRes.map(obj => mapToObjectv2(obj));
+  }
+  if (apiRes === null) {
+    return "";
   }
   const keys = Object.keys(apiRes);
   let tournament = {};

@@ -33,7 +33,6 @@ class TournamentListItem extends React.Component {
     const {
       data: {
         id,
-        classes,
         startDate,
         endDate,
         playerVenue,
@@ -42,8 +41,10 @@ class TournamentListItem extends React.Component {
         shortNameProfixio,
         name,
         displayDivider
-      }
+      },
+      classes
     } = this.props;
+
     return (
       <li className={classes.tournamentListItem}>
         <Grid container spacing={16}>

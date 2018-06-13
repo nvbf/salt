@@ -1,7 +1,8 @@
 require("dotenv").config();
-
 const express = require("express");
+
 import { rollbar } from "./utils/rollbar";
+import { getTournamentClass } from "./utils/getTournamentClass";
 
 const api = require("./api");
 const {
@@ -19,7 +20,6 @@ const {
   getTournamentsThatHasEnded
 } = api;
 
-import { getTournamentClass } from "./utils/getTournamentClass";
 const getClientToken = require("./utils/getClientToken");
 const gateway = require("./utils/gateway");
 const sendMailTournament = require("./utils/sendMail");
@@ -350,3 +350,8 @@ async function errorHandlerJson(handler, req, res, next) {
     });
   }
 }
+
+process.on("unhandledRejection", reason => {
+  rollbar.error("unhandledRejection", reason);
+  process.exit(-1);
+});

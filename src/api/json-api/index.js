@@ -116,9 +116,17 @@ async function apiGetTournament(id) {
   }
   return tournamentArray[0];
 }
+
 async function apiGetTournaments(extraQueryString = "") {
   log(`request URL: ${API_URL2}/tournaments${extraQueryString}`);
   const result = await axios.get(`${API_URL2}/tournaments${extraQueryString}`);
+  const data = getData(result);
+  return data;
+}
+
+async function apiGetTournamentsInTheFuture() {
+  log(`request URL: ${API_URL2}/tournaments/future`);
+  const result = await axios.get(`${API_URL2}/tournaments/future`);
   const data = getData(result);
   return data;
 }
@@ -154,7 +162,8 @@ module.exports = {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
-  apiRegisterTeamForTournament,
+  apiGetTournamentsInTheFuture,
   apiGetPointsFromPlayer,
-  apiGetPoints
+  apiGetPoints,
+  apiRegisterTeamForTournament
 };
