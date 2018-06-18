@@ -221,7 +221,7 @@ class SignupPage extends React.Component {
 
   signupExpired(tournament) {
     const { deadline } = tournament;
-    const timeToDeadLine = moment(deadline)
+    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
       .endOf("day")
       .diff(moment.now());
     const signupAllowd = timeToDeadLine > 0;
