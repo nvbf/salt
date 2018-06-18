@@ -6,6 +6,7 @@ const {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
+  apiGetTournamentsInTheFuture,
   apiRegisterTeamForTournament,
   apiGetPointsFromPlayer,
   apiGetPoints
@@ -126,7 +127,7 @@ async function getTournaments() {
     return getJson(`/api/tournaments/`);
   }
   const tournaments = await apiGetTournaments();
-  return mapToObject(tournaments);
+  return mapToObjectv2(tournaments);
 }
 
 async function getTournamentsThatHasEnded() {
@@ -136,15 +137,13 @@ async function getTournamentsThatHasEnded() {
   const tournaments = await getTournaments();
   const tournamentsThatIsEnded = tournaments
     .filter(({ name, endDate }) => {
-      const timeToEnd = moment(endDate, "DD.MM.YYYY")
+      const timeToEnd = moment(endDate)
         .endOf("day")
         .diff(moment.now());
       return timeToEnd < 0;
     })
     .sort((a, b) => {
-      return (
-        moment(b.startDate, "DD.MM.YYYY") - moment(a.startDate, "DD.MM.YYYY")
-      );
+      return moment(b.startDate) - moment(a.startDate);
     });
   return tournamentsThatIsEnded;
 }
@@ -153,19 +152,8 @@ async function getTournamentsInTheFuture() {
   if (!isServer) {
     return getJson(`/api/tournaments/future`);
   }
-  const tournaments = await getTournaments();
-  const tournamentsInTheFuture = tournaments
-    .filter(({ endDate }) => {
-      const timeToEnd = moment(endDate, "DD.MM.YYYY")
-        .endOf("day")
-        .diff(moment.now());
-      return timeToEnd > 0;
-    })
-    .sort((a, b) => {
-      return (
-        moment(a.startDate, "DD.MM.YYYY") - moment(b.startDate, "DD.MM.YYYY")
-      );
-    });
+  const tournamentsInTheFuture = await apiGetTournamentsInTheFuture();
+
   return tournamentsInTheFuture;
 }
 
@@ -194,6 +182,30 @@ async function registerTeamForTournament(
     TransactionId: transactionId
   });
   return response;
+}
+
+function mapToObjectv2(apiRes) {
+  if (Array.isArray(apiRes)) {
+    return apiRes.map(obj => mapToObjectv2(obj));
+  }
+  if (apiRes === null) {
+    return "";
+  }
+  const keys = Object.keys(apiRes);
+  let tournament = {};
+  keys.forEach(key => {
+    if (mappingNew[key]) {
+      if (typeof apiRes[key] === "object") {
+        const result = mapToObjectv2(apiRes[key]);
+        tournament[mappingNew[key]] = result;
+      } else {
+        tournament[mappingNew[key]] = apiRes[key];
+      }
+    } else {
+      log(`skipping ${key} no mapping for it! (v2)`);
+    }
+  });
+  return tournament;
 }
 
 function mapToObject(apiRes) {
@@ -270,6 +282,62 @@ const mapping = {
   Topn: "topn",
   SortId: "sortId",
   Foreldet: "obsolete"
+};
+
+const mappingNew = {
+  tournamentId: "tournamentId",
+  name: "name",
+  tournamentType: "tournamentType",
+  season: "season",
+  endDate: "endDate",
+  tournamentIdProfixio: "tournamentIdProfixio",
+  shortNameProfixio: "shortNameProfixio",
+  startDate: "startDate",
+  Starttid: "startTime",
+  endTime: "endTime",
+  deadline: "deadline",
+  tournamentDirector: "tournamentDirector",
+  mail: "email",
+  phone: "phone",
+  TurneringTlf: "phone",
+  classesAsText: "classesAsText",
+  Klasser: "classes",
+  Klasse: "class",
+  Pris: "price",
+  MaksLag: "maxNrOfTeams",
+  description: "description",
+  playerVenue: "playerVenue",
+  paymentInfo: "paymentInfo",
+  PersonId: "personId",
+  Fornavn: "firstname",
+  Etternavn: "lastname",
+  Adresse1: "adresseLine1",
+  Adresse2: "adresseLine2",
+  Posnr: "zipcode",
+  Possted: "city",
+  FDato: "dateOfBith",
+  Epost: "email",
+  Lag: "teams",
+  LagId: "teamId",
+  Lagnavn: "teamName",
+  LagnavnKort: "teamNameShort",
+  Spiller_1: "player1Id",
+  Spiller_2: "player2Id",
+  PoengS1: "player1Points",
+  PoengS2: "player2Points",
+  PoengLag: "teamPoints",
+  ProfixioId: "profixioId",
+  Idrettsnr: "idrettsnr",
+  SpillerId: "playerId",
+  Kjonn: "gender",
+  Turneringsnavn: "tournamentName",
+  Plassering: "place",
+  Poeng: "points",
+  Topn: "topn",
+  SortId: "sortId",
+  Foreldet: "obsolete",
+  organizer: "organizer",
+  region: "region"
 };
 
 module.exports = {

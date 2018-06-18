@@ -1,22 +1,24 @@
-const axios = require("axios");
+import axios from "axios";
+import { rollbar } from "../../utils/rollbar";
+
 const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
+
+// const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
+// const groupByGender = require("../../utils/groupByGender");
+
 const API_URL = process.env.API_URL;
-const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
-import { rollbar } from "../../utils/rollbar";
-const groupByGender = require("../../utils/groupByGender");
+const API_URL2 = process.env.API_URL2;
 
 async function apiRegisterTeamForTournament(data) {
   try {
     log(`Send to axios: ${CircularJSON.stringify(data)}`);
     const response = await axios.post(`${API_URL}/RegisterTeam`, data);
-    if (response.status != 200) {
+    if (response.status !== 200) {
       return {
         statusText: response.statusText,
         status: response.status,
-        message: CircularJSON.stringify(
-          response.data || response.body || response.text
-        )
+        message: CircularJSON.stringify(response.data)
       };
     }
     return response.data;
@@ -101,7 +103,11 @@ async function apiGetPlayers() {
 }
 
 async function apiGetTournament(id) {
-  const tournaments = await apiGetTournaments(`?TurneringsId=${id}&Lag=True`);
+  log(`request URL: ${API_URL}/tournaments?TurneringsId=${id}&Lag=True`);
+  const result = await axios.get(
+    `${API_URL}/tournaments?TurneringsId=${id}&Lag=True`
+  );
+  const tournaments = getData(result);
   const tournamentArray = tournaments.filter(
     ({ TurneringsId }) => TurneringsId == id
   );
@@ -110,9 +116,17 @@ async function apiGetTournament(id) {
   }
   return tournamentArray[0];
 }
+
 async function apiGetTournaments(extraQueryString = "") {
-  log(`request URL: ${API_URL}/tournaments${extraQueryString}`);
-  const result = await axios.get(`${API_URL}/tournaments${extraQueryString}`);
+  log(`request URL: ${API_URL2}/tournaments${extraQueryString}`);
+  const result = await axios.get(`${API_URL2}/tournaments${extraQueryString}`);
+  const data = getData(result);
+  return data;
+}
+
+async function apiGetTournamentsInTheFuture() {
+  log(`request URL: ${API_URL2}/tournaments/future`);
+  const result = await axios.get(`${API_URL2}/tournaments/future`);
   const data = getData(result);
   return data;
 }
@@ -148,7 +162,8 @@ module.exports = {
   apiGetPlayers,
   apiGetTournament,
   apiGetTournaments,
-  apiRegisterTeamForTournament,
+  apiGetTournamentsInTheFuture,
   apiGetPointsFromPlayer,
-  apiGetPoints
+  apiGetPoints,
+  apiRegisterTeamForTournament
 };
