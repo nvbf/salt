@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 
+/* eslint-disable import/first */
 import { rollbar } from "./utils/rollbar";
 import { getTournamentClass } from "./utils/getTournamentClass";
 
@@ -11,7 +12,6 @@ const {
   getPlayers,
   getTournament,
   getTournaments,
-  getNorwegianTournaments,
   registerTeamForTournament,
   getPointsFromPlayer,
   getTournamentsInTheFuture,

@@ -216,7 +216,7 @@ function renderClasses(tournament, classes) {
 
 function renderSignupLink(tournament) {
   const { deadline, id } = tournament;
-  const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+  const timeToDeadLine = moment(deadline)
     .endOf("day")
     .diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
@@ -233,7 +233,6 @@ function renderSeedingCopyPaste(klass) {
     <Table>
       <TableBody>
         {teams.map((team, index) => {
-          const players = team.teamName.split("/");
           return (
             <TableRow key={index}>
               <TableCell>{team.teamNameShort}</TableCell>

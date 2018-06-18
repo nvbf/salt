@@ -209,6 +209,7 @@ class SignupPage extends React.Component {
   }
 
   renderPaymentStatusError() {
+    const { name } = this.state.tournament;
     return (
       <Main>
         <h1> {name}</h1>
@@ -220,7 +221,7 @@ class SignupPage extends React.Component {
 
   signupExpired(tournament) {
     const { deadline } = tournament;
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+    const timeToDeadLine = moment(deadline)
       .endOf("day")
       .diff(moment.now());
     const signupAllowd = timeToDeadLine > 0;

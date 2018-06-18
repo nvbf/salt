@@ -137,15 +137,13 @@ async function getTournamentsThatHasEnded() {
   const tournaments = await getTournaments();
   const tournamentsThatIsEnded = tournaments
     .filter(({ name, endDate }) => {
-      const timeToEnd = moment(endDate, "DD.MM.YYYY")
+      const timeToEnd = moment(endDate)
         .endOf("day")
         .diff(moment.now());
       return timeToEnd < 0;
     })
     .sort((a, b) => {
-      return (
-        moment(b.startDate, "DD.MM.YYYY") - moment(a.startDate, "DD.MM.YYYY")
-      );
+      return moment(b.startDate) - moment(a.startDate);
     });
   return tournamentsThatIsEnded;
 }
@@ -287,7 +285,7 @@ const mapping = {
 };
 
 const mappingNew = {
-  TournamentId: "id",
+  tournamentId: "tournamentId",
   name: "name",
   tournamentType: "tournamentType",
   season: "season",
@@ -302,7 +300,7 @@ const mappingNew = {
   mail: "email",
   phone: "phone",
   TurneringTlf: "phone",
-  KlasserTekst: "classesText",
+  classesAsText: "classesAsText",
   Klasser: "classes",
   Klasse: "class",
   Pris: "price",
