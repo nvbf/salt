@@ -216,7 +216,7 @@ function renderClasses(tournament, classes) {
 
 function renderSignupLink(tournament) {
   const { deadline, id } = tournament;
-  const timeToDeadLine = moment(deadline)
+  const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
     .endOf("day")
     .diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
