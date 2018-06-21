@@ -131,7 +131,7 @@ function renderRanking(points, classes) {
   );
 }
 
-function renderPlayer({ playerId, firstname, lastname, dateOfBith }) {
+function renderPlayer({ playerId, firstname, lastname }) {
   if (!playerId) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
   }
@@ -140,7 +140,6 @@ function renderPlayer({ playerId, firstname, lastname, dateOfBith }) {
       <Typography variant="headline">
         {firstname} {lastname}
       </Typography>
-      <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
   );
 }

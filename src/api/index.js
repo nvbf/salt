@@ -29,7 +29,7 @@ async function getPointsFromPlayer(id) {
     return getJson(`/api/points/${id}`);
   }
   const points = await apiGetPointsFromPlayer(id);
-  return mapToObject(points);
+  return mapToObjectv2(points);
 }
 
 async function getTournamentResults(tournamentId) {
@@ -86,7 +86,7 @@ async function getPoints(id) {
     return getJson(`/api/points`);
   }
   const points = await apiGetPoints();
-  return mapToObject(points);
+  return mapToObjectv2(points);
 }
 
 async function getPlayer(id) {
@@ -94,7 +94,7 @@ async function getPlayer(id) {
     return getJson(`/api/players/${id}`);
   }
   const player = await apiGetPlayer(id);
-  return mapToObject(player);
+  return mapToObjectv2(player);
 }
 
 async function getPlayers() {
@@ -102,7 +102,7 @@ async function getPlayers() {
     return getJson(`/api/players`);
   }
   const apiPlayers = await apiGetPlayers();
-  const players = mapToObject(apiPlayers);
+  const players = mapToObjectv2(apiPlayers);
   const simplePlayers = players.map(
     ({ playerId, firstname, lastname, gender }) => ({
       playerId,

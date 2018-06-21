@@ -4,9 +4,6 @@ import { rollbar } from "../../utils/rollbar";
 const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
 
-// const norwegianTournamentsTypes = ["RT Open", "NT Open", "NT Master", "LT"];
-// const groupByGender = require("../../utils/groupByGender");
-
 const API_URL = process.env.API_URL;
 const API_URL2 = process.env.API_URL2;
 
@@ -40,13 +37,13 @@ async function apiRegisterTeamForTournament(data) {
 }
 
 async function apiGetPointsFromPlayer(id) {
-  const res = await axios.get(`${API_URL}/points?SpillerId=${id}`);
+  const res = await axios.get(`${API_URL2}/points/${id}`);
   return res.data;
 }
 
 async function apiGetRanking() {
   const result = await axios.get(`${API_URL2}/points`);
-  const playersRes = await axios.get(`${API_URL}/players`);
+  const playersRes = await axios.get(`${API_URL2}/players`);
   const playerData = getData(playersRes);
   const data = getData(result);
 
@@ -98,7 +95,7 @@ async function apiGetPlayer(id) {
   return playersArray[0];
 }
 async function apiGetPlayers() {
-  const result = await axios.get(`${API_URL}/players`);
+  const result = await axios.get(`${API_URL2}/players`);
   return getData(result);
 }
 
@@ -132,8 +129,8 @@ async function apiGetTournamentsInTheFuture() {
 }
 
 async function apiGetPoints() {
-  log(`request URL: ${API_URL}/points`);
-  const result = await axios.get(`${API_URL}/points`);
+  log(`request URL: ${API_URL2}/points`);
+  const result = await axios.get(`${API_URL2}/points`);
   const data = getData(result);
   return data;
 }
