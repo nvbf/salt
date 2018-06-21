@@ -45,7 +45,7 @@ async function apiGetPointsFromPlayer(id) {
 }
 
 async function apiGetRanking() {
-  const result = await axios.get(`${API_URL}/points`);
+  const result = await axios.get(`${API_URL2}/points`);
   const playersRes = await axios.get(`${API_URL}/players`);
   const playerData = getData(playersRes);
   const data = getData(result);
