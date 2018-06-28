@@ -7,6 +7,7 @@ const {
   apiGetTournament,
   apiGetTournaments,
   apiGetTournamentsInTheFuture,
+  apiGetTournamentsthatIsFinished,
   apiRegisterTeamForTournament,
   apiGetPointsFromPlayer,
   apiGetPoints
@@ -73,7 +74,7 @@ async function getTournamentResults(tournamentId) {
         .sort((a, b) => a.place - b.place);
 
       return {
-        class: klasse.teams[0]["class"],
+        class: klasse.teams[0]["klasse"],
         teams
       };
     });
@@ -119,7 +120,7 @@ async function getTournament(id) {
     return getJson(`/api/tournaments/${id}`);
   }
   const apiTournament = await apiGetTournament(id);
-  return mapToObject(apiTournament);
+  return mapToObjectv2(apiTournament);
 }
 
 async function getTournaments() {
@@ -132,19 +133,9 @@ async function getTournaments() {
 
 async function getTournamentsThatHasEnded() {
   if (!isServer) {
-    return getJson(`/api/tournaments/ended`);
+    return getJson(`/api/tournaments/finished`);
   }
-  const tournaments = await getTournaments();
-  const tournamentsThatIsEnded = tournaments
-    .filter(({ name, endDate }) => {
-      const timeToEnd = moment(endDate)
-        .endOf("day")
-        .diff(moment.now());
-      return timeToEnd < 0;
-    })
-    .sort((a, b) => {
-      return moment(b.startDate) - moment(a.startDate);
-    });
+  const tournamentsThatIsEnded = await apiGetTournamentsthatIsFinished();
   return tournamentsThatIsEnded;
 }
 
@@ -248,7 +239,7 @@ const mapping = {
   TurneringTlf: "phone",
   KlasserTekst: "classesText",
   Klasser: "classes",
-  Klasse: "class",
+  Klasse: "klasse",
   Pris: "price",
   MaksLag: "maxNrOfTeams",
   Memo: "description",
@@ -266,6 +257,7 @@ const mapping = {
   Lag: "teams",
   LagId: "teamId",
   Lagnavn: "teamName",
+  teamName: "teamName",
   LagnavnKort: "teamNameShort",
   Spiller_1: "player1Id",
   Spiller_2: "player2Id",
@@ -285,11 +277,20 @@ const mapping = {
 };
 
 const mappingNew = {
+  classes: "classes",
+  teams: "teams",
+  klasse: "klasse",
+  maxNrOfTeams: "maxNrOfTeams",
+  price: "price",
   tournamentId: "tournamentId",
+  TurneringsId: "tournamentId",
   name: "name",
   tournamentType: "tournamentType",
+  Turneringstype: "tournamentType",
+  Sesong: "season",
   season: "season",
   endDate: "endDate",
+  Finaledato: "endDate",
   tournamentIdProfixio: "tournamentIdProfixio",
   shortNameProfixio: "shortNameProfixio",
   startDate: "startDate",
@@ -302,7 +303,7 @@ const mappingNew = {
   TurneringTlf: "phone",
   classesAsText: "classesAsText",
   Klasser: "classes",
-  Klasse: "class",
+  Klasse: "klasse",
   Pris: "price",
   MaksLag: "maxNrOfTeams",
   description: "description",

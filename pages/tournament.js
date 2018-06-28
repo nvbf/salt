@@ -113,7 +113,7 @@ class TournamentPage extends React.Component {
             }
             return (
               <React.Fragment key={index}>
-                <Typography variant="display1">{klass["class"]}</Typography>
+                <Typography variant="display1">{klass["klasse"]}</Typography>
                 {!(clicks > 5) && renderSeeding(klass)}
                 {clicks > 5 && renderSeedingCopyPaste(klass)}
               </React.Fragment>
@@ -205,7 +205,7 @@ function renderTournament(tournament, classes, onClick) {
 function renderClasses(tournament, classes) {
   return tournament.classes.map((klass, index) => (
     <ul className={classes.classBox} key={index}>
-      <li>Klasse {klass["class"]}</li>
+      <li>Klasse {klass["klasse"]}</li>
       <li>Pris {klass.price}</li>
       <li>
         Påmeldte {klass.teams.length} av {klass.maxNrOfTeams}
@@ -284,7 +284,7 @@ function renderSeeding(klass) {
 function renderResultList(result) {
   return (
     <section>
-      <Typography variant="display1">{result["class"]}</Typography>
+      <Typography variant="display1">{result["klasse"]}</Typography>
       <Table>
         <TableHead>
           <TableRow>

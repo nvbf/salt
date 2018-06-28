@@ -120,7 +120,7 @@ app.prepare().then(() => {
   );
 
   server.get(
-    "/api/tournaments/ended",
+    "/api/tournaments/finished",
     routeCache.cacheSeconds(300),
     errorHandlerJson.bind(null, tournamentsThatHasEndedHandler)
   );

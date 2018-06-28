@@ -114,7 +114,7 @@ class StepChooseClass extends React.Component {
 
 function listOptions(classes) {
   const classesAsOptions = classes.map(klass => {
-    const klass1 = klass["class"];
+    const klass1 = klass["klasse"];
     return (
       <MenuItem key={klass1} value={klass1}>
         {klass1}

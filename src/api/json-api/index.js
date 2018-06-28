@@ -10,8 +10,13 @@ const API_URL2 = process.env.API_URL2;
 async function apiRegisterTeamForTournament(data) {
   try {
     log(`Send to axios: ${CircularJSON.stringify(data)}`);
-    const response = await axios.post(`${API_URL}/RegisterTeam`, data);
+    const response = await axios.post(`${API_URL2}/RegisterTeam`, data);
     if (response.status !== 200) {
+      log(
+        `Error in posting team - Status !== 200: : ${CircularJSON.stringify(
+          data
+        )}`
+      );
       return {
         statusText: response.statusText,
         status: response.status,
@@ -21,7 +26,7 @@ async function apiRegisterTeamForTournament(data) {
     return response.data;
   } catch (error) {
     const { config: { method = "", url = "", data = {} } = {} } = error;
-    log("Error in posting team - " + CircularJSON.stringify(error));
+    log(error.response);
     log(
       `Error in posting team - method: ${method}, url: ${url} data: ${CircularJSON.stringify(
         data
@@ -100,18 +105,13 @@ async function apiGetPlayers() {
 }
 
 async function apiGetTournament(id) {
-  log(`request URL: ${API_URL}/tournaments?TurneringsId=${id}&Lag=True`);
-  const result = await axios.get(
-    `${API_URL}/tournaments?TurneringsId=${id}&Lag=True`
-  );
-  const tournaments = getData(result);
-  const tournamentArray = tournaments.filter(
-    ({ TurneringsId }) => TurneringsId == id
-  );
-  if (tournamentArray.length === 0) {
+  log(`request URL: ${API_URL2}/tournaments/${id}`);
+  const result = await axios.get(`${API_URL2}/tournaments/${id}`);
+  const tournament = getData(result);
+  if (!tournament) {
     return { noSuchTournament: "No such tournamentID" };
   }
-  return tournamentArray[0];
+  return tournament;
 }
 
 async function apiGetTournaments(extraQueryString = "") {
@@ -124,6 +124,13 @@ async function apiGetTournaments(extraQueryString = "") {
 async function apiGetTournamentsInTheFuture() {
   log(`request URL: ${API_URL2}/tournaments/future`);
   const result = await axios.get(`${API_URL2}/tournaments/future`);
+  const data = getData(result);
+  return data;
+}
+
+async function apiGetTournamentsthatIsFinished() {
+  log(`request URL: ${API_URL2}/tournaments/finished`);
+  const result = await axios.get(`${API_URL2}/tournaments/finished`);
   const data = getData(result);
   return data;
 }
@@ -141,15 +148,6 @@ function getData(result) {
     throw new Error(`Did not get a 200 response from API, details: ${result}`);
   }
 
-  if (typeof result.data == "string") {
-    console.log("Hacking");
-    const newData = result.data.replace(
-      /select \* from Turnering[\t\s\r\n]+/g,
-      ""
-    );
-    return JSON.parse(newData);
-  }
-
   return result.data;
 }
 
@@ -162,5 +160,6 @@ module.exports = {
   apiGetTournamentsInTheFuture,
   apiGetPointsFromPlayer,
   apiGetPoints,
-  apiRegisterTeamForTournament
+  apiRegisterTeamForTournament,
+  apiGetTournamentsthatIsFinished
 };

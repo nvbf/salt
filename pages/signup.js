@@ -221,9 +221,7 @@ class SignupPage extends React.Component {
 
   signupExpired(tournament) {
     const { deadline } = tournament;
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
-      .endOf("day")
-      .diff(moment.now());
+    const timeToDeadLine = moment(deadline).diff(moment.now());
     const signupAllowd = timeToDeadLine > 0;
     if (signupAllowd) {
       return false;
@@ -347,7 +345,7 @@ class SignupPage extends React.Component {
 }
 
 function getClassInfoFromClass(klass, classes) {
-  const correctClass = classes.filter(klass1 => klass1["class"] === klass);
+  const correctClass = classes.filter(klass1 => klass1["klasse"] === klass);
   if (correctClass.length != 1) {
     log("getClassInfoFromClass problem", correctClass, classes, klass);
   }
@@ -355,9 +353,11 @@ function getClassInfoFromClass(klass, classes) {
 }
 
 function getPlayerIdsFromTournamentClass(tournament, klasse) {
-  const chosenClassArray = tournament.classes.filter(
-    tournament => tournament["class"] == klasse.class
-  );
+  const chosenClassArray = tournament.classes.filter(tournament => {
+    console.log("!! - " + tournament["klasse"].toLowerCase());
+    console.log("## " + klasse["klasse"].toLowerCase());
+    return tournament["klasse"].toLowerCase() == klasse["klasse"].toLowerCase();
+  });
   const teams = chosenClassArray[0].teams;
   const playerIdsNotFlat = teams.map(({ player1Id, player2Id }) => [
     player1Id,
