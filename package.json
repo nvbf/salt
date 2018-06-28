@@ -1,8 +1,7 @@
 {
   "name": "salt",
   "scripts": {
-    "dev":
-      "nodemon -w src/ --exec 'npm run transpile-server && npm run dev-start'",
+    "dev": "nodemon -w src/ --exec 'npm run transpile-server && npm run dev-start'",
     "transpile-server": "babel src --out-dir dist",
     "dev-start": "node --trace-warnings dist/server",
     "postinstall": "npm run build",
@@ -46,7 +45,6 @@
     "mssql": "^4.1.0",
     "next": "^6.0.3",
     "nodemon": "^1.17.5",
-    "npm-check-updates": "^2.14.2",
     "path-match": "^1.2.4",
     "prettier": "1.13.6",
     "prettier-eslint": "^8.8.1",
