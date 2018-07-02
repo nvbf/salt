@@ -70,7 +70,7 @@ class TournamentListItem extends React.Component {
                   </Typography>
                 </ListItem>
               )}
-              {isTournamentDateOver(endDate) && (
+              {isTournamentDateOver(endDate) && classesAsText && (
                 <ListItem dense>
                   <Typography variant="body1">
                     Klasser: {classesAsText.split(",").join(", ")}
