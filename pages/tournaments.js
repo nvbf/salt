@@ -1,15 +1,12 @@
 import React from "react";
 import debug from "debug";
-import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
+
 
 import withRoot from "../src/withRoot";
 import Main from "../components/Main";
 import { getTournamentsInTheFuture } from "../src/api";
-import { TournamentListItem } from "../components/TournamentListItem";
+import { TournamentList } from "../components/TournamentList";
 
 const CircularJSON = require("circular-json");
 const log = debug("tournaments");
@@ -79,27 +76,7 @@ class Tournaments extends React.Component {
 
     return (
       <React.Fragment>
-        <Typography variant="display1" className={classes.tournamentTitle}>
-          Turneringer
-        </Typography>
-        <Paper className={classes.tournamentPaper}>
-          <ul className={classes.tournamentList}>
-            {tournaments.map((tournament, index) => {
-              const displayDivider = Boolean(index < tournaments.length - 1);
-              return (
-                <TournamentListItem
-                  key={tournament.id}
-                  data={Object.assign(
-                    {},
-                    tournament,
-                    { index },
-                    { displayDivider }
-                  )}
-                />
-              );
-            })}
-          </ul>
-        </Paper>
+        <TournamentList tournaments={tournaments} />
       </React.Fragment>
     );
   }
