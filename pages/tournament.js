@@ -225,15 +225,28 @@ function renderSignupLink(tournament) {
   }
 }
 
+function getShortName(player) {
+  const nameParts = player.trim().split(/\s+/);
+  if (nameParts.length == 1) {
+    return nameParts[0];
+  }
+  
+  let nameString = nameParts[0][0] + ". ";
+  nameString += nameParts[nameParts.length-1];
+  return nameString;
+}
+
 function renderSeedingCopyPaste(klass) {
   const teams = klass.teams.sort((a, b) => b.teamPoints - a.teamPoints);
   return (
     <Table>
       <TableBody>
         {teams.map((team, index) => {
+          const players = team.teamName.split("/");
+          const teamNameShort = getShortName(players[0]) + " / " + getShortName(players[1]);
           return (
             <TableRow key={index}>
-              <TableCell>{team.teamNameShort}</TableCell>
+              <TableCell>{teamNameShort}</TableCell>
             </TableRow>
           );
         })}
