@@ -6,6 +6,8 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import Icon from "@material-ui/core/Icon";
 import Card from "@material-ui/core/Card";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import CardContent from "@material-ui/core/CardContent";
 
 
@@ -138,17 +140,21 @@ class TournamentList extends React.Component {
     const allTypes = Object.keys( tournaments.reduce ( (all, tournament) => {
       all[tournament[tournamentKey]] = true;
       return all;
-    }, {}));
+    }, {})).sort();
 
     console.log(allTypes);
     return allTypes.map ( function (type, index) {
       const elmId = `${tournamentKey}_filter_${index}`;
       const checked = currentTypes.indexOf(type) >= 0 || currentTypes.length == 0;
       return <div className={classes.filterItem}>
-        <input id={elmId} key={index} type="checkbox" checked={checked} onChange={e => {
-          toggleFilter(stateKey, type)
-        }} />
-        <label htmlFor={elmId}>{type}</label>
+        <FormControlLabel
+          control={
+            <Checkbox color="primary" id={elmId} key={index} type="checkbox" checked={checked} onChange={e => {
+              toggleFilter(stateKey, type)
+            }} />
+          }
+          label={type}
+        />
       </div>
     });
   }
