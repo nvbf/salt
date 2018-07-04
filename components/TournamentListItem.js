@@ -43,7 +43,7 @@ class TournamentListItem extends React.Component {
     return (
       <li className={classes.tournamentListItem}>
         <Grid container spacing={16}>
-          <Grid item xs={4} sm={2} md={1}>
+          <Grid item xs={2} md={1}>
             <List
               classes={{
                 padding: classes.padding
@@ -52,7 +52,7 @@ class TournamentListItem extends React.Component {
               <ListItem dense>{renderDate(startDate)}</ListItem>
             </List>
           </Grid>
-          <Grid item>
+          <Grid item xs={10} md={11}>
             <List
               classes={{
                 padding: classes.padding

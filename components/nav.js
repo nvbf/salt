@@ -3,10 +3,13 @@ import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 
 const links = [
-  { href: "http://norgestour.no/", label: "norgestour.no" },
+  { href: "http://norgestour.no/",
+    label: "norgestour.no",
+    src: '/static/norgestour.png' },
   {
     href: "https://www.profixio.com/fx/login.php?login_public=NVBF.NO.SVB",
-    label: "Cupassist"
+    label: "Cupassist",
+    src: "/static/profixio.png"
   }
 ].map(link => {
   link.key = `nav-link-${link.href}-${link.label}`;
@@ -25,10 +28,10 @@ const Nav = () => (
           </Link>
         </li>
         <ul>
-          {links.map(({ key, href, label }) => (
+          {links.map(({ key, href, src, label }) => (
             <li key={key}>
               <Link href={href}>
-                <a>{label}</a>
+                <a href={href}><img src={src} alt={label} height="30" /></a>
               </Link>
             </li>
           ))}
