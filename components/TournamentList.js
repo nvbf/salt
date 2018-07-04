@@ -69,6 +69,7 @@ class TournamentList extends React.Component {
     if (filters) {
       return JSON.parse(filters);
     }
+    return {};
   }
 
   resetFilters() {
