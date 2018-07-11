@@ -168,7 +168,8 @@ async function registerTeamForTournament(
     Spiller_2: player2,
     Klasse: klasse,
     Melding: "",
-    TransactionId: transactionId
+    TransactionId: transactionId,
+    email: email
   });
   return response;
 }
