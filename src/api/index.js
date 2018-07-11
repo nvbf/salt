@@ -151,7 +151,8 @@ async function registerTeamForTournament(
   klasse,
   player1,
   player2,
-  transactionId
+  transactionId,
+  email
 ) {
   log(
     JSON.stringify({
@@ -159,7 +160,8 @@ async function registerTeamForTournament(
       klasse,
       player1,
       player2,
-      transactionId
+      transactionId,
+      email
     })
   );
   const response = await apiRegisterTeamForTournament({

@@ -259,7 +259,8 @@ app.prepare().then(() => {
           klasse,
           player1,
           player2,
-          result.transaction.id
+          result.transaction.id,
+          req.body.email
         )
           .then(apiRes => {
             const withPaymentStatus = Object.assign(
