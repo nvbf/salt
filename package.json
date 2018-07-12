@@ -1,7 +1,8 @@
 {
   "name": "salt",
   "scripts": {
-    "dev": "nodemon -w src/ --exec 'npm run transpile-server && npm run dev-start'",
+    "dev":
+      "nodemon -w src/ --exec 'npm run transpile-server && npm run dev-start'",
     "transpile-server": "babel src --out-dir dist",
     "dev-start": "node --trace-warnings dist/server",
     "postinstall": "npm run build",
