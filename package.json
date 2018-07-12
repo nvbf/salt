@@ -27,6 +27,7 @@
     "braintree-dropin-react": "^0.1.0",
     "braintree-web-drop-in": "^1.11.0",
     "circular-json": "^0.5.4",
+    "cypress": "^3.0.1",
     "debug": "^3.1.0",
     "dotenv": "^6.0.0",
     "downshift": "^2.0.10",
