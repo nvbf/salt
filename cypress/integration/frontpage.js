@@ -1,5 +1,3 @@
-import { cy } from "cypress";
-
 describe("Frontpage", function() {
   it("Have 3 button", function() {
     cy.visit(`/`);
