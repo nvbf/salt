@@ -102,29 +102,33 @@ class TournamentPage extends React.Component {
 
     return (
       <Main>
-        {renderTournament(tournament, this.props.classes, this.onClick)}
-        {!Boolean(tournamentResult.length > 0) && (
-          <Typography variant="display2">Seeding</Typography>
-        )}
-        {!Boolean(tournamentResult.length > 0) &&
-          tournament.classes.map((klass, index) => {
-            if (klass.teams.length === 0) {
-              return null;
-            }
-            return (
-              <React.Fragment key={index}>
-                <Typography variant="display1">{klass["klasse"]}</Typography>
-                {!(clicks > 5) && renderSeeding(klass)}
-                {clicks > 5 && renderSeedingCopyPaste(klass)}
-              </React.Fragment>
-            );
-          })}
-        {Boolean(tournamentResult.length > 0) && (
-          <>
-            <Typography variant="display2">Resultat</Typography>
-            {tournamentResult.map(klasse => renderResultList(klasse))}
-          </>
-        )}
+        <section>
+          {renderTournament(tournament, this.props.classes, this.onClick)}
+        </section>
+        <section>
+          {!Boolean(tournamentResult.length > 0) && (
+            <Typography variant="display2">Seeding</Typography>
+          )}
+          {!Boolean(tournamentResult.length > 0) &&
+            tournament.classes.map((klass, index) => {
+              if (klass.teams.length === 0) {
+                return null;
+              }
+              return (
+                <section key={index}>
+                  <Typography variant="display1">{klass["klasse"]}</Typography>
+                  {!(clicks > 5) && renderSeeding(klass)}
+                  {clicks > 5 && renderSeedingCopyPaste(klass)}
+                </section>
+              );
+            })}
+          {Boolean(tournamentResult.length > 0) && (
+            <section>
+              <Typography variant="display2">Resultat</Typography>
+              {tournamentResult.map(klasse => renderResultList(klasse))}
+            </section>
+          )}
+        </section>
       </Main>
     );
   }
@@ -132,7 +136,7 @@ class TournamentPage extends React.Component {
 
 function renderTournament(tournament, classes, onClick) {
   return (
-    <main>
+    <section>
       <h1>{tournament.name}</h1>
       <Paper onClick={onClick} className={classes.tournamentInfoContainer}>
         <table>
@@ -198,7 +202,7 @@ function renderTournament(tournament, classes, onClick) {
           </tbody>
         </table>
       </Paper>
-    </main>
+    </section>
   );
 }
 
@@ -230,9 +234,9 @@ function getShortName(player) {
   if (nameParts.length == 1) {
     return nameParts[0];
   }
-  
+
   let nameString = nameParts[0][0] + ". ";
-  nameString += nameParts[nameParts.length-1];
+  nameString += nameParts[nameParts.length - 1];
   return nameString;
 }
 
@@ -243,7 +247,8 @@ function renderSeedingCopyPaste(klass) {
       <TableBody>
         {teams.map((team, index) => {
           const players = team.teamName.split("/");
-          const teamNameShort = getShortName(players[0]) + " / " + getShortName(players[1]);
+          const teamNameShort =
+            getShortName(players[0]) + " / " + getShortName(players[1]);
           return (
             <TableRow key={index}>
               <TableCell>{teamNameShort}</TableCell>

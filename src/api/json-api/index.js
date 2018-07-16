@@ -4,7 +4,6 @@ import { rollbar } from "../../utils/rollbar";
 const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
 
-const API_URL = process.env.API_URL;
 const API_URL2 = process.env.API_URL2;
 
 async function apiRegisterTeamForTournament(data) {
