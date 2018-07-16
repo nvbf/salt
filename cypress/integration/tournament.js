@@ -1,7 +1,7 @@
 describe("Tournament - Øst Beach Tour #1", function() {
   it("section header and default size is correct", function() {
     cy.visit(`/tournaments/199`);
-    cy.wait(3);
+    cy.wait(16000);
     cy.get("h1").contains("Øst Beach Tour #1");
     cy.contains("Klasse K");
     cy.contains("Klasse M");
@@ -21,8 +21,9 @@ describe("Tournament - Øst Beach Tour #1", function() {
     cy.contains("2018-05-05T00:00:00.000Z");
     cy.contains("2018-05-03T00:00:00.000Z");
     cy.get("main > section > section > table > tbody").should("have.length", 6);
-    cy
-      .get("main > section > section > table > tbody > tr")
-      .should("have.length", 34);
+    cy.get("main > section > section > table > tbody > tr").should(
+      "have.length",
+      34
+    );
   });
 });
