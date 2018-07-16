@@ -1,9 +1,13 @@
 #!/bin/sh
-# This sctips ssumes localhost:3001
-set -eu
+# This scripts assumes localhost:3001
 
 SITE="http://localhost:3001"
+CYPRESS_ARGUMENT="$1"
 
+if [ -z $CYPRESS_ARGUMENT ]; then
+    echo "Please provide an argument to cypress to run. e.g run or open or another valid cypress command"
+    exit 2
+fi
 npm run build 
 npm run start &
 PID=$!
@@ -15,10 +19,8 @@ until $(curl --output /dev/null --silent --head --fail $SITE); do
    printf '.'
    sleep 1
 done
-set +e
 cypress $1
 EXIT_CODE=$?
-set -e
 echo "Killing app"
 pkill --pgroup $PGID
 exit $EXIT_CODE

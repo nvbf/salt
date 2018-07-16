@@ -12,12 +12,13 @@ const styles = theme => ({
   }
 });
 
+// content is basicly main
 class Content extends React.Component {
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={classes.contentContainer}>{this.props.children}</div>
+      <main className={classes.contentContainer}>{this.props.children}</main>
     );
   }
 }

@@ -2,7 +2,6 @@ import React from "react";
 import debug from "debug";
 import { withStyles } from "@material-ui/core/styles";
 
-
 import withRoot from "../src/withRoot";
 import Main from "../components/Main";
 import { getTournamentsInTheFuture } from "../src/api";
@@ -74,11 +73,7 @@ class Tournaments extends React.Component {
       return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }
 
-    return (
-      <React.Fragment>
-        <TournamentList tournaments={tournaments} />
-      </React.Fragment>
-    );
+    return <TournamentList tournaments={tournaments} />;
   }
 }
 
