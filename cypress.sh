@@ -8,8 +8,8 @@ if [ -z $CYPRESS_ARGUMENT ]; then
     echo "Please provide an argument to cypress to run. e.g run or open or another valid cypress command"
     exit 2
 fi
-npm run build 
-npm run start &
+NODE_ENV="production" npm run build 
+NODE_ENV="production" npm run start &
 PID=$!
 PGID=$(ps axjf --sort=-pid | egrep $PID | head -1 | tr -s - " "  | cut -d " " -f 3)
 echo "PGID: $PGID"
