@@ -70,13 +70,14 @@ class TournamentListItem extends React.Component {
                   </Typography>
                 </ListItem>
               )}
-              {isTournamentDateOver(endDate) && classesAsText && (
-                <ListItem dense>
-                  <Typography variant="body1">
-                    Klasser: {classesAsText.split(",").join(", ")}
-                  </Typography>
-                </ListItem>
-              )}
+              {isTournamentDateOver(endDate) &&
+                classesAsText && (
+                  <ListItem dense>
+                    <Typography variant="body1">
+                      Klasser: {classesAsText.split(",").join(", ")}
+                    </Typography>
+                  </ListItem>
+                )}
             </List>
             {renderTournamentDetailLink(tournamentId, endDate)}
             {renderSignupLink(tournamentId, deadline)}

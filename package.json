@@ -67,9 +67,9 @@
     ]
   },
   "devDependencies": {
-    "@babel/cli": "7.0.0-beta.53",
-    "@babel/core": "7.0.0-beta.53",
-    "@babel/runtime": "7.0.0-beta.53",
+    "@babel/cli": "7.0.0-beta.42",
+    "@babel/core": "7.0.0-beta.42",
+    "@babel/runtime": "7.0.0-beta.42",
     "@storybook/addon-actions": "3.4.8",
     "@storybook/addon-links": "3.4.8",
     "@storybook/addon-viewport": "3.4.8",

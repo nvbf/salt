@@ -1,5 +1,7 @@
 # Salt
 
+[![CircleCI](https://circleci.com/gh/nvbf/salt.svg?style=svg)](https://circleci.com/gh/nvbf/salt)
+
 ### Description
 
 Beachvolleyballtournament signup and payment system.
@@ -11,7 +13,7 @@ you need to rename `.env.sample` to `.env` and fill inn all the blanks with corr
 then you are ready to go:
 
 ```
-npm install 
+npm install
 npm run dev
 ```
 
