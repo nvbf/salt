@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:8.11.3
+      - image: circleci/node:8.11.3-stretch
     working_directory: ~/repo
 
     steps:
@@ -27,6 +27,8 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package-lock.json" }}
-        
+
+      # See what version is in used
+      - run: node -v  && npm -v        
       # run tests!
       - run: npm test
