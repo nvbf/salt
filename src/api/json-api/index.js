@@ -141,6 +141,13 @@ async function apiGetPoints() {
   return data;
 }
 
+async function apiPointsFromTournament(id) {
+  log(`request URL: ${API_URL2}/tournaments/${id}/results`);
+  const result = await axios.get(`${API_URL2}/tournaments/${id}/results`);
+  const data = getData(result);
+  return data;
+}
+
 function getData(result) {
   if (result.status !== 200) {
     log(`Did not get a 200 response from API, details: ${result}`);
@@ -160,5 +167,6 @@ module.exports = {
   apiGetPointsFromPlayer,
   apiGetPoints,
   apiRegisterTeamForTournament,
-  apiGetTournamentsthatIsFinished
+  apiGetTournamentsthatIsFinished,
+  apiPointsFromTournament
 };

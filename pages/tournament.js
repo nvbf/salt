@@ -300,7 +300,7 @@ function renderSeeding(klass) {
 function renderResultList(result) {
   return (
     <section>
-      <Typography variant="display1">{result["klasse"]}</Typography>
+      <Typography variant="display1">{result["class"]}</Typography>
       <Table>
         <TableHead>
           <TableRow>

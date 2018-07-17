@@ -26,4 +26,14 @@ describe("Tournament - Øst Beach Tour #1", function() {
       34
     );
   });
+
+  it("section header and default size is correct", function() {
+    cy.visit(`/tournaments/234`);
+    cy.wait(16000);
+    cy.get("main > section > section > table > tbody").should("have.length", 6);
+    cy.get("main > section > section > table > tbody > tr").should(
+      "have.length",
+      34
+    );
+  });
 });
