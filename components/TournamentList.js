@@ -1,6 +1,6 @@
 import React from "react";
 import debug from "debug";
-import {withStyles} from "@material-ui/core/styles";
+import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
@@ -10,8 +10,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import CardContent from "@material-ui/core/CardContent";
 
-
-import {TournamentListItem} from "../components/TournamentListItem";
+import { TournamentListItem } from "../components/TournamentListItem";
 
 const log = debug("TournamentsList");
 
@@ -31,12 +30,12 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit
   },
   filtersContainer: {
-    marginBottom: theme.spacing.unit*2
+    marginBottom: theme.spacing.unit * 2
   },
   filterItem: {
-    marginRight: theme.spacing.unit*2,
-    marginBottom: theme.spacing.unit*2,
-    display: 'inline-block'
+    marginRight: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 2,
+    display: "inline-block"
   }
 });
 
@@ -49,7 +48,7 @@ class TournamentList extends React.Component {
       tournamentTypes: [],
       tournamentClasses: [],
       tournamentRegions: []
-    }
+    };
 
     this.toggleViewFilters = this.toggleViewFilters.bind(this);
   }
@@ -67,7 +66,7 @@ class TournamentList extends React.Component {
   }
 
   loadFilters() {
-    const filters = localStorage.getItem('tournamentFilters');
+    const filters = localStorage.getItem("tournamentFilters");
     if (filters) {
       return JSON.parse(filters);
     }
@@ -79,22 +78,22 @@ class TournamentList extends React.Component {
       tournamentTypes: [],
       tournamentClasses: [],
       tournamentRegions: []
-    })
+    });
   }
 
   saveFilters() {
-    const { tournamentTypes, classes, tournamentRegions } = this.state
+    const { tournamentTypes, classes, tournamentRegions } = this.state;
     const filters = {
       tournamentTypes: tournamentTypes,
       tournamentClasses: tournamentClasses,
       tournamentRegions: tournamentRegions
     };
 
-    localStorage.setItem('tournamentFilters', JSON.stringify(filters));
+    localStorage.setItem("tournamentFilters", JSON.stringify(filters));
   }
 
   toggleViewFilters() {
-    const  { showFilters } = this.state;
+    const { showFilters } = this.state;
     this.setState({
       showFilters: !showFilters
     });
@@ -107,13 +106,11 @@ class TournamentList extends React.Component {
 
     if (filter.length == 0) {
       filter.push(type);
-    }
-    else {
+    } else {
       const pos = filter.indexOf(type);
       if (pos >= 0) {
         filter.splice(pos, 1);
-      }
-      else {
+      } else {
         filter.push(type);
       }
     }
@@ -125,7 +122,6 @@ class TournamentList extends React.Component {
     this.saveFilters();
   }
 
-
   renderFilterByKey(stateKey, tournamentKey) {
     const { classes, tournaments } = this.props;
 
@@ -136,57 +132,66 @@ class TournamentList extends React.Component {
 
     const toggleFilter = this.toggleFilter.bind(this);
 
-
-    const allTypes = Object.keys( tournaments.reduce ( (all, tournament) => {
-      all[tournament[tournamentKey]] = true;
-      return all;
-    }, {})).sort();
+    const allTypes = Object.keys(
+      tournaments.reduce((all, tournament) => {
+        all[tournament[tournamentKey]] = true;
+        return all;
+      }, {})
+    ).sort();
 
     console.log(allTypes);
-    return allTypes.map ( function (type, index) {
+    return allTypes.map(function(type, index) {
       const elmId = `${tournamentKey}_filter_${index}`;
-      const checked = currentTypes.indexOf(type) >= 0 || currentTypes.length == 0;
-      return <div className={classes.filterItem}>
-        <FormControlLabel
-          control={
-            <Checkbox color="primary" id={elmId} key={index} type="checkbox" checked={checked} onChange={e => {
-              toggleFilter(stateKey, type)
-            }} />
-          }
-          label={type}
-        />
-      </div>
+      const checked =
+        currentTypes.indexOf(type) >= 0 || currentTypes.length == 0;
+      return (
+        <div className={classes.filterItem}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                color="primary"
+                id={elmId}
+                key={index}
+                type="checkbox"
+                checked={checked}
+                onChange={e => {
+                  toggleFilter(stateKey, type);
+                }}
+              />
+            }
+            label={type}
+          />
+        </div>
+      );
     });
   }
 
   renderFilters() {
-    const {classes } = this.props;
-    return <Card className={classes.filtersContainer}>
-      <CardContent>
-      <Typography variant="headline">Filter</Typography>
-      {/*<Typography variant="subheading">Klasser</Typography>
+    const { classes } = this.props;
+    return (
+      <Card className={classes.filtersContainer}>
+        <CardContent>
+          <Typography variant="headline">Filter</Typography>
+          {/*<Typography variant="subheading">Klasser</Typography>
       {
         this.renderClassesFilter()
       }
       */}
-      <Typography variant="subheading">Turneringstype</Typography>
-      {
-        this.renderFilterByKey("tournamentTypes", "tournamentType")
-      }
-      <Typography variant="subheading">Region</Typography>
-      {
-        this.renderFilterByKey("tournamentRegions", "region")
-      }
-      </CardContent>
-    </Card>
+          <Typography variant="subheading">Turneringstype</Typography>
+          {this.renderFilterByKey("tournamentTypes", "tournamentType")}
+          <Typography variant="subheading">Region</Typography>
+          {this.renderFilterByKey("tournamentRegions", "region")}
+        </CardContent>
+      </Card>
+    );
   }
 
   render() {
-    const {classes, tournaments = []} = this.props;
+    const { classes, tournaments = [] } = this.props;
     const { showFilters, tournamentTypes, tournamentRegions } = this.state;
 
     let numFilteredTournaments = 0;
-    const filteredTournaments = tournaments.filter ( tournament => {
+    const filteredTournaments = tournaments.filter(tournament => {
       if (tournamentTypes.length > 0) {
         if (tournamentTypes.indexOf(tournament.tournamentType) < 0) {
           numFilteredTournaments++;
@@ -204,13 +209,22 @@ class TournamentList extends React.Component {
 
     return (
       <React.Fragment>
-        <div style={{display: 'flex'}}>
-        <Typography variant="display1" className={classes.tournamentTitle} style={{flex: 1}}>
-          Turneringer
-        </Typography>
-          <IconButton color="primary" onClick={e => {
-            this.toggleViewFilters()
-          }}><Icon>filter_list</Icon></IconButton>
+        <div style={{ display: "flex" }}>
+          <Typography
+            variant="display1"
+            className={classes.tournamentTitle}
+            style={{ flex: 1 }}
+          >
+            Turneringer
+          </Typography>
+          <IconButton
+            color="primary"
+            onClick={e => {
+              this.toggleViewFilters();
+            }}
+          >
+            <Icon>filter_list</Icon>
+          </IconButton>
         </div>
         {showFilters && this.renderFilters()}
         <Paper className={classes.tournamentPaper}>
@@ -223,21 +237,21 @@ class TournamentList extends React.Component {
                   data={Object.assign(
                     {},
                     tournament,
-                    {index},
-                    {displayDivider}
+                    { index },
+                    { displayDivider }
                   )}
                 />
               );
             })}
           </ul>
         </Paper>
-        {numFilteredTournaments > 0 && <p>{numFilteredTournaments} turneringer ble filtrert bort</p>}
+        {numFilteredTournaments > 0 && (
+          <p>{numFilteredTournaments} turneringer ble filtrert bort</p>
+        )}
       </React.Fragment>
     );
   }
 }
 
-
-
 const styledTournamentList = withStyles(styles)(TournamentList);
-export {styledTournamentList as TournamentList};
+export { styledTournamentList as TournamentList };
