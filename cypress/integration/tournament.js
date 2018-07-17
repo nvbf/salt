@@ -1,5 +1,5 @@
 describe("Tournament - Øst Beach Tour #1", function() {
-  it("section header and default size is correct", function() {
+  it("Finished Tournaments", function() {
     cy.visit(`/tournaments/199`);
     cy.wait(16000);
     cy.get("h1").contains("Øst Beach Tour #1");
@@ -20,20 +20,22 @@ describe("Tournament - Øst Beach Tour #1", function() {
     cy.contains("Påmelding stengt");
     cy.contains("2018-05-05T00:00:00.000Z");
     cy.contains("2018-05-03T00:00:00.000Z");
-    cy.get("main > section > section > table > tbody").should("have.length", 6);
-    cy.get("main > section > section > table > tbody > tr").should(
+    cy.contains("Resultat");
+    cy.get("main > section > section > section > table > tbody").should(
+      "have.length",
+      6
+    );
+    cy.get("main > section > section > section > table > tbody > tr").should(
       "have.length",
       34
     );
   });
 
-  it("section header and default size is correct", function() {
-    cy.visit(`/tournaments/234`);
+  it("Open Tournament", function() {
+    cy.visit(`/tournaments/317`);
     cy.wait(16000);
-    cy.get("main > section > section > table > tbody").should("have.length", 6);
-    cy.get("main > section > section > table > tbody > tr").should(
-      "have.length",
-      34
-    );
+    cy.contains("Seeding");
+    cy.contains("Meld deg på");
+    cy.contains("2018-08-27T00:00:00.000Z");
   });
 });
