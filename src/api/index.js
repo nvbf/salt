@@ -47,6 +47,9 @@ async function getTournamentResults(tournamentId) {
     return getJson(`/api/tournaments/${tournamentId}/results`);
   }
   const tournamentResult = await getPointsFromTournament(tournamentId);
+  if (!tournamentResult || tournamentResult.length === 0) {
+    return [];
+  }
   log(`points ${JSON.stringify(tournamentResult)}`);
   const players = await getPlayers();
   // log(`players ${players.length}`);
