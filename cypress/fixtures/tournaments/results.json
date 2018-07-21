@@ -1,0 +1,68 @@
+{
+  "tournamentId": 237,
+  "name": "NT Lofoten Open",
+  "endDate": "2018-07-21T22:00:00.000Z",
+  "season": "2018",
+  "tournamentType": "NT Open",
+  "tournamentIdProfixio": 23818,
+  "shortNameProfixio": "nt_lofoten_open_18",
+  "startDate": "2018-07-20T22:00:00.000Z",
+  "deadline": "2018-07-16T21:59:00.000Z",
+  "tournamentDirector": "Stian Zakariassen",
+  "email": "stian.zakariassen@securitas.no",
+  "phone": "97559521",
+  "description": "",
+  "playerVenue": "Hauklandsstranden",
+  "paymentInfo": "",
+  "organizer": "",
+  "region": "Alle/Nasjonal",
+  "classes": [
+    {
+      "klasse": "K",
+      "maxNrOfTeams": 999,
+      "price": 650,
+      "teams": [
+        {
+          "teamName": "Josefine Sørland Øines / Marte Iversen Grytøyr",
+          "player1Id": 2948,
+          "player2Id": 3396,
+          "player1Points": 360,
+          "player2Points": 960,
+          "teamPoints": 1320
+        },
+        {
+          "teamName": "Ingrid Lovise Grande / Emily Larsen",
+          "player1Id": 26577,
+          "player2Id": 26576,
+          "player1Points": 0,
+          "player2Points": 0,
+          "teamPoints": 0
+        },
+        {
+          "teamName": "Oda Hveem / Kristiina Öis",
+          "player1Id": 2918,
+          "player2Id": 2584,
+          "player1Points": "",
+          "player2Points": "",
+          "teamPoints": ""
+        }
+      ]
+    },
+    {
+      "klasse": "M",
+      "maxNrOfTeams": 999,
+      "price": 650,
+      "teams": [
+        {
+          "teamName": "Geir Sindre Eithun / Sindre Alexander Sørenssen",
+          "player1Id": 1984,
+          "player2Id": 3203,
+          "player1Points": "",
+          "player2Points": "",
+          "teamPoints": ""
+        }
+      ]
+    }
+  ],
+  "classesAsText": "K,M"
+}
