@@ -59,6 +59,10 @@ class RankingPage extends React.Component {
     });
   }
 
+  componentDidMount() {
+    window.retryGetRanking = this.retryGetRanking;
+  }
+
   async retryGetRanking() {
     this.setState(Object.assign({}, this.defaultState));
     this.setState(await getRankingAsProps());

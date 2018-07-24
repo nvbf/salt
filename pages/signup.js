@@ -1,7 +1,6 @@
 import React from "react";
 import debug from "debug";
 import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import StepChooseClass from "../components/StepChooseClass";
 import StepChoosePlayers from "../components/StepChoosePlayers";
