@@ -1,0 +1,122 @@
+[
+  {
+    "class": "Kvinner",
+    "teams": [
+      { "teamNameShort": "S. Balk / M. Duesund", "place": 1, "points": 300 },
+      { "teamNameShort": "V. Doan / V. Doan", "place": 2, "points": 0 },
+      { "teamNameShort": "M. Dahlen / O. Lindbo", "place": 3, "points": 0 },
+      { "teamNameShort": "H. Rødseth / H. Lunde", "place": 4, "points": 0 },
+      { "teamNameShort": "M. Frich / A. Garder", "place": 5, "points": 180 }
+    ]
+  },
+  {
+    "class": "Menn",
+    "teams": [
+      {
+        "teamNameShort": "N. Khanevski / H. Dybfest",
+        "place": 1,
+        "points": 300
+      },
+      {
+        "teamNameShort": "K. Søllesvik / L. Bruvik",
+        "place": 2,
+        "points": 270
+      },
+      { "teamNameShort": "E. Polden / M. Lindqvist", "place": 3, "points": 0 },
+      { "teamNameShort": "M. Holt / D. Løvvik", "place": 3, "points": 240 },
+      { "teamNameShort": "E. Morten / E. Morten", "place": 4, "points": 210 },
+      {
+        "teamNameShort": "Ø. Hjellset / T. Jøraholmen",
+        "place": 5,
+        "points": 180
+      },
+      {
+        "teamNameShort": "M. Helland / M. Helgerud",
+        "place": 5,
+        "points": 180
+      },
+      {
+        "teamNameShort": "D. Medarov / I. Milosevic",
+        "place": 8,
+        "points": 156
+      }
+    ]
+  },
+  {
+    "class": "Gutter under 15",
+    "teams": [
+      {
+        "teamNameShort": "O. Gundersen / C. Åserud Spidsø",
+        "place": 1,
+        "points": 300
+      },
+      {
+        "teamNameShort": "M. Roness / J. Kjemperud",
+        "place": 2,
+        "points": 270
+      },
+      {
+        "teamNameShort": "J. Gundersen / F. Tjetland",
+        "place": 3,
+        "points": 0
+      },
+      { "teamNameShort": "S. Kjemperud / T. Roness", "place": 4, "points": 0 }
+    ]
+  },
+  {
+    "class": "Gutter under 19",
+    "teams": [
+      { "teamNameShort": "E. Winje / J. Sørensen", "place": 1, "points": 300 },
+      {
+        "teamNameShort": "H. Solheim / H. Berggreen",
+        "place": 2,
+        "points": 270
+      },
+      {
+        "teamNameShort": "S. Klungsøyr / M. Helgerud",
+        "place": 3,
+        "points": 240
+      },
+      { "teamNameShort": "E. Morten / E. Morten", "place": 4, "points": 210 },
+      {
+        "teamNameShort": "M. Erlandsen / B. Tjetland",
+        "place": 5,
+        "points": 180
+      },
+      { "teamNameShort": "C. Balk / S. Pettersen", "place": 6, "points": 171 },
+      {
+        "teamNameShort": "K. Qvale-Seterelv / N. Brende",
+        "place": 7,
+        "points": 165
+      }
+    ]
+  },
+  {
+    "class": "Jenter under 15",
+    "teams": [
+      { "teamNameShort": "I. Roness / I. Roness", "place": 1, "points": 300 },
+      { "teamNameShort": "A. Yngsdal / A. Yngsdal", "place": 2, "points": 270 },
+      { "teamNameShort": "I. Sværk / M. Saugestad", "place": 3, "points": 240 },
+      { "teamNameShort": "S. Klungsøyr / M. Grøterud", "place": 4, "points": 0 }
+    ]
+  },
+  {
+    "class": "Jenter under 19",
+    "teams": [
+      { "teamNameShort": "I. Roness / I. Roness", "place": 1, "points": 300 },
+      { "teamNameShort": "M. Duesund / M. Duesund", "place": 1, "points": 300 },
+      { "teamNameShort": "V. Doan / V. Doan", "place": 2, "points": 0 },
+      { "teamNameShort": "H. Harnes / H. Harnes", "place": 2, "points": 0 },
+      {
+        "teamNameShort": "T. Høklingen / J. Håvaldsrud",
+        "place": 4,
+        "points": 210
+      },
+      {
+        "teamNameShort": "S. Torsvik / M. Rein-Larsen",
+        "place": 6,
+        "points": 0
+      }
+    ]
+  }
+]

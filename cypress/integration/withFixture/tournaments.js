@@ -1,32 +1,26 @@
-import { validateTournamentPage } from "../tests/tournaments";
-const deferred = require("../deferred");
+import { validateTournamentsListPage } from "../../asserts/tournaments";
+import { createStub } from "../../stub";
 
 describe("Tournaments", function() {
   it("Tournament list is displaying with info and length over 10", function() {
     cy.server();
-    this.fetchTournamentsDeferred = deferred();
-    cy.fixture("tournaments/future").then(tournaments => {
-      this.fetchTournamentsDeferred.resolve({
-        json() {
-          return tournaments;
-        },
-        status: 200,
-        ok: true
-      });
+
+    cy.clock(1532903909650);
+
+    const tournamentsStub = createStub({
+      apiPath: "/api/tournaments/future",
+      fixturePath: "tournaments/future"
     });
 
     cy.visit("/tournaments", {
       onBeforeLoad(win) {
-        cy.stub(win, "fetch")
-          .withArgs("/api/tournaments/future")
-          .as("tournamentsResponse")
-          .returns(this.fetchTournamentsDeferred.promise);
+        const stubbedFetch = cy.stub(win, "fetch");
+        tournamentsStub(stubbedFetch);
       }
     });
 
     // Every thing is done with SSR. Let run the same logic on the frontend to be able to stub the XHR requests
     cy.window().then(window => window.retryGetTournaments());
-    cy.wait(3000);
-    validateTournamentPage();
+    validateTournamentsListPage();
   });
 });

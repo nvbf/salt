@@ -1,7 +1,8 @@
-import { createStub } from "../stub";
+import { createStub } from "../../stub";
+import moment from "moment";
 
 describe("Signup", function() {
-  it("Signup to an upen tournament ", function() {
+  it("Signup to an open tournament ", function() {
     cy.server();
 
     const playerStub = createStub({
@@ -10,12 +11,16 @@ describe("Signup", function() {
     });
     const tournamentStub = createStub({
       apiPath: "/api/tournaments/238",
-      fixturePath: "tournaments/tournament"
+      fixturePath: "signups/signup-tournament",
+      handleRes: res => {
+        res.deadline = moment().add(1, "days");
+        return res;
+      }
     });
 
     const checkoutStub = createStub({
       apiPath: "/tournaments/checkout/",
-      fixturePath: "tournaments/checkout"
+      fixturePath: "signups/checkout-ok"
     });
 
     cy.visit("/signup/238", {
@@ -27,10 +32,12 @@ describe("Signup", function() {
       }
     });
 
+    //Choose class to participate in
     cy.get("div[role=button]").click();
     cy.get("li[data-value=M][role=option]").click();
     cy.contains("button", "Neste").click();
 
+    // Choose players to signup
     cy.get('input[placeholder="Finn Spiller 1"]').type(
       "Håkon Tveitan{downarrow}{enter}"
     );
@@ -87,12 +94,60 @@ describe("Signup", function() {
   });
 
   // TODO
-  // it("Signup to an full tournament ", function() {
-  //     cy.visit(`/signup/238`);
-  // });
+  it("Signup to an closed tournament", function() {
+    cy.server();
 
-  // TODO
-  // it("Signup to an closed tournament ", function() {
-  //     cy.visit(`/signup/238`);
-  // });
+    const playerStub = createStub({
+      apiPath: "/api/players",
+      fixturePath: "players"
+    });
+    const tournamentStub = createStub({
+      apiPath: "/api/tournaments/238",
+      fixturePath: "signups/signup-tournament",
+      handleRes: res => {
+        res.deadline = moment().subtract(1, "days");
+        return res;
+      }
+    });
+
+    cy.visit("/signup/238", {
+      onBeforeLoad(win) {
+        const stubbedFetch = cy.stub(win, "fetch");
+        playerStub(stubbedFetch);
+        tournamentStub(stubbedFetch);
+      }
+    });
+
+    cy.contains("Påmeldinga er stengt");
+  });
+
+  it("Signup to an full tournament ", function() {
+    const playerStub = createStub({
+      apiPath: "/api/players",
+      fixturePath: "players"
+    });
+    const tournamentStub = createStub({
+      apiPath: "/api/tournaments/238",
+      fixturePath: "signups/signup-tournament",
+      handleRes: res => {
+        res.deadline = moment().add(1, "days");
+        // female class
+        res.classes[0].maxNrOfTeams = 7;
+        return res;
+      }
+    });
+
+    cy.visit("/signup/238", {
+      onBeforeLoad(win) {
+        const stubbedFetch = cy.stub(win, "fetch");
+        playerStub(stubbedFetch);
+        tournamentStub(stubbedFetch);
+      }
+    });
+
+    cy.get("div[role=button]").click();
+    cy.get("li[data-value=K][role=option]").click();
+    1;
+    cy.contains("Beklager, men denne klassen er full.");
+  });
 });

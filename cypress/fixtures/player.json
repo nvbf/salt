@@ -1,1 +1,9 @@
-{"playerId":2460,"personId":"8090440","profixioId":16149,"firstname":"Sindre Øye","lastname":"Svendby","klasse":"M","gender":"M"}
+{
+  "playerId": 2460,
+  "personId": "8090440",
+  "profixioId": 16149,
+  "firstname": "Sindre Øye",
+  "lastname": "Svendby",
+  "klasse": "M",
+  "gender": "M"
+}

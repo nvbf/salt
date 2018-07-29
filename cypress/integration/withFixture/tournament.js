@@ -1,21 +1,29 @@
-describe("Tournament - Øst Beach Tour #1", function() {
+import { createStub } from "../../stub";
+
+describe("Tournament - Finished", function() {
   it("Finished Tournaments", function() {
     cy.server();
-    cy.fixture("tournaments/tournament").as("tournamentJSON");
-    cy.route("GET", "/api/tournaments/199", "@tournamentJSON").as(
-      "tournamentResponse"
-    );
-    cy.route("GET", "/api/tournaments/199/results", "@tournamentResultJSON").as(
-      "tournamentResultResponse"
-    );
 
-    cy.visit(`/tournaments/199`);
+    const tournamentStub = createStub({
+      apiPath: "/api/tournaments/199",
+      fixturePath: "tournaments/tournament-finished"
+    });
 
-    //TODO:
-    //cy.window().then(window => window.retryGetTournament());
+    const resultStub = createStub({
+      apiPath: "/api/tournaments/199/results",
+      fixturePath: "tournaments/tournament-results"
+    });
 
-    cy.wait("@tournamentResponse", { timeout: 30000 });
-    cy.wait(16000);
+    cy.visit("/tournaments/199", {
+      onBeforeLoad(win) {
+        const stubbedFetch = cy.stub(win, "fetch");
+        tournamentStub(stubbedFetch);
+        resultStub(stubbedFetch);
+      }
+    });
+
+    // TODO: this is not needed yet because we have not implemented SSR on
+    // cy.window().then(window => window.retryGetTournament());
 
     cy.get("h1").contains("Øst Beach Tour #1");
     cy.contains("Klasse K");
@@ -33,8 +41,8 @@ describe("Tournament - Øst Beach Tour #1", function() {
     cy.contains("Start");
     cy.contains("Ikke oppgitt");
     cy.contains("Påmelding stengt");
-    cy.contains("2018-05-05T00:00:00.000Z");
-    cy.contains("2018-05-03T00:00:00.000Z");
+    cy.contains("2018-05-04T22:00:00.000Z");
+    cy.contains("2018-05-02T22:00:00.000Z");
     cy.contains("Resultat");
     cy.get("main > section > section > section > table > tbody").should(
       "have.length",
@@ -47,10 +55,31 @@ describe("Tournament - Øst Beach Tour #1", function() {
   });
 
   it("Open Tournament", function() {
-    cy.visit(`/tournaments/317`);
-    cy.wait(16000);
+    cy.server();
+    // intate the clock to 1.1.1970 so current date will always be in the future (https://docs.cypress.io/api/commands/clock.html#Usage)
+    cy.clock();
+
+    const tournamentStub = createStub({
+      apiPath: "/api/tournaments/317",
+      fixturePath: "tournaments/tournament-open-317"
+    });
+
+    const resultStub = createStub({
+      apiPath: "/api/tournaments/317/results",
+      fixturePath: "tournaments/tournament-result-317"
+    });
+
+    cy.visit("/tournaments/317", {
+      onBeforeLoad(win) {
+        const stubbedFetch = cy.stub(win, "fetch");
+
+        tournamentStub(stubbedFetch);
+        resultStub(stubbedFetch);
+      }
+    });
+
     cy.contains("Seeding");
     cy.contains("Meld deg på");
-    cy.contains("2018-08-27T00:00:00.000Z");
+    cy.contains("2018-08-26T22:00:00.000Z");
   });
 });

@@ -353,8 +353,6 @@ function getClassInfoFromClass(klass, classes) {
 
 function getPlayerIdsFromTournamentClass(tournament, klasse) {
   const chosenClassArray = tournament.classes.filter(tournament => {
-    console.log("!! - " + tournament["klasse"].toLowerCase());
-    console.log("## " + klasse["klasse"].toLowerCase());
     return tournament["klasse"].toLowerCase() == klasse["klasse"].toLowerCase();
   });
   const teams = chosenClassArray[0].teams;

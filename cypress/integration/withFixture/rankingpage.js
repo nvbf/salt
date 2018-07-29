@@ -1,5 +1,5 @@
-import { validateResultPage } from "../tests/rankingpage";
-const deferred = require("../deferred");
+import { validateResultPage } from "../../asserts/rankingpage";
+const deferred = require("../../deferred");
 
 describe("Rankingpage", function() {
   it("Tournament list is displaying with info and length over 10", function() {
