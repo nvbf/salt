@@ -35,5 +35,5 @@ jobs:
       # run tests!
       - run: npm test
 
-       - store_artifacts:
-          path: ~/repo/cypress/screenshots/
+      - store_artifacts:
+         path: ~/repo/cypress/screenshots/
