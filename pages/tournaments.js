@@ -42,7 +42,7 @@ class Tournaments extends React.Component {
   }
 
   componentDidMount() {
-    window.retryGetTournaments = this.retryGetTournaments;
+    window.retryHandler = this.retryGetTournaments;
   }
 
   static async getInitialProps() {
@@ -63,7 +63,7 @@ class Tournaments extends React.Component {
         error={error}
         errorDetails={errorDetails}
         loading={loading}
-        retryHandler={this.retryGetTournaments}
+        retryHandler={this.retryHandler}
       >
         {content}
       </Main>

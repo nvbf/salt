@@ -52,6 +52,10 @@ class PlayerPage extends React.Component {
     });
   }
 
+  componentDidMount() {
+    window.retryHandler = this.retryGetPlayers;
+  }
+
   static async getInitialProps({ asPath }) {
     return await getPlayerAsProps(asPath);
   }
