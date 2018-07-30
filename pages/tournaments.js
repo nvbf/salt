@@ -63,7 +63,7 @@ class Tournaments extends React.Component {
         error={error}
         errorDetails={errorDetails}
         loading={loading}
-        retryHandler={this.retryHandler}
+        retryHandler={this.retryGetTournaments}
       >
         {content}
       </Main>

@@ -20,7 +20,7 @@ describe("Tournaments", function() {
     });
 
     // Every thing is done with SSR. Let run the same logic on the frontend to be able to stub the XHR requests
-    cy.window().then(window => window.retryGetTournaments());
+    cy.window().then(window => window.retryHandler());
     validateTournamentsListPage();
   });
 });
