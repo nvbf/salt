@@ -56,9 +56,10 @@ class PlayerPage extends React.Component {
     return await getPlayerAsProps(asPath);
   }
 
-  retryGetPlayers() {
-    this.setState(this.defaultState);
-    this.setState(getPlayerAsProps(location.pathname));
+  async retryGetPlayers() {
+    this.setState(this.defaultState, async () => {
+      this.setState(await getPlayerAsProps(location.pathname));
+    });
   }
 
   render() {
@@ -151,13 +152,13 @@ async function getPlayerAsProps(pathname) {
     const player = await getPlayer(id);
     const points = await getPointsFromPlayer(id);
 
-    return { player, points, loading: false };
+    return { player, points, loading: false, error: false };
   } catch (err) {
     log(err);
     return {
       loading: false,
-      error: true,
-      errorDetails: CircularJSON.stringify(err)
+      error: true
+      // errorDetails: CircularJSON.stringify(err)
     };
   }
 }

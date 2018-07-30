@@ -1,25 +1,19 @@
 import { validateResultPage } from "../../asserts/rankingpage";
-const deferred = require("../../deferred");
+import { createStub } from "../../stub";
 
 describe("Rankingpage", function() {
-  it("Tournament list is displaying with info and length over 10", function() {
+  it("Rankinglist", function() {
     cy.server();
-    this.fetchTournamentsResultsDeferred = deferred();
-    cy.fixture("ranking").then(results => {
-      this.fetchTournamentsResultsDeferred.resolve({
-        json() {
-          return results;
-        },
-        status: 200,
-        ok: true
-      });
+
+    const rankingStub = createStub({
+      apiPath: "/api/ranking",
+      fixturePath: "ranking"
     });
 
     cy.visit("/ranking", {
       onBeforeLoad(win) {
-        cy.stub(win, "fetch")
-          .withArgs("/api/ranking")
-          .returns(this.fetchTournamentsResultsDeferred.promise);
+        const stubbedFetch = cy.stub(win, "fetch");
+        rankingStub(stubbedFetch);
       }
     });
 

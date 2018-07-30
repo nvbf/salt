@@ -8,6 +8,10 @@ const log = debug("salt:error");
 const styles = theme => ({});
 
 class ErrorComponent extends React.Component {
+  componentDidMount() {
+    window.retryHandler = this.props.retryHandler;
+  }
+
   render() {
     const { error, errorDetails, retryHandler } = this.props;
     log(`Error ${error} ${errorDetails}`);

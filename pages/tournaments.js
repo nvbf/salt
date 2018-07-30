@@ -73,7 +73,6 @@ class Tournaments extends React.Component {
   getContent() {
     const { tournaments = [], loading, error } = this.state;
     const { classes } = this.props;
-    console.log("STATE", this.state);
     if (tournaments.length == 0) {
       return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }

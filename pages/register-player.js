@@ -16,7 +16,7 @@ import withRoot from "../src/withRoot";
 import Main from "../components/Main";
 
 const CircularJSON = require("circular-json");
-const log = require("debug")("salt:player");
+const log = require("debug")("salt:register-player");
 
 // Set some styles here later:
 const styles = theme => ({

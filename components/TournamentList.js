@@ -82,7 +82,11 @@ class TournamentList extends React.Component {
   }
 
   saveFilters() {
-    const { tournamentTypes, classes, tournamentRegions } = this.state;
+    const {
+      tournamentTypes,
+      tournamentClasses,
+      tournamentRegions
+    } = this.state;
     const filters = {
       tournamentTypes: tournamentTypes,
       tournamentClasses: tournamentClasses,
@@ -100,8 +104,6 @@ class TournamentList extends React.Component {
   }
 
   toggleFilter(filterName, type) {
-    console.log(filterName);
-    console.log(this.state);
     const filter = this.state[filterName];
 
     if (filter.length == 0) {
@@ -127,9 +129,6 @@ class TournamentList extends React.Component {
 
     const currentTypes = this.state[stateKey] || [];
 
-    console.log(currentTypes);
-    console.log(this.state);
-
     const toggleFilter = this.toggleFilter.bind(this);
 
     const allTypes = Object.keys(
@@ -139,7 +138,6 @@ class TournamentList extends React.Component {
       }, {})
     ).sort();
 
-    console.log(allTypes);
     return allTypes.map(function(type, index) {
       const elmId = `${tournamentKey}_filter_${index}`;
       const checked =

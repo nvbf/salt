@@ -1,6 +1,11 @@
 import { createStub } from "../../stub";
 import moment from "moment";
 
+/**
+ * This test goes against braintree on the server side, so this could be more flaky then the other test,
+ * but we really want to test the signup process as production like as possible.
+ * So at this point in time, we believe this is the correct decision
+ */
 describe("Signup", function() {
   it("Signup to an open tournament ", function() {
     cy.server();
