@@ -1,5 +1,5 @@
 import axios from "axios";
-// import { rollbar } from "../../utils/rollbar";
+import { rollbar } from "../../utils/rollbar";
 
 const log = require("debug")("salt:src:api:json-api");
 const CircularJSON = require("circular-json");
@@ -62,11 +62,11 @@ async function apiGetRanking(klasse) {
       lastValue[currentValue.SpillerId] = {};
 
       if (playerArray.length === 0) {
-        // rollbar.warn(
-        //   `Seems like a mismatch on id between /players and /points ${CircularJSON.stringify(
-        //     currentValue
-        //   )}`
-        // );
+        rollbar.warn(
+          `Seems like a mismatch on id between /players and /points ${CircularJSON.stringify(
+            currentValue
+          )}`
+        );
         return lastValue;
       }
 

@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 
 /* eslint-disable import/first */
-// import { rollbar } from "./utils/rollbar";
+import { rollbar } from "./utils/rollbar";
 import { getTournamentClass } from "./utils/getTournamentClass";
 
 const api = require("./api");
@@ -92,7 +92,7 @@ const tournamentHandler = async (req, res, next) => {
 
 app.prepare().then(() => {
   const server = express();
-  // server.use(rollbar.errorHandler());
+  server.use(rollbar.errorHandler());
   var checkoutRoute = express.Router();
   checkoutRoute.use(express.json());
 
@@ -335,7 +335,6 @@ app.prepare().then(() => {
   server.listen(process.env.PORT || 3000, err => {
     if (err) throw err;
     log("Server ready on http://localhost:" + (process.env.PORT || 3000));
-    // rollbar.info(`Server starts on port ${process.env.PORT || 3000}`);
   });
 });
 
@@ -343,7 +342,7 @@ async function errorHandlerJson(handler, req, res, next) {
   try {
     return await handler(req, res, next);
   } catch (err) {
-    // rollbar.error(err);
+    rollbar.error(err);
     log(`Error in handler: ${err}, ${CircularJSON.stringify(err)}`);
     res.status(500).json({
       error: "Internal Server Error",
@@ -353,6 +352,6 @@ async function errorHandlerJson(handler, req, res, next) {
 }
 
 process.on("unhandledRejection", reason => {
-  // rollbar.error("unhandledRejection", reason);
+  rollbar.error("unhandledRejection", reason);
   process.exit(-1);
 });
