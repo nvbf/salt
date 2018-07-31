@@ -31,7 +31,7 @@ class Tournaments extends React.Component {
   constructor(props) {
     super(props);
     this.retryGetTournaments = this.retryGetTournaments.bind(this);
-    this.defaultState = { tournaments: [], loading: true, error: true };
+    this.defaultState = { tournaments: [], loading: true, error: false };
 
     const { tournaments, error, loading } = this.props;
     this.state = Object.assign({}, this.defaultState, {
@@ -41,13 +41,18 @@ class Tournaments extends React.Component {
     });
   }
 
+  componentDidMount() {
+    window.retryHandler = this.retryGetTournaments;
+  }
+
   static async getInitialProps() {
     return await getTournamentsAsProps();
   }
 
-  retryGetTournaments() {
+  async retryGetTournaments() {
     this.setState(this.defaultState);
-    this.setState(getTournamentsAsProps());
+    const newProps = await getTournamentsAsProps();
+    this.setState(newProps);
   }
 
   render() {
@@ -68,7 +73,6 @@ class Tournaments extends React.Component {
   getContent() {
     const { tournaments = [], loading, error } = this.state;
     const { classes } = this.props;
-
     if (tournaments.length == 0) {
       return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }
@@ -80,7 +84,7 @@ class Tournaments extends React.Component {
 async function getTournamentsAsProps() {
   try {
     const json = await getTournamentsInTheFuture();
-    return { tournaments: json, loading: false };
+    return { tournaments: json, error: false, loading: false };
   } catch (err) {
     log("Error in getting getTournamentsAsProps");
     log(err.name);

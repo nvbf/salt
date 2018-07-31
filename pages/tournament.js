@@ -1,5 +1,4 @@
 import React from "react";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import debug from "debug";
 import moment from "moment";

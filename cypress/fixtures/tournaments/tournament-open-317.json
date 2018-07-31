@@ -1,0 +1,28 @@
+{
+  "tournamentId": 317,
+  "name": "Koll Open LT 14",
+  "endDate": "2018-08-27T22:00:00.000Z",
+  "season": "2018",
+  "tournamentType": "LT",
+  "tournamentIdProfixio": 0,
+  "shortNameProfixio": "",
+  "startDate": "2018-08-27T22:00:00.000Z",
+  "deadline": "2018-08-26T22:00:00.000Z",
+  "tournamentDirector": "",
+  "email": "",
+  "phone": "",
+  "description": "",
+  "playerVenue": "Kringsjå",
+  "paymentInfo": "",
+  "organizer": "Koll",
+  "region": "Øst",
+  "classes": [
+    { "klasse": "GU15", "maxNrOfTeams": 999, "price": 0, "teams": [] },
+    { "klasse": "GU17", "maxNrOfTeams": 999, "price": 0, "teams": [] },
+    { "klasse": "GU19", "maxNrOfTeams": 999, "price": 0, "teams": [] },
+    { "klasse": "JU15", "maxNrOfTeams": 999, "price": 0, "teams": [] },
+    { "klasse": "JU17", "maxNrOfTeams": 999, "price": 0, "teams": [] },
+    { "klasse": "JU19", "maxNrOfTeams": 999, "price": 0, "teams": [] }
+  ],
+  "classesAsText": "GU15,GU17,GU19,JU15,JU17,JU19"
+}

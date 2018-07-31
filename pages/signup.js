@@ -1,7 +1,6 @@
 import React from "react";
 import debug from "debug";
 import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import StepChooseClass from "../components/StepChooseClass";
 import StepChoosePlayers from "../components/StepChoosePlayers";
@@ -354,8 +353,6 @@ function getClassInfoFromClass(klass, classes) {
 
 function getPlayerIdsFromTournamentClass(tournament, klasse) {
   const chosenClassArray = tournament.classes.filter(tournament => {
-    console.log("!! - " + tournament["klasse"].toLowerCase());
-    console.log("## " + klasse["klasse"].toLowerCase());
     return tournament["klasse"].toLowerCase() == klasse["klasse"].toLowerCase();
   });
   const teams = chosenClassArray[0].teams;

@@ -34,11 +34,10 @@ class StepChooseClass extends React.Component {
     const { tournamentClasses } = this.props;
     const fakeTournament = { classes: tournamentClasses };
     const klasse = event.target.value;
-    const {
-      teams: { lenght, maxNrOfTeams }
-    } = getTournamentClass(fakeTournament, klasse);
-    const full = length >= maxNrOfTeams;
-    // de not set state on defaultValue
+    const { teams, maxNrOfTeams } = getTournamentClass(fakeTournament, klasse);
+    const full = teams.length >= maxNrOfTeams;
+
+    // do not set state on defaultValue
     if (klasse == " ") {
       return;
     }
