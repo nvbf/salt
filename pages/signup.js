@@ -1,13 +1,12 @@
 import React from "react";
 import debug from "debug";
 import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import StepChooseClass from "../components/StepChooseClass";
 import StepChoosePlayers from "../components/StepChoosePlayers";
 import StepEmailReceipt from "../components/StepEmailReceipt";
 import StepPayment from "../components/StepPayment";
-
+import StepLicenseNotice from "../components/StepLicenseNotice";
 import Typography from "@material-ui/core/Typography";
 
 import Stepper from "@material-ui/core/Stepper";
@@ -42,7 +41,7 @@ class SignupPage extends React.Component {
     this.onSetReceiptEmail = this.onSetReceiptEmail.bind(this);
 
     this.onSignUp = this.onSignUp.bind(this);
-
+    this.onAccept = this.onAccept.bind(this);
     this.onGoBack = this.onGoBack.bind(this);
 
     this.handleErrorResponse = this.handleErrorResponse.bind(this);
@@ -64,7 +63,6 @@ class SignupPage extends React.Component {
   }
 
   onSetClass(className) {
-    console.log("onSetClass", className);
     const { activeStep, tournament, players } = this.state;
 
     const correctClass = getClassInfoFromClass(className, tournament.classes);
@@ -82,6 +80,13 @@ class SignupPage extends React.Component {
       priceToPay: correctClass.price,
       activeStep: activeStep + 1,
       players: filteredPlayers
+    });
+  }
+
+  onAccept() {
+    const { activeStep } = this.state;
+    this.setState({
+      activeStep: activeStep + 1
     });
   }
 
@@ -203,6 +208,7 @@ class SignupPage extends React.Component {
   }
 
   renderPaymentStatusError() {
+    const { name } = this.state.tournament;
     return (
       <Main>
         <h1> {name}</h1>
@@ -214,9 +220,7 @@ class SignupPage extends React.Component {
 
   signupExpired(tournament) {
     const { deadline } = tournament;
-    const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
-      .endOf("day")
-      .diff(moment.now());
+    const timeToDeadLine = moment(deadline).diff(moment.now());
     const signupAllowd = timeToDeadLine > 0;
     if (signupAllowd) {
       return false;
@@ -301,6 +305,15 @@ class SignupPage extends React.Component {
             </StepContent>
           </Step>
           <Step>
+            <StepLabel>Lisensbekreftelse</StepLabel>
+            <StepContent>
+              <StepLicenseNotice
+                onGoBack={this.onGoBack}
+                onAccept={this.onAccept}
+              />
+            </StepContent>
+          </Step>
+          <Step>
             <StepLabel>
               Kvittering på Epost
               {receiptEmail && <div>{receiptEmail}</div>}
@@ -331,7 +344,7 @@ class SignupPage extends React.Component {
 }
 
 function getClassInfoFromClass(klass, classes) {
-  const correctClass = classes.filter(klass1 => klass1["class"] === klass);
+  const correctClass = classes.filter(klass1 => klass1["klasse"] === klass);
   if (correctClass.length != 1) {
     log("getClassInfoFromClass problem", correctClass, classes, klass);
   }
@@ -339,9 +352,9 @@ function getClassInfoFromClass(klass, classes) {
 }
 
 function getPlayerIdsFromTournamentClass(tournament, klasse) {
-  const chosenClassArray = tournament.classes.filter(
-    tournament => tournament["class"] == klasse.class
-  );
+  const chosenClassArray = tournament.classes.filter(tournament => {
+    return tournament["klasse"].toLowerCase() == klasse["klasse"].toLowerCase();
+  });
   const teams = chosenClassArray[0].teams;
   const playerIdsNotFlat = teams.map(({ player1Id, player2Id }) => [
     player1Id,

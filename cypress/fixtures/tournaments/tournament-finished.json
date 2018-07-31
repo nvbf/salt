@@ -1,0 +1,336 @@
+{
+  "tournamentId": 199,
+  "name": "Øst Beach Tour #1",
+  "endDate": "2018-05-05T22:00:00.000Z",
+  "season": "2018",
+  "tournamentType": "RT Open",
+  "tournamentIdProfixio": "",
+  "shortNameProfixio": "",
+  "startDate": "2018-05-04T22:00:00.000Z",
+  "deadline": "2018-05-02T22:00:00.000Z",
+  "tournamentDirector": "",
+  "email": "",
+  "phone": "",
+  "description": "",
+  "playerVenue": "",
+  "paymentInfo": "",
+  "organizer": "",
+  "region": "Øst",
+  "classes": [
+    {
+      "klasse": "K",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Signe Marie Balk / Mathea Kristine Duesund",
+          "player1Id": 1875,
+          "player2Id": 3116,
+          "player1Points": 1848,
+          "player2Points": 1400,
+          "teamPoints": 3248
+        },
+        {
+          "teamName": "Victoria Doan / Hedda Egset Harnes",
+          "player1Id": 1966,
+          "player2Id": 2067,
+          "player1Points": 910,
+          "player2Points": 600,
+          "teamPoints": 1510
+        },
+        {
+          "teamName": "Hilde Naas Rødseth / Helene Lunde",
+          "player1Id": 3610,
+          "player2Id": 3947,
+          "player1Points": 1011,
+          "player2Points": 1560,
+          "teamPoints": 2571
+        },
+        {
+          "teamName": "Margrethe Olsbu Frich / Agnes Therese Larsdatter Garder",
+          "player1Id": 3672,
+          "player2Id": 2996,
+          "player1Points": 180,
+          "player2Points": 492,
+          "teamPoints": 672
+        },
+        {
+          "teamName": "Malene Dahlen / Oda Lindbo",
+          "player1Id": 4157,
+          "player2Id": 2783,
+          "player1Points": 0,
+          "player2Points": 90,
+          "teamPoints": 90
+        }
+      ]
+    },
+    {
+      "klasse": "M",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Kristoffer Son Søllesvik / Lars Østvold Bruvik",
+          "player1Id": 3541,
+          "player2Id": 3089,
+          "player1Points": 2424,
+          "player2Points": 1506,
+          "teamPoints": 3930
+        },
+        {
+          "teamName": "Erlend Polden / Mats Lindqvist",
+          "player1Id": 2646,
+          "player2Id": 3226,
+          "player1Points": 2280,
+          "player2Points": 942,
+          "teamPoints": 3222
+        },
+        {
+          "teamName": "Morten Holt / Daniel Løvvik",
+          "player1Id": 2905,
+          "player2Id": 3239,
+          "player1Points": 1380,
+          "player2Points": 1632,
+          "teamPoints": 3012
+        },
+        {
+          "teamName": "Øystein Hjellset / Timothy Jøraholmen",
+          "player1Id": 2900,
+          "player2Id": 4140,
+          "player1Points": 1056,
+          "player2Points": 636,
+          "teamPoints": 1692
+        },
+        {
+          "teamName": "Nikita Khanevski / Hans Erik Dybfest",
+          "player1Id": 2846,
+          "player2Id": 3489,
+          "player1Points": 3720,
+          "player2Points": 4260,
+          "teamPoints": 7980
+        },
+        {
+          "teamName": "Espen Kalvatn Morten / Birk Eidså Tjetland",
+          "player1Id": 2702,
+          "player2Id": 3041,
+          "player1Points": 450,
+          "player2Points": 642,
+          "teamPoints": 1092
+        },
+        {
+          "teamName": "Magnus Duesund Helland / Magnus Helgerud",
+          "player1Id": 2088,
+          "player2Id": 2084,
+          "player1Points": 750,
+          "player2Points": 2100,
+          "teamPoints": 2850
+        },
+        {
+          "teamName": "Dzhordzhe Medarov / Ivan Milosevic",
+          "player1Id": 2266,
+          "player2Id": 4141,
+          "player1Points": 1416,
+          "player2Points": 456,
+          "teamPoints": 1872
+        }
+      ]
+    },
+    {
+      "klasse": "GU15",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Mads Roness / Jonah Andre Kjemperud",
+          "player1Id": 4145,
+          "player2Id": 4146,
+          "player1Points": 780,
+          "player2Points": 780,
+          "teamPoints": 1560
+        },
+        {
+          "teamName": "Sebastian Kjemperud / Thomas Roness",
+          "player1Id": 4147,
+          "player2Id": 4148,
+          "player1Points": 0,
+          "player2Points": 0,
+          "teamPoints": 0
+        },
+        {
+          "teamName": "Jonatan Majak Gundersen / Falk Eidså Tjetland",
+          "player1Id": 4152,
+          "player2Id": 3042,
+          "player1Points": 390,
+          "player2Points": 80,
+          "teamPoints": 470
+        },
+        {
+          "teamName": "Oscar Majak Gundersen / Conrad Åserud Spidsø",
+          "player1Id": 4154,
+          "player2Id": 4155,
+          "player1Points": 980,
+          "player2Points": 370,
+          "teamPoints": 1350
+        }
+      ]
+    },
+    {
+      "klasse": "GU19",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Kasper Qvale-Seterelv / Nickolai Johan Weider Brende",
+          "player1Id": 3586,
+          "player2Id": 3085,
+          "player1Points": 495,
+          "player2Points": 315,
+          "teamPoints": 810
+        },
+        {
+          "teamName": "Syver Drolsum Klungsøyr / Martin Helgerud",
+          "player1Id": 4142,
+          "player2Id": 4143,
+          "player1Points": 690,
+          "player2Points": 690,
+          "teamPoints": 1380
+        },
+        {
+          "teamName": "Christian Balk / Sigurd Fossdal Pettersen",
+          "player1Id": 1874,
+          "player2Id": 2354,
+          "player1Points": 411,
+          "player2Points": 171,
+          "teamPoints": 582
+        },
+        {
+          "teamName": "Håvard Solheim / Herman Halvorsen Berggreen",
+          "player1Id": 3510,
+          "player2Id": 3571,
+          "player1Points": 1224,
+          "player2Points": 977,
+          "teamPoints": 2201
+        },
+        {
+          "teamName": "Mikkel Levardson Erlandsen / Birk Eidså Tjetland",
+          "player1Id": 3504,
+          "player2Id": 3041,
+          "player1Points": 1332,
+          "player2Points": 1011,
+          "teamPoints": 2343
+        },
+        {
+          "teamName": "Espen Kalvatn Morten / Oskar Opstad Fridstrøm",
+          "player1Id": 2702,
+          "player2Id": 3384,
+          "player1Points": 840,
+          "player2Points": 540,
+          "teamPoints": 1380
+        },
+        {
+          "teamName": "Erlend Henriksen Winje / Johannes Stavnar Sørensen",
+          "player1Id": 3454,
+          "player2Id": 2479,
+          "player1Points": 1560,
+          "player2Points": 1560,
+          "teamPoints": 3120
+        }
+      ]
+    },
+    {
+      "klasse": "JU15",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Ingrid Roness / Josefine Nydahl Håvaldsrud",
+          "player1Id": 3600,
+          "player2Id": 3341,
+          "player1Points": 1302,
+          "player2Points": 1410,
+          "teamPoints": 2712
+        },
+        {
+          "teamName": "Anna Luna Bjønnes Yngsdal / Sara Indine Hjellset",
+          "player1Id": 3353,
+          "player2Id": 4149,
+          "player1Points": 1146,
+          "player2Points": 270,
+          "teamPoints": 1416
+        },
+        {
+          "teamName": "Signe Drolsum Klungsøyr / Mari Berget Grøterud",
+          "player1Id": 4150,
+          "player2Id": 4151,
+          "player1Points": 0,
+          "player2Points": 0,
+          "teamPoints": 0
+        },
+        {
+          "teamName": "Ida Viksmo Sværk / Marie Saugestad",
+          "player1Id": 4158,
+          "player2Id": 4159,
+          "player1Points": 240,
+          "player2Points": 240,
+          "teamPoints": 480
+        }
+      ]
+    },
+    {
+      "klasse": "JU19",
+      "maxNrOfTeams": 999,
+      "price": 200,
+      "teams": [
+        {
+          "teamName": "Victoria Doan / Eiril Jensen Isachsen",
+          "player1Id": 1966,
+          "player2Id": 3349,
+          "player1Points": 1440,
+          "player2Points": 1338,
+          "teamPoints": 2778
+        },
+        {
+          "teamName": "Thea Hellsten Høklingen / Josefine Nydahl Håvaldsrud",
+          "player1Id": 2924,
+          "player2Id": 3341,
+          "player1Points": 670,
+          "player2Points": 670,
+          "teamPoints": 1340
+        },
+        {
+          "teamName": "Ingrid Roness / Anna Luna Bjønnes Yngsdal",
+          "player1Id": 3600,
+          "player2Id": 3353,
+          "player1Points": 732,
+          "player2Points": 180,
+          "teamPoints": 912
+        },
+        {
+          "teamName": "Mathea Kristine Duesund / Maja Sofie Windelstad",
+          "player1Id": 3116,
+          "player2Id": 2932,
+          "player1Points": 1860,
+          "player2Points": 1920,
+          "teamPoints": 3780
+        },
+        {
+          "teamName": "Sigrid Rusten Torsvik / Mali Rein-Larsen",
+          "player1Id": 3421,
+          "player2Id": 3590,
+          "player1Points": 0,
+          "player2Points": 0,
+          "teamPoints": 0
+        },
+        {
+          "teamName": "Hedda Egset Harnes / Cornelia Johnsen-Braseth",
+          "player1Id": 2067,
+          "player2Id": 3271,
+          "player1Points": 1350,
+          "player2Points": 580,
+          "teamPoints": 1930
+        }
+      ]
+    }
+  ],
+  "classesAsText": "K,M,GU15,GU19,JU15,JU19"
+}

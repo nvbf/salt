@@ -1,5 +1,4 @@
 import React from "react";
-import fetch from "isomorphic-unfetch";
 import Main from "../components/Main";
 import debug from "debug";
 import moment from "moment";
@@ -102,29 +101,33 @@ class TournamentPage extends React.Component {
 
     return (
       <Main>
-        {renderTournament(tournament, this.props.classes, this.onClick)}
-        {!Boolean(tournamentResult.length > 0) && (
-          <Typography variant="display2">Seeding</Typography>
-        )}
-        {!Boolean(tournamentResult.length > 0) &&
-          tournament.classes.map((klass, index) => {
-            if (klass.teams.length === 0) {
-              return null;
-            }
-            return (
-              <React.Fragment key={index}>
-                <Typography variant="display1">{klass["class"]}</Typography>
-                {!(clicks > 5) && renderSeeding(klass)}
-                {clicks > 5 && renderSeedingCopyPaste(klass)}
-              </React.Fragment>
-            );
-          })}
-        {Boolean(tournamentResult.length > 0) && (
-          <>
-            <Typography variant="display2">Resultat</Typography>
-            {tournamentResult.map(klasse => renderResultList(klasse))}
-          </>
-        )}
+        <section>
+          {renderTournament(tournament, this.props.classes, this.onClick)}
+        </section>
+        <section>
+          {!Boolean(tournamentResult.length > 0) && (
+            <Typography variant="display2">Seeding</Typography>
+          )}
+          {!Boolean(tournamentResult.length > 0) &&
+            tournament.classes.map((klass, index) => {
+              if (klass.teams.length === 0) {
+                return null;
+              }
+              return (
+                <section key={index}>
+                  <Typography variant="display1">{klass["klasse"]}</Typography>
+                  {!(clicks > 5) && renderSeeding(klass)}
+                  {clicks > 5 && renderSeedingCopyPaste(klass)}
+                </section>
+              );
+            })}
+          {Boolean(tournamentResult.length > 0) && (
+            <section>
+              <Typography variant="display2">Resultat</Typography>
+              {tournamentResult.map(klasse => renderResultList(klasse))}
+            </section>
+          )}
+        </section>
       </Main>
     );
   }
@@ -132,7 +135,7 @@ class TournamentPage extends React.Component {
 
 function renderTournament(tournament, classes, onClick) {
   return (
-    <main>
+    <section>
       <h1>{tournament.name}</h1>
       <Paper onClick={onClick} className={classes.tournamentInfoContainer}>
         <table>
@@ -198,14 +201,14 @@ function renderTournament(tournament, classes, onClick) {
           </tbody>
         </table>
       </Paper>
-    </main>
+    </section>
   );
 }
 
 function renderClasses(tournament, classes) {
   return tournament.classes.map((klass, index) => (
     <ul className={classes.classBox} key={index}>
-      <li>Klasse {klass["class"]}</li>
+      <li>Klasse {klass["klasse"]}</li>
       <li>Pris {klass.price}</li>
       <li>
         Påmeldte {klass.teams.length} av {klass.maxNrOfTeams}
@@ -215,16 +218,25 @@ function renderClasses(tournament, classes) {
 }
 
 function renderSignupLink(tournament) {
-  const { deadline, id } = tournament;
-  const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
-    .endOf("day")
-    .diff(moment.now());
+  const { deadline, tournamentId } = tournament;
+  const timeToDeadLine = moment(deadline).diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
   if (signupAllowd) {
-    return <a href={`/signup/${id}`}>Meld deg på</a>;
+    return <a href={`/signup/${tournamentId}`}>Meld deg på</a>;
   } else {
     return "Påmelding stengt";
   }
+}
+
+function getShortName(player) {
+  const nameParts = player.trim().split(/\s+/);
+  if (nameParts.length == 1) {
+    return nameParts[0];
+  }
+
+  let nameString = nameParts[0][0] + ". ";
+  nameString += nameParts[nameParts.length - 1];
+  return nameString;
 }
 
 function renderSeedingCopyPaste(klass) {
@@ -234,9 +246,11 @@ function renderSeedingCopyPaste(klass) {
       <TableBody>
         {teams.map((team, index) => {
           const players = team.teamName.split("/");
+          const teamNameShort =
+            getShortName(players[0]) + " / " + getShortName(players[1]);
           return (
             <TableRow key={index}>
-              <TableCell>{team.teamNameShort}</TableCell>
+              <TableCell>{teamNameShort}</TableCell>
             </TableRow>
           );
         })}

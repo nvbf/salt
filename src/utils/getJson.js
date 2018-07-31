@@ -1,8 +1,7 @@
-const fetch = require("isomorphic-unfetch");
 const log = require("debug")("salt:getJson");
 
 async function getJson(url) {
-  const res = await fetch(url);
+  const res = await window.fetch(url);
   const isOK = res.status == 200 ? true : false;
   if (!isOK) {
     log("Status code from api is not ok");

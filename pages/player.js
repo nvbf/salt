@@ -52,13 +52,18 @@ class PlayerPage extends React.Component {
     });
   }
 
+  componentDidMount() {
+    window.retryHandler = this.retryGetPlayers;
+  }
+
   static async getInitialProps({ asPath }) {
     return await getPlayerAsProps(asPath);
   }
 
-  retryGetPlayers() {
-    this.setState(this.defaultState);
-    this.setState(getPlayerAsProps(location.pathname));
+  async retryGetPlayers() {
+    this.setState(this.defaultState, async () => {
+      this.setState(await getPlayerAsProps(location.pathname));
+    });
   }
 
   render() {
@@ -131,7 +136,7 @@ function renderRanking(points, classes) {
   );
 }
 
-function renderPlayer({ playerId, firstname, lastname, dateOfBith }) {
+function renderPlayer({ playerId, firstname, lastname }) {
   if (!playerId) {
     return <div>Denne iden er ikke knyttet til en spiller</div>;
   }
@@ -140,7 +145,6 @@ function renderPlayer({ playerId, firstname, lastname, dateOfBith }) {
       <Typography variant="headline">
         {firstname} {lastname}
       </Typography>
-      <p>Fødselsår: {dateOfBith.split(".")[2]}</p>
     </div>
   );
 }
@@ -149,17 +153,16 @@ async function getPlayerAsProps(pathname) {
   try {
     const path = pathname.split("/");
     const id = path[path.length - 1];
-    log(`id is: ${id} ${pathname}`);
     const player = await getPlayer(id);
     const points = await getPointsFromPlayer(id);
 
-    return { player, points, loading: false };
+    return { player, points, loading: false, error: false };
   } catch (err) {
     log(err);
     return {
       loading: false,
-      error: true,
-      errorDetails: CircularJSON.stringify(err)
+      error: true
+      // errorDetails: CircularJSON.stringify(err)
     };
   }
 }

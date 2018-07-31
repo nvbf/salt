@@ -1,15 +1,11 @@
 import React from "react";
 import debug from "debug";
-import Link from "next/link";
-import fetch from "isomorphic-unfetch";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 
 import withRoot from "../src/withRoot";
 import Main from "../components/Main";
 import { getTournamentsInTheFuture } from "../src/api";
-import { TournamentListItem } from "../components/TournamentListItem";
+import { TournamentList } from "../components/TournamentList";
 
 const CircularJSON = require("circular-json");
 const log = debug("tournaments");
@@ -35,7 +31,7 @@ class Tournaments extends React.Component {
   constructor(props) {
     super(props);
     this.retryGetTournaments = this.retryGetTournaments.bind(this);
-    this.defaultState = { tournaments: [], loading: true, error: true };
+    this.defaultState = { tournaments: [], loading: true, error: false };
 
     const { tournaments, error, loading } = this.props;
     this.state = Object.assign({}, this.defaultState, {
@@ -45,13 +41,18 @@ class Tournaments extends React.Component {
     });
   }
 
+  componentDidMount() {
+    window.retryHandler = this.retryGetTournaments;
+  }
+
   static async getInitialProps() {
     return await getTournamentsAsProps();
   }
 
-  retryGetTournaments() {
+  async retryGetTournaments() {
     this.setState(this.defaultState);
-    this.setState(getTournamentsAsProps());
+    const newProps = await getTournamentsAsProps();
+    this.setState(newProps);
   }
 
   render() {
@@ -72,45 +73,23 @@ class Tournaments extends React.Component {
   getContent() {
     const { tournaments = [], loading, error } = this.state;
     const { classes } = this.props;
-
     if (tournaments.length == 0) {
       return <p>Ingen turneringer er på plass enda, prøve igjen senere</p>;
     }
 
-    return (
-      <React.Fragment>
-        <Typography variant="display1" className={classes.tournamentTitle}>
-          Turneringer
-        </Typography>
-        <Paper className={classes.tournamentPaper}>
-          <ul className={classes.tournamentList}>
-            {tournaments.map((tournament, index) => {
-              const displayDivider = Boolean(index < tournaments.length - 1);
-              return (
-                <TournamentListItem
-                  key={tournament.id}
-                  data={Object.assign(
-                    {},
-                    tournament,
-                    { index },
-                    { displayDivider }
-                  )}
-                />
-              );
-            })}
-          </ul>
-        </Paper>
-      </React.Fragment>
-    );
+    return <TournamentList tournaments={tournaments} />;
   }
 }
 
 async function getTournamentsAsProps() {
   try {
     const json = await getTournamentsInTheFuture();
-    return { tournaments: json, loading: false };
+    return { tournaments: json, error: false, loading: false };
   } catch (err) {
-    log(err);
+    log("Error in getting getTournamentsAsProps");
+    log(err.name);
+    log(err.message);
+    log(err.stack);
     return {
       loading: false,
       error: true,

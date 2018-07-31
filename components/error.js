@@ -1,13 +1,17 @@
 import React from "react";
-const debug = require("debug");
-const log = debug("salt:error");
 
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+const debug = require("debug");
+const log = debug("salt:error");
 
 const styles = theme => ({});
 
 class ErrorComponent extends React.Component {
+  componentDidMount() {
+    window.retryHandler = this.props.retryHandler;
+  }
+
   render() {
     const { error, errorDetails, retryHandler } = this.props;
     log(`Error ${error} ${errorDetails}`);

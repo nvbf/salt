@@ -22,3 +22,6 @@ env.sh
 service-account.json
 .env
 .idea
+.lock.pgid
+cypress/videos/
+cypress/screenshots

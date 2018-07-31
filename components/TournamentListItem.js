@@ -21,10 +21,6 @@ const styles = theme => ({
   },
   deadLineItem: {
     marginTop: "16px"
-  },
-
-  padding: {
-    padding: "100px"
   }
 });
 
@@ -32,22 +28,22 @@ class TournamentListItem extends React.Component {
   render() {
     const {
       data: {
-        id,
-        classes,
+        tournamentId,
         startDate,
         endDate,
-        playerVenue,
         deadline,
-        classesText,
+        classesAsText,
         shortNameProfixio,
         name,
         displayDivider
-      }
+      },
+      classes
     } = this.props;
+
     return (
       <li className={classes.tournamentListItem}>
         <Grid container spacing={16}>
-          <Grid item xs={4} sm={2} md={1}>
+          <Grid item xs={2} md={1}>
             <List
               classes={{
                 padding: classes.padding
@@ -56,7 +52,7 @@ class TournamentListItem extends React.Component {
               <ListItem dense>{renderDate(startDate)}</ListItem>
             </List>
           </Grid>
-          <Grid item>
+          <Grid item xs={10} md={11}>
             <List
               classes={{
                 padding: classes.padding
@@ -70,20 +66,21 @@ class TournamentListItem extends React.Component {
               {isTournamentDateOver(endDate) && (
                 <ListItem dense>
                   <Typography variant="body2">
-                    Påmeldingsfrist: {deadline}
+                    Påmeldingsfrist: {moment(deadline).format("DD.MM hh:mm")}
                   </Typography>
                 </ListItem>
               )}
-              {isTournamentDateOver(endDate) && (
-                <ListItem dense>
-                  <Typography variant="body1">
-                    Klasser: {classesText}
-                  </Typography>
-                </ListItem>
-              )}
+              {isTournamentDateOver(endDate) &&
+                classesAsText && (
+                  <ListItem dense>
+                    <Typography variant="body1">
+                      Klasser: {classesAsText.split(",").join(", ")}
+                    </Typography>
+                  </ListItem>
+                )}
             </List>
-            {renderTournamentDetailLink(id, endDate)}
-            {renderSignupLink(id, deadline)}
+            {renderTournamentDetailLink(tournamentId, endDate)}
+            {renderSignupLink(tournamentId, deadline)}
             {renderTournamentScheduleLink(shortNameProfixio, endDate)}
           </Grid>
         </Grid>
@@ -94,27 +91,15 @@ class TournamentListItem extends React.Component {
 }
 
 function renderDate(date) {
-  const [d, m, y] = date.split(".");
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des"
-  ];
+  moment.locale("nb");
+  const momentDate = moment(date);
+  const mon = momentDate.format("MMMM");
+  const dateInMonth = momentDate.format("DD");
 
   return (
     <div>
-      <Typography variant="title">{d}</Typography>
-      <Typography variant="subheading">{months[parseInt(m) - 1]}</Typography>
+      <Typography variant="title">{dateInMonth}</Typography>
+      <Typography variant="subheading">{mon}</Typography>
     </div>
   );
 }
@@ -153,7 +138,7 @@ function renderTournamentDetailLink(id, endDate) {
 }
 
 function renderSignupLink(id, deadline) {
-  const timeToDeadLine = moment(deadline, "DD.MM.YYYY")
+  const timeToDeadLine = moment(deadline)
     .endOf("day")
     .diff(moment.now());
   const signupAllowd = timeToDeadLine > 0;
@@ -171,7 +156,7 @@ function renderSignupLink(id, deadline) {
 
 function isTournamentDateOver(endDate) {
   return (
-    moment(endDate, "DD.MM.YYYY")
+    moment(endDate)
       .endOf("day")
       .diff(moment.now()) > 0
   );

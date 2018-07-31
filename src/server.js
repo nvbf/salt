@@ -1,7 +1,9 @@
 require("dotenv").config();
-
 const express = require("express");
-import { rollbar } from "./utils/rollbar";
+
+/* eslint-disable import/first */
+// import { rollbar } from "./utils/rollbar";
+import { getTournamentClass } from "./utils/getTournamentClass";
 
 const api = require("./api");
 const {
@@ -10,7 +12,6 @@ const {
   getPlayers,
   getTournament,
   getTournaments,
-  getNorwegianTournaments,
   registerTeamForTournament,
   getPointsFromPlayer,
   getTournamentsInTheFuture,
@@ -19,7 +20,6 @@ const {
   getTournamentsThatHasEnded
 } = api;
 
-import { getTournamentClass } from "./utils/getTournamentClass";
 const getClientToken = require("./utils/getClientToken");
 const gateway = require("./utils/gateway");
 const sendMailTournament = require("./utils/sendMail");
@@ -83,7 +83,6 @@ const tournamentsThatHasEndedHandler = async (req, res) => {
 };
 
 const tournamentHandler = async (req, res, next) => {
-  log("tournamentHandler");
   const tournament = await getTournament(req.params.id);
   if (tournament.noSuchTournament) {
     return res.status(404).send("404");
@@ -93,7 +92,7 @@ const tournamentHandler = async (req, res, next) => {
 
 app.prepare().then(() => {
   const server = express();
-  server.use(rollbar.errorHandler());
+  // server.use(rollbar.errorHandler());
   var checkoutRoute = express.Router();
   checkoutRoute.use(express.json());
 
@@ -121,7 +120,7 @@ app.prepare().then(() => {
   );
 
   server.get(
-    "/api/tournaments/ended",
+    "/api/tournaments/finished",
     routeCache.cacheSeconds(300),
     errorHandlerJson.bind(null, tournamentsThatHasEndedHandler)
   );
@@ -209,12 +208,10 @@ app.prepare().then(() => {
     const nonce = process.env.BT_SANDBOX
       ? "fake-valid-no-billing-address-nonce"
       : req.body.nonce;
-    log(`Using nounce: ${nonce}`);
 
     const tournament = await getTournament(tournamentId);
 
     const tournamentClass = getTournamentClass(tournament, klasse);
-    log("tournament class", tournamentClass);
     const price = tournamentClass.price;
 
     if (tournamentClass.length === 0) {
@@ -262,7 +259,8 @@ app.prepare().then(() => {
           klasse,
           player1,
           player2,
-          result.transaction.id
+          result.transaction.id,
+          req.body.email
         )
           .then(apiRes => {
             const withPaymentStatus = Object.assign(
@@ -337,7 +335,7 @@ app.prepare().then(() => {
   server.listen(process.env.PORT || 3000, err => {
     if (err) throw err;
     log("Server ready on http://localhost:" + (process.env.PORT || 3000));
-    rollbar.info(`Server starts on port ${process.env.PORT || 3000}`);
+    // rollbar.info(`Server starts on port ${process.env.PORT || 3000}`);
   });
 });
 
@@ -345,7 +343,7 @@ async function errorHandlerJson(handler, req, res, next) {
   try {
     return await handler(req, res, next);
   } catch (err) {
-    rollbar.error(err);
+    // rollbar.error(err);
     log(`Error in handler: ${err}, ${CircularJSON.stringify(err)}`);
     res.status(500).json({
       error: "Internal Server Error",
@@ -353,3 +351,8 @@ async function errorHandlerJson(handler, req, res, next) {
     });
   }
 }
+
+process.on("unhandledRejection", reason => {
+  // rollbar.error("unhandledRejection", reason);
+  process.exit(-1);
+});
