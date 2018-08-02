@@ -22,7 +22,7 @@ export function validateTournamentsListPage() {
 
   cy.get("main > div > ul > li")
     .eq(3)
-    .contains("Påmeldingsfrist: 30.07 12:00");
+    .contains("Påmeldingsfrist: 30.07 00:00");
 
   const tournamentList = "main > div > ul > li";
   cy.get(tournamentList).should("have.length", 18);

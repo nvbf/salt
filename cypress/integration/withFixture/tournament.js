@@ -41,8 +41,8 @@ describe("Tournament - Finished", function() {
     cy.contains("Start");
     cy.contains("Ikke oppgitt");
     cy.contains("Påmelding stengt");
-    cy.contains("2018-05-04T22:00:00.000Z");
-    cy.contains("2018-05-02T22:00:00.000Z");
+    cy.contains("05.05 00:00");
+    cy.contains("03.05 00:00");
     cy.contains("Resultat");
     cy.get("main > section > section > section > table > tbody").should(
       "have.length",
@@ -80,6 +80,6 @@ describe("Tournament - Finished", function() {
 
     cy.contains("Seeding");
     cy.contains("Meld deg på");
-    cy.contains("2018-08-26T22:00:00.000Z");
+    cy.contains("27.08 00:00");
   });
 });
