@@ -66,7 +66,7 @@ class TournamentListItem extends React.Component {
               {isTournamentDateOver(endDate) && (
                 <ListItem dense>
                   <Typography variant="body2">
-                    Påmeldingsfrist: {moment(deadline).format("DD.MM hh:mm")}
+                    Påmeldingsfrist: {moment(deadline).format("DD.MM HH:mm")}
                   </Typography>
                 </ListItem>
               )}

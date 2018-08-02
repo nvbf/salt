@@ -142,9 +142,7 @@ function renderTournament(tournament, classes, onClick) {
           <tbody>
             <tr>
               <td className={classes.tournamentInfo}>Start</td>
-              <td>
-                {tournament.startDate} - {tournament.startTime}
-              </td>
+              <td>{moment(tournament.startDate).format("DD.MM HH:mm")}</td>
             </tr>
             <tr>
               <td className={classes.tournamentInfo}>Type</td>
@@ -174,7 +172,7 @@ function renderTournament(tournament, classes, onClick) {
             </tr>
             <tr>
               <td className={classes.tournamentInfo}>Påmeldingsfrist</td>
-              <td>{tournament.deadline}</td>
+              <td>{moment(tournament.deadline).format("DD.MM HH:mm")}</td>
             </tr>
             <tr>
               <td className={classes.tournamentInfo}>Sted</td>
