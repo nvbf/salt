@@ -107,7 +107,7 @@ function renderDate(date) {
 function renderTournamentScheduleLink(shortNameProfixio, endDate) {
   if (shortNameProfixio && isTournamentDateOver(endDate)) {
     return (
-      <a href={`https://www.profixio.com/matches/${shortNameProfixio}`}>
+      <a href={`https://www.profixio.com/matches/${shortNameProfixio}/d`}>
         <Button color="primary">Kampresultater</Button>
       </a>
     );
