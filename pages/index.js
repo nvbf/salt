@@ -37,20 +37,20 @@ class IndexPage extends React.Component {
     const items = [
       {
         title: "Turneringer",
-        description: "Påmeldte og påmelding for turneringer",
+        description: "Meld deg på eller se påmeldte til kommende turneringer",
         linkText: "Vis turneringer",
         link: "/tournaments"
       },
       {
         title: "Resultater",
-        description: "Se resultater fra de siste turneringene som har vært",
+        description: "Se resultater fra de siste spilte turneringene",
         linkText: "Se resultater",
         link: "/results"
       },
       {
         title: "Rankinglista",
-        description: "Spillerrangering for 2018",
-        linkText: "Se rankinglista!",
+        description: "Spillerrangering",
+        linkText: "Se rankinglister for senior!",
         link: "/ranking"
       }
     ];
@@ -61,8 +61,7 @@ class IndexPage extends React.Component {
           Sandvolleyball i Norge
         </Typography>
         <p className="description">
-          Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
-          sesongen 2018.
+          Her vil du kunne melde deg på lokale-, regionale- nasjonale turneringer.
         </p>
 
         <Grid container spacing={16}>
