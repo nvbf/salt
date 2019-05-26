@@ -49,7 +49,7 @@ class IndexPage extends React.Component {
       },
       {
         title: "Rankinglista",
-        description: "Spillerrangering for 2018",
+        description: "Spillerrangering for 2019",
         linkText: "Se rankinglista!",
         link: "/ranking"
       }
@@ -62,18 +62,18 @@ class IndexPage extends React.Component {
         </Typography>
         <p className="description">
           Her vil du kunne melde deg på Lokale, Regionale og Norges Tour for
-          sesongen 2018.
+          sesongen 2019.
         </p>
 
         <Grid container spacing={16}>
           {items.map((item, index) => {
             return (
               <Grid item key={index} xs={12} md={4}>
-                <Paper className={classes.paperContainer}>
+                <Paper className={classes.paperContainer} style={{display: "flex", flexDirection: 'column'}}>
                   <Typography variant="headline">{item.title}</Typography>
-                  <span style={{ paddingTop: "1rem", paddingBottom: "1rem" }}>
+                  <p style={{flexGrow: 1}}>
                     <Typography variant="body1">{item.description}</Typography>
-                  </span>
+                  </p>
                   <Link href={item.link}>
                     <Button color="primary" className={classes.buttonLink}>
                       {item.linkText}

@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+import moment from "moment";
 
 /* eslint-disable import/first */
 // import { rollbar } from "./utils/rollbar";
@@ -89,6 +90,24 @@ const tournamentHandler = async (req, res, next) => {
   }
   return res.json(tournament);
 };
+
+const tournamentRegistrationExpired = (tournament) => {
+  if (moment(tournament.deadline) < moment()) {
+    return true;
+  }
+  return false;
+}
+
+const tournamentPlayerAlreadyRegistered = (tournament, player) => {
+  for (const cls of tournament.classes) {
+    for (const team of cls.teams) {
+      if (team.player1Id == player || team.player2Id == player) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
 
 app.prepare().then(() => {
   const server = express();
@@ -210,6 +229,23 @@ app.prepare().then(() => {
       : req.body.nonce;
 
     const tournament = await getTournament(tournamentId);
+
+    // Check if signup expired:
+    if (tournamentRegistrationExpired(tournament)) {
+      return res.json({
+        error:
+          "Tidsfristen for å melde seg på er dessverre utløpt.",
+          statusText: "error"
+      });
+    }
+
+    if (tournamentPlayerAlreadyRegistered(tournament, player1) || tournamentPlayerAlreadyRegistered(player2)) {
+      return res.json({
+        error:
+          "En eller flere av spillerene har allerede registrert seg.",
+        statusText: "error"
+      });
+    }
 
     const tournamentClass = getTournamentClass(tournament, klasse);
     const price = tournamentClass.price;
