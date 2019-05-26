@@ -239,7 +239,7 @@ app.prepare().then(() => {
       });
     }
 
-    if (tournamentPlayerAlreadyRegistered(tournament, player1) || tournamentPlayerAlreadyRegistered(player2)) {
+    if (tournamentPlayerAlreadyRegistered(tournament, player1) || tournamentPlayerAlreadyRegistered(tournament, player2)) {
       return res.json({
         error:
           "En eller flere av spillerene har allerede registrert seg.",
