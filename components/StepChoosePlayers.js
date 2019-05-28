@@ -123,16 +123,18 @@ function PlayerSelect({ players, placeHolder, defaultItem, onChange }) {
         highlightedIndex
       }) => (
         <div>
-          {renderInput({
-            fullWidth: true,
-            classes,
-            InputProps: getInputProps({
+          <SearchInput
+            fullWidth={true}
+            classes={classes}
+            InputProps={getInputProps({
               placeholder: placeHolder,
-              id: "integration-downshift-simple"
-            })
-          })}
+              id: "integration-downshift-simple",
+              autoComplete: 'off'
+
+            })}
+           />
           {isOpen ? (
-            <Paper square>
+            <Paper square style={{maxHeight: '60vh', overflow: 'auto'}}>
               {getSuggestions(players, inputValue).map((suggestion, index) =>
                 renderSuggestion({
                   suggestion,
@@ -150,9 +152,8 @@ function PlayerSelect({ players, placeHolder, defaultItem, onChange }) {
   );
 }
 
-function renderInput(inputProps) {
+function SearchInput(inputProps) {
   const { InputProps, classes, ref, ...other } = inputProps;
-
   return (
     <TextField
       InputProps={{
@@ -168,26 +169,21 @@ function renderInput(inputProps) {
 }
 
 function getSuggestions(players, inputValue) {
-  let count = 0;
 
   const searchWords = inputValue.toLowerCase().split(/\s+/);
 
-  return players.filter(player => {
-    if (count > 5) {
-      return false;
-    }
-
+  const result = players.filter(player => {
     const searchText = (player.firstname + " " + player.lastname).toLowerCase();
-
     for (const word of searchWords) {
       if (searchText.indexOf(word) === -1) {
         return false;
       }
     }
 
-    count++;
     return true;
   });
+
+  return result.slice(0, 10);
 }
 
 function renderSuggestion({
