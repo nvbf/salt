@@ -79,7 +79,7 @@ class StepChoosePlayers extends React.Component {
         </section>
         <p>
           Mangler det et navn? Send mail til{" "}
-          <a href="mailto:post@osvb.no">post@osvb.no</a>{" "}
+          <a href="mailto:hakon@tmst.no">hakon@tmst.no</a>{" "}
         </p>
         <div className={classes.actionsContainer}>
           <div>
