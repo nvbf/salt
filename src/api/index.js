@@ -71,12 +71,14 @@ async function getTournamentResults(tournamentId) {
           // log(`player1Id ${JSON.stringify(team.player1Id)}`);
 
           const res = tournamentResult.filter(res => {
-            // log(res);
-            return (
-              res.playerId[0] === team.player1Id ||
-              res.playerId[1] == team.player2Id
-            );
+            // Why is res.playerId (0, 1) always the same?
+            if ((res.playerId[0] == team.player1Id || res.playerId[0] == team.player2Id)
+              && res.klasse == klasse.klasse) {
+              return true;
+            }
+            return false;
           });
+
           if (!res || res.length === 0) {
             log("!res || res.length === 0");
             return {};
