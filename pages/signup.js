@@ -122,14 +122,13 @@ class SignupPage extends React.Component {
     const data = JSON.stringify({
       nonce: nonce,
       tournamentId: getIdFromPath(),
-      player1: player1.playerId,
-      player2: player2.playerId,
+      player1: player1,
+      player2: player2,
       klasse: signupClass,
       email: receiptEmail
     });
 
     log(`signup data: ${data}`);
-
     const res = fetch("/tournaments/checkout/", {
       headers: {
         Accept: "application/json",

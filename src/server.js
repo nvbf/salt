@@ -221,7 +221,7 @@ app.prepare().then(() => {
     }
 
     log(
-      `SIGNUP: tournamentId:${tournamentId} klasse: ${klasse} player1:${player1} player2:${player2} email:${email}`
+      `SIGNUP: tournamentId:${tournamentId} klasse: ${klasse} player1:${player1.playerId} player2:${player2.playerId} email:${email}`
     );
 
     const nonce = process.env.BT_SANDBOX
@@ -239,7 +239,7 @@ app.prepare().then(() => {
       });
     }
 
-    if (tournamentPlayerAlreadyRegistered(tournament, player1) || tournamentPlayerAlreadyRegistered(tournament, player2)) {
+    if (tournamentPlayerAlreadyRegistered(tournament, player1.playerId) || tournamentPlayerAlreadyRegistered(tournament, player2.playerId)) {
       return res.json({
         error:
           "En eller flere av spillerene har allerede registrert seg.",
@@ -293,8 +293,8 @@ app.prepare().then(() => {
         registerTeamForTournament(
           tournamentId,
           klasse,
-          player1,
-          player2,
+          player1.playerId,
+          player2.playerId,
           result.transaction.id,
           req.body.email
         )
@@ -326,15 +326,16 @@ app.prepare().then(() => {
           tournament,
           klasse,
           price,
-          result.transaction.id
+          result.transaction.id,
+          [player1, player2],
         );
       });
     } else {
       registerTeamForTournament(
         tournamentId,
         klasse,
-        player1,
-        player2,
+        player1.playerId,
+        player2.playerId,
         "påmeldt til en turnering med pris 0"
       )
         .then(apiRes => {
@@ -360,7 +361,7 @@ app.prepare().then(() => {
           });
         });
 
-      sendMailTournament(req.body.email, tournament, klasse, false, false);
+      sendMailTournament(req.body.email, tournament, klasse, false, false, [player1, player2]);
     }
   });
 
